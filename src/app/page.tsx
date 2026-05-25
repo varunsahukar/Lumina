@@ -10,10 +10,10 @@ export default function Home() {
       <Navbar />
       <main className="container flex-1 flex flex-col items-center justify-center py-20 relative z-10 text-center space-y-8 animate-fade-in">
         <div className="space-y-4">
-          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-slate-100">
-            Welcome to <span className="bg-gradient-to-r from-emerald-400 to-teal-500 bg-clip-text text-transparent">LuminaVest</span>
+          <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-white">
+            Welcome to <span className="text-white">LuminaVest</span>
           </h1>
-          <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto font-medium">
+          <p className="text-lg md:text-xl text-white max-w-2xl mx-auto font-medium">
             Invest in direct mutual funds with ease. Discover, analyze, and manage your portfolio all in one intelligent wealth platform.
           </p>
         </div>

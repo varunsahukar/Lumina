@@ -7,15 +7,15 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen bg-slate-950 text-slate-100 overflow-x-hidden">
+    <div className="flex min-h-screen bg-black text-white overflow-x-hidden">
       {/* Dynamic Desktop Sidebar */}
       <Sidebar />
 
       {/* Main Page Area */}
       <div className="flex-1 flex flex-col min-h-screen relative">
         {/* Mobile Header Bar */}
-        <header className="md:hidden flex h-14 items-center justify-between px-6 border-b border-slate-900 bg-slate-950">
-          <span className="font-extrabold text-sm tracking-tight bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
+        <header className="md:hidden flex h-14 items-center justify-between px-6 border-b border-slate-900 bg-black">
+          <span className="font-extrabold text-sm tracking-tight text-white">
             LuminaVest
           </span>
         </header>

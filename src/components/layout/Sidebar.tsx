@@ -93,7 +93,7 @@ export default function Sidebar() {
           <div className="p-1.5 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg shadow-[0_0_15px_rgba(16,185,129,0.15)]">
             <Shield className="h-5 w-5 text-slate-950 stroke-[2.5]" />
           </div>
-          <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
+          <span className="font-extrabold text-lg tracking-tight text-white">
             LuminaVest
           </span>
         </Link>
@@ -106,8 +106,7 @@ export default function Sidebar() {
             Active Workspace
           </span>
           <span className={cn(
-            "text-xs font-bold bg-gradient-to-r bg-clip-text text-transparent",
-            roleLabels[activeRole].color
+            "text-xs font-bold text-white"
           )}>
             {roleLabels[activeRole].label}
           </span>

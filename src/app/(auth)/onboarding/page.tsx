@@ -122,7 +122,7 @@ export default function OnboardingPage() {
           <div className="flex items-center justify-between border-b border-slate-850 pb-4">
             <div className="flex items-center space-x-2">
               <Shield className="h-5 w-5 text-emerald-400 stroke-[2]" />
-              <span className="font-extrabold text-sm tracking-wide bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
+              <span className="font-extrabold text-sm tracking-wide text-white">
                 LuminaVest Investor Onboarding
               </span>
             </div>
