@@ -86,7 +86,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="hidden md:flex md:w-64 md:flex-col md:border-r md:border-slate-800 bg-slate-950 text-slate-100 min-h-screen">
+    <aside className="hidden md:flex md:w-64 md:flex-col md:border-r md:border-slate-900 bg-black text-white min-h-screen">
       {/* Brand Header */}
       <div className="flex h-16 items-center px-6 border-b border-slate-900 justify-between">
         <Link href="/" className="flex items-center space-x-2">
