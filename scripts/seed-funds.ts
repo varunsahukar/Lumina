@@ -1,13 +1,8 @@
 import { PrismaClient } from "../src/generated/prisma/client";
 import axios from "axios";
 import { subDays, format } from "date-fns";
-import { Pool } from "pg";
-import { PrismaPg } from "@prisma/adapter-pg";
 
-const connectionString = process.env.DATABASE_URL || "postgresql://postgres:password@localhost:5432/luminavest";
-const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter } as any);
+const prisma = new PrismaClient({} as any);
 
 // Helper to generate a random float between min and max
 function randomFloat(min: number, max: number, decimals: number = 4) {

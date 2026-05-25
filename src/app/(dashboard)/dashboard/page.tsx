@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useAppStore, UserRole } from "@/store/useStore";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -24,7 +25,8 @@ import {
   ChevronRight,
   ArrowDownRight,
   Database,
-  Search
+  Search,
+  Loader2
 } from "lucide-react";
 import {
   BarChart as RechartsBarChart,
@@ -38,6 +40,25 @@ import {
 export default function DashboardPage() {
   const { activeRole } = useAppStore();
   const { toast } = useToast();
+  const [stats, setStats] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const res = await fetch("/api/dashboard");
+        const json = await res.json();
+        if (json.success) {
+          setStats(json.data);
+        }
+      } catch (err) {
+        console.error("Error fetching stats:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchStats();
+  }, []);
 
   const handleQuickAction = (action: string) => {
     toast({
@@ -45,6 +66,14 @@ export default function DashboardPage() {
       description: "Feature running inside sandboxed early-stage prototype environment.",
     });
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center bg-black">
+        <Loader2 className="h-8 w-8 animate-spin text-white" />
+      </div>
+    );
+  }
 
   // Mock datasets for various roles
   const amcChartData = [
@@ -56,7 +85,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="space-y-6 text-slate-100 animate-fade-in">
+    <div className="space-y-6 text-white animate-fade-in">
       
       {/* 👤 INVESTOR ROLE DASHBOARD */}
       {activeRole === "INVESTOR" && (
@@ -110,7 +139,7 @@ export default function DashboardPage() {
                   Annualized Returns (XIRR)
                 </span>
                 <h2 className="text-2xl font-extrabold tracking-tight text-emerald-400">
-                  18.42%
+                  {stats?.avgEquityReturns || "18.42"}%
                 </h2>
               </div>
               <div className="flex items-center justify-between text-xs text-slate-500">
@@ -306,12 +335,12 @@ export default function DashboardPage() {
                   Total Managed AUM
                 </span>
                 <h2 className="text-2xl font-extrabold tracking-tight text-slate-100">
-                  ₹2.41 Lakh Crore
+                  ₹{(stats?.totalAum / 1000).toFixed(2)} Lakh Crore
                 </h2>
               </div>
               <div className="flex items-center space-x-1.5 text-xs">
                 <Badge className="bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/10 border-none font-bold">
-                  28 Listed Direct Schemes
+                  {stats?.fundsCount || "28"} Listed Direct Schemes
                 </Badge>
               </div>
             </div>
@@ -480,16 +509,16 @@ export default function DashboardPage() {
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
-                    PostgreSQL DB Pool (pg)
+                    PostgreSQL DB Schemes
                   </span>
                   <Database className="h-4 w-4 text-emerald-400" />
                 </div>
                 <h2 className="text-2xl font-extrabold tracking-tight text-slate-100">
-                  18 Active Pools
+                  {stats?.fundsCount || "0"} Seeded Funds
                 </h2>
               </div>
               <span className="text-slate-500 font-semibold text-[10px]">
-                Driver adapter connected successfully
+                AMFI NAV parsing pipeline healthy
               </span>
             </div>
 
@@ -497,16 +526,16 @@ export default function DashboardPage() {
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
-                    Upstash Redis Cache
+                    Registered Accounts
                   </span>
                   <Layers className="h-4 w-4 text-emerald-400" />
                 </div>
                 <h2 className="text-2xl font-extrabold tracking-tight text-slate-100">
-                  94.8% Hit Rate
+                  {stats?.usersCount || "0"} Active Users
                 </h2>
               </div>
               <span className="text-slate-500 font-semibold text-[10px]">
-                Direct NAV lists fully cached
+                Role-based access controls active
               </span>
             </div>
           </div>
