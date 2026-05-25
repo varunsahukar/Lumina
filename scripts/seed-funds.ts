@@ -2,7 +2,7 @@ import { PrismaClient } from "../src/generated/prisma/client";
 import axios from "axios";
 import { subDays, format } from "date-fns";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({});
 
 // Helper to generate a random float between min and max
 function randomFloat(min: number, max: number, decimals: number = 4) {
