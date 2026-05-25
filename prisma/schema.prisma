@@ -15,7 +15,9 @@ datasource db {
 enum UserRole {
   INVESTOR
   ADVISOR
+  AMC
   ADMIN
+  RESEARCHER
 }
 
 enum KycStatus {
