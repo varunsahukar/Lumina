@@ -40,25 +40,25 @@ export default async function Home() {
     <div className="min-h-screen bg-[#000000] text-[#ffffff] font-sans">
       <Navbar minimal />
 
-      <main className="container">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Hero Section */}
-        <section className="py-[100px] flex flex-col items-center text-center w-[1250px]">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight mb-4">
+        <section className="py-16 md:py-24 flex flex-col items-center text-center">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight leading-tight mb-4">
             Trade the{" "}
             <span className="bg-gradient-to-r from-emerald-400 to-sky-400 bg-clip-text text-transparent">
               markets
             </span>{" "}
             like a quant.
           </h1>
-          <p className="text-[#a3a3a3] text-base md:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+          <p className="text-[#a3a3a3] text-sm md:text-base lg:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
             LuminaVest turns India&apos;s mutual fund universe into a live stock market terminal —
             screen direct plans, backtest strategies, and deploy capital in a matte-black, pro-grade
             console.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button
               asChild
-              className="bg-white text-black hover:bg-slate-100 font-semibold px-8 py-6 text-sm rounded-full flex items-center justify-center gap-2"
+              className="bg-white text-black hover:bg-slate-100 font-semibold px-6 py-3 text-sm rounded-full flex items-center justify-center gap-2 w-full sm:w-auto"
             >
               <a href="/screener">
                 Launch Market Screener
@@ -68,7 +68,7 @@ export default async function Home() {
             <Button
               asChild
               variant="outline"
-              className="border-[#1a1a1a] bg-black hover:bg-[#0a0a0a] text-white font-semibold px-8 py-6 text-sm rounded-full flex items-center justify-center"
+              className="border-[#1a1a1a] bg-black hover:bg-[#0a0a0a] text-white font-semibold px-6 py-3 text-sm rounded-full flex items-center justify-center w-full sm:w-auto"
             >
               <a href="/register">Create Free Account</a>
             </Button>
@@ -76,22 +76,22 @@ export default async function Home() {
         </section>
 
         {/* Section Spacer */}
-        <div className="h-20 w-[1641px]" />
+        <div className="h-12 md:h-16" />
 
         {/* India Indices Snapshot (Scrolling Ticker) */}
-        <section className="mb-20 w-full">
-          <div className="flex items-center justify-between mb-4 px-4">
+        <section className="mb-12 md:mb-16 w-full">
+          <div className="flex items-center justify-between mb-4 px-2">
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#a3a3a3]">
-            
+              Scroll Velocity
             </span>
-            <span className="text-xs text-[#a3a3a3] font-medium -mx-[200px] w-auto">Live · 15 min delay</span>
+            <span className="text-xs text-[#a3a3a3] font-medium">Live · 15 min delay</span>
           </div>
-          <div className="overflow-hidden border-y border-[#1a1a1a] bg-black py-0">
+          <div className="overflow-hidden border-y border-[#1a1a1a] bg-black py-4">
             <div className="flex gap-12 animate-[scrollRightToLeft_30s_linear_infinite]">
               {[...sampleTickers, ...sampleTickers].map((t, idx) => (
                 <div
                   key={`${t.symbol}-${idx}`}
-                  className="flex flex-col items-start min-w-[140px] flex-shrink-0"
+                  className="flex flex-col items-start min-w-[120px] flex-shrink-0"
                 >
                   <span className="font-semibold text-sm text-white">{t.symbol}</span>
                   <span className="font-bold text-lg text-white mt-0.5">{t.price}</span>
@@ -109,12 +109,12 @@ export default async function Home() {
         </section>
 
         {/* Section Spacer */}
-        <div className="h-20 w-[1641px]" />
+        <div className="h-12 md:h-16" />
 
         {/* Direct Plan Flow & Mutual Fund Universe */}
-        <section className="flex flex-col items-center mb-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl h-[896px]">
-            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-[25px] flex flex-col justify-between w-[440px] mt-[333px] mb-[333px]">
+        <section className="mb-12 md:mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 flex flex-col justify-between">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <p className="text-xs uppercase tracking-widest text-[#a3a3a3] font-semibold mb-1">
@@ -139,7 +139,7 @@ export default async function Home() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-[25px] flex flex-col justify-between w-[436px] mt-[333px] mb-[333px] ml-[1px] mr-[1px]">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 flex flex-col justify-between">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <p className="text-xs uppercase tracking-widest text-[#a3a3a3] font-semibold mb-1">
@@ -170,8 +170,8 @@ export default async function Home() {
         </section>
 
         {/* Bottom Stats Block */}
-        <section className="flex flex-col items-center pb-20 w-[1200px] mt-[100px] mb-[100px]">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-4xl">
+        <section className="pb-16 md:pb-24">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
             <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6">
               <div className="flex items-center gap-3">
                 <div className="p-3 rounded-xl border border-[#1a1a1a] text-white">
