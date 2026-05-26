@@ -113,8 +113,8 @@ export default async function Home() {
 
         {/* Direct Plan Flow & Mutual Fund Universe */}
         <section className="flex flex-col items-center mb-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl h-[896px] mt-0 mb-0 ml-0 mr-0">
-            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-[25px] flex flex-col justify-between w-[440px] mt-[333px] mb-[333px] ml-0 mr-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl h-[896px]">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-[25px] flex flex-col justify-between w-[440px] mt-[333px] mb-[333px]">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <p className="text-xs uppercase tracking-widest text-[#a3a3a3] font-semibold mb-1">
