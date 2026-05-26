@@ -84,7 +84,7 @@ export default async function Home() {
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#a3a3a3]">
             
             </span>
-            <span className="text-xs text-[#a3a3a3] font-medium -mx-[200px]">Live · 15 min delay</span>
+            <span className="text-xs text-[#a3a3a3] font-medium -mx-[200px] w-auto">Live · 15 min delay</span>
           </div>
           <div className="overflow-hidden border-y border-[#1a1a1a] bg-black py-0">
             <div className="flex gap-12 animate-[scrollRightToLeft_30s_linear_infinite]">
@@ -113,8 +113,8 @@ export default async function Home() {
 
         {/* Direct Plan Flow & Mutual Fund Universe */}
         <section className="flex flex-col items-center mb-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl h-[896px]">
-            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-[25px] flex flex-col justify-between w-[440px] mt-[333px] mb-[333px] ml-[100px] mr-[100px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl h-[896px] mt-0 mb-0 ml-0 mr-0">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-[25px] flex flex-col justify-between w-[440px] mt-[333px] mb-[333px] ml-0 mr-0">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <p className="text-xs uppercase tracking-widest text-[#a3a3a3] font-semibold mb-1">
@@ -139,7 +139,7 @@ export default async function Home() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-[25px] flex flex-col justify-between w-[436px] mt-[333px] mb-[333px] ml-[180px] mr-[180px]">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-[25px] flex flex-col justify-between w-[436px] mt-[333px] mb-[333px] ml-[1px] mr-[1px]">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <p className="text-xs uppercase tracking-widest text-[#a3a3a3] font-semibold mb-1">
@@ -170,7 +170,7 @@ export default async function Home() {
         </section>
 
         {/* Bottom Stats Block */}
-        <section className="flex flex-col items-center pb-20 w-[1200px]">
+        <section className="flex flex-col items-center pb-20 w-[1200px] mt-[100px] mb-[100px]">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-4xl">
             <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6">
               <div className="flex items-center gap-3">
