@@ -184,10 +184,10 @@ export default function FundTable() {
                         </>
                       )}
                     </button>
-                    <Button className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-slate-950 hover:text-slate-950 text-xs font-extrabold rounded-full shadow-[0_4px_12px_rgba(16,185,129,0.15)] px-5 py-3 h-auto group-hover:scale-[1.02] transition-all duration-300 flex items-center justify-between gap-3 min-w-[132px]">
+                    <Button className="bg-white/20 hover:bg-white/25 backdrop-blur-md border border-white/30 text-white hover:text-white text-xs font-extrabold rounded-full px-5 py-2.5 h-auto group-hover:scale-[1.02] transition-all duration-300 flex items-center justify-between gap-3 min-w-[132px] shadow-none">
                       <span className="whitespace-nowrap">Invest Direct</span>
-                      <span className="shrink-0 w-10 h-10 rounded-full bg-white/95 flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.18)]">
-                        <ArrowUpRight className="h-4 w-4 text-slate-950 stroke-[2.5]" />
+                      <span className="shrink-0 w-9 h-9 rounded-full bg-white flex items-center justify-center">
+                        <ArrowUpRight className="h-4 w-4 text-slate-700 stroke-[2.5]" />
                       </span>
                     </Button>
                   </div>

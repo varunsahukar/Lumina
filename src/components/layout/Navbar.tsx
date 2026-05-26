@@ -1,30 +1,46 @@
+import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function Navbar() {
+interface NavbarProps {
+  minimal?: boolean;
+}
+
+export default function Navbar({ minimal = false }: NavbarProps) {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-900 bg-black/90 backdrop-blur-md">
-      <div className="container flex h-16 items-center">
-        <div className="mr-4 hidden md:flex">
-          <a href="/" className="mr-6 flex items-center space-x-2">
-            <span className="font-extrabold text-xl tracking-tight text-slate-100">
+    <header className="sticky top-0 z-50 w-full border-b border-[#1a1a1a] bg-black">
+      <div className="container flex h-16 items-center justify-between">
+        <div className="flex items-center gap-8 ml-8 md:ml-16">
+          <a
+            href="/"
+            className="flex items-center"
+          >
+            <span className="font-bold text-xl tracking-tight text-white">
               Lumina<span className="text-emerald-400">Vest</span>
             </span>
           </a>
+
+          {!minimal && (
+            <nav className="hidden md:flex items-center gap-8">
+              <Button asChild variant="ghost" className="text-[#a3a3a3] hover:text-white font-medium transition-colors">
+                <a href="/screener">Screener</a>
+              </Button>
+              <Button asChild variant="ghost" className="text-[#a3a3a3] hover:text-white font-medium transition-colors">
+                <a href="/portfolio">Portfolio</a>
+              </Button>
+              <Button asChild variant="ghost" className="text-[#a3a3a3] hover:text-white font-medium transition-colors">
+                <a href="/dashboard">Dashboard</a>
+              </Button>
+            </nav>
+          )}
         </div>
-        <nav className="flex items-center space-x-2 ml-auto">
-          <Button asChild variant="ghost" className="text-slate-300 hover:text-emerald-400 hover:bg-emerald-500/10 font-bold transition-all">
-            <a href="/screener">Screener</a>
-          </Button>
-          <Button asChild variant="ghost" className="text-slate-300 hover:text-emerald-400 hover:bg-emerald-500/10 font-bold transition-all">
-            <a href="/portfolio">Portfolio</a>
-          </Button>
-          <Button asChild variant="ghost" className="text-slate-300 hover:text-emerald-400 hover:bg-emerald-500/10 font-bold transition-all">
-            <a href="/dashboard">Dashboard</a>
-          </Button>
-          <Button asChild className="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold ml-2 rounded-xl">
-            <a href="/login">Sign In</a>
-          </Button>
-        </nav>
+
+        <a
+          href="/login"
+          className="inline-flex items-center gap-2 rounded-full bg-white text-black hover:bg-slate-100 text-sm font-semibold px-5 py-2.5 transition-colors"
+        >
+          <span>Sign In</span>
+          <ArrowUpRight className="h-4 w-4" />
+        </a>
       </div>
     </header>
   );
