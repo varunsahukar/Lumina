@@ -55,7 +55,7 @@ export default async function Home() {
             screen direct plans, backtest strategies, and deploy capital in a matte-black, pro-grade
             console.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-0">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
             <Button
               asChild
               className="bg-white text-black hover:bg-slate-100 font-semibold px-8 py-6 text-sm rounded-full flex items-center justify-center gap-2"
