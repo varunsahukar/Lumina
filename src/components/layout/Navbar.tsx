@@ -36,7 +36,7 @@ export default function Navbar({ minimal = false }: NavbarProps) {
 
         <a
           href="/login"
-          className="inline-flex items-center gap-2 rounded-full bg-white text-black hover:bg-slate-100 text-sm font-semibold px-5 py-2.5 transition-colors"
+          className="inline-flex items-center gap-2 rounded-full bg-white text-black hover:bg-slate-100 text-sm font-semibold px-5 py-2.5 transition-colors -mx-[77px]"
         >
           <span>Sign In</span>
           <ArrowUpRight className="h-4 w-4" />
