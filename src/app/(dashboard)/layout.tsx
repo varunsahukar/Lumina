@@ -14,7 +14,7 @@ export default function DashboardLayout({
       {/* Main Page Area */}
       <div className="flex-1 flex flex-col min-h-screen relative">
         {/* Mobile Header Bar */}
-        <header className="md:hidden flex h-14 items-center justify-between px-6 border-b border-slate-900 bg-black">
+        <header className="md:hidden flex h-14 items-center justify-between px-6 border-b border-[#1a1a1a] bg-black">
           <span className="font-extrabold text-sm tracking-tight text-white">
             LuminaVest
           </span>

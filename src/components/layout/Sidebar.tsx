@@ -86,9 +86,9 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="hidden md:flex md:w-64 md:flex-col md:border-r md:border-slate-900 bg-black text-white min-h-screen">
+    <aside className="hidden md:flex md:w-64 md:flex-col md:border-r md:border-[#1a1a1a] bg-black text-white min-h-screen">
       {/* Brand Header */}
-      <div className="flex h-16 items-center px-6 border-b border-slate-900 justify-between">
+      <div className="flex h-16 items-center px-6 border-b border-[#1a1a1a] justify-between">
         <Link href="/" className="flex items-center space-x-2">
           <div className="p-1.5 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg shadow-[0_0_15px_rgba(16,185,129,0.15)]">
             <Shield className="h-5 w-5 text-slate-950 stroke-[2.5]" />
@@ -100,9 +100,9 @@ export default function Sidebar() {
       </div>
 
       {/* Role Indicator Widget */}
-      <div className="px-4 py-3 border-b border-slate-900 bg-slate-900/30">
+      <div className="px-4 py-3 border-b border-[#1a1a1a] bg-black/30">
         <div className="flex flex-col space-y-1">
-          <span className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">
+          <span className="text-[10px] uppercase tracking-widest text-[#a3a3a3] font-bold">
             Active Workspace
           </span>
           <span className={cn(
@@ -125,8 +125,8 @@ export default function Sidebar() {
               className={cn(
                 "flex items-center rounded-xl px-3 py-2.5 text-xs font-medium transition-all duration-300 group border border-transparent",
                 isActive
-                  ? "bg-slate-900 text-slate-100 border-slate-800/60 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/40 hover:border-slate-900"
+                  ? "bg-black text-white border-[#1a1a1a]/60 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]"
+                  : "text-[#a3a3a3] hover:text-white hover:bg-black/40 hover:border-[#1a1a1a]"
               )}
             >
               <Icon
@@ -134,7 +134,7 @@ export default function Sidebar() {
                   "mr-3 h-4 w-4 stroke-[2] transition-colors duration-300",
                   isActive
                     ? "text-emerald-400"
-                    : "text-slate-500 group-hover:text-slate-400"
+                    : "text-[#a3a3a3] group-hover:text-[#a3a3a3]"
                 )}
               />
               {item.name}
@@ -144,35 +144,35 @@ export default function Sidebar() {
       </nav>
 
       {/* Bottom Switcher Control Panel */}
-      <div className="p-4 border-t border-slate-900 bg-slate-900/20">
+      <div className="p-4 border-t border-[#1a1a1a] bg-black/20">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="w-full justify-between bg-slate-950 border-slate-800 hover:bg-slate-900 text-slate-300 hover:text-slate-100 text-xs px-3 py-5 rounded-xl transition-all duration-300"
+              className="w-full justify-between bg-black border-[#1a1a1a] hover:bg-black text-[#a3a3a3] hover:text-white text-xs px-3 py-5 rounded-xl transition-all duration-300"
             >
               <span className="flex items-center">
                 <UserCheck className="mr-2 h-4 w-4 text-emerald-400 stroke-[2]" />
                 Switch Role
               </span>
-              <ChevronDown className="h-4 w-4 text-slate-500" />
+              <ChevronDown className="h-4 w-4 text-[#a3a3a3]" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-56 bg-slate-950 border-slate-800 text-slate-300 rounded-xl p-1 shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+            className="w-56 bg-black border-[#1a1a1a] text-[#a3a3a3] rounded-xl p-1 shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
           >
             {(Object.keys(roleLabels) as UserRole[]).map((role) => (
               <DropdownMenuItem
                 key={role}
                 onClick={() => setActiveRole(role)}
                 className={cn(
-                  "flex flex-col items-start px-3 py-2 rounded-lg cursor-pointer focus:bg-slate-900 transition-colors duration-200",
-                  activeRole === role ? "bg-slate-900 text-emerald-400" : "text-slate-400 focus:text-slate-200"
+                  "flex flex-col items-start px-3 py-2 rounded-lg cursor-pointer focus:bg-black transition-colors duration-200",
+                  activeRole === role ? "bg-black text-emerald-400" : "text-[#a3a3a3] focus:text-white"
                 )}
               >
                 <span className="text-xs font-bold">{roleLabels[role].label}</span>
-                <span className="text-[10px] text-slate-500 mt-0.5">{roleLabels[role].desc}</span>
+                <span className="text-[10px] text-[#a3a3a3] mt-0.5">{roleLabels[role].desc}</span>
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>

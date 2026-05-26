@@ -133,7 +133,7 @@ export default function LoginPage() {
       <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-blue-500/10 blur-[120px] pointer-events-none" />
 
       {/* Grid Pattern Overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30 pointer-events-none" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1a1a1a_1px,transparent_1px),linear-gradient(to_bottom,#1a1a1a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30 pointer-events-none animate-scrollRightToLeft" />
 
       <div className="relative z-10 w-full max-w-md">
         {/* Brand Header */}
@@ -150,10 +150,10 @@ export default function LoginPage() {
         </div>
 
         {/* Glassmorphic Tabs Card */}
-        <Card className="border-slate-800 bg-slate-900/60 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
+        <Card className="border-[#1a1a1a] bg-black shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <CardHeader className="pb-4">
-              <TabsList className="grid w-full grid-cols-2 bg-slate-950 border border-slate-800/80 p-1">
+              <TabsList className="grid w-full grid-cols-2 bg-[#0a0a0a] border border-[#1a1a1a] p-1">
                 <TabsTrigger
                   value="login"
                   className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500/10 data-[state=active]:to-emerald-500/20 data-[state=active]:text-emerald-400 border-none transition-all duration-300 text-xs py-2"
@@ -174,16 +174,16 @@ export default function LoginPage() {
               <form onSubmit={loginForm.handleSubmit(onLoginSubmit)}>
                 <CardContent className="space-y-4 pt-2">
                   <div className="space-y-2">
-                    <Label htmlFor="login-email" className="text-slate-300 text-xs font-semibold">
+                    <Label htmlFor="login-email" className="text-[#a3a3a3] text-xs font-semibold">
                       Email Address
                     </Label>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+                      <Mail className="absolute left-3 top-3 h-4 w-4 text-[#a3a3a3]" />
                       <Input
                         id="login-email"
                         type="email"
                         placeholder="name@example.com"
-                        className="pl-10 bg-slate-950 border-slate-800 text-slate-100 placeholder:text-slate-600 focus-visible:ring-emerald-500/50"
+                        className="pl-10 bg-black border-[#1a1a1a] text-white placeholder:text-[#a3a3a3] focus-visible:ring-emerald-500/50"
                         {...loginForm.register("email")}
                       />
                     </div>
@@ -194,7 +194,7 @@ export default function LoginPage() {
 
                   <div className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <Label htmlFor="login-password" className="text-slate-300 text-xs font-semibold">
+                      <Label htmlFor="login-password" className="text-[#a3a3a3] text-xs font-semibold">
                         Password
                       </Label>
                       <a href="#" className="text-xs text-emerald-400 hover:underline">
@@ -202,12 +202,12 @@ export default function LoginPage() {
                       </a>
                     </div>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+                      <Lock className="absolute left-3 top-3 h-4 w-4 text-[#a3a3a3]" />
                       <Input
                         id="login-password"
                         type="password"
                         placeholder="••••••••"
-                        className="pl-10 bg-slate-950 border-slate-800 text-slate-100 placeholder:text-slate-600 focus-visible:ring-emerald-500/50"
+                        className="pl-10 bg-black border-[#1a1a1a] text-white placeholder:text-[#a3a3a3] focus-visible:ring-emerald-500/50"
                         {...loginForm.register("password")}
                       />
                     </div>
@@ -234,9 +234,9 @@ export default function LoginPage() {
 
                   <div className="relative w-full flex items-center justify-center py-2">
                     <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-slate-800" />
+                      <div className="w-full border-t border-[#1a1a1a]" />
                     </div>
-                    <span className="relative z-10 px-3 bg-slate-900 text-[10px] text-slate-500 uppercase tracking-widest">
+                    <span className="relative z-10 px-3 bg-black text-[10px] text-[#a3a3a3] uppercase tracking-widest">
                       Or Connect With
                     </span>
                   </div>
@@ -245,7 +245,7 @@ export default function LoginPage() {
                     type="button"
                     variant="outline"
                     onClick={() => signIn("google")}
-                    className="w-full border-slate-800 bg-slate-950 text-slate-300 hover:bg-slate-900"
+                    className="w-full border-[#1a1a1a] bg-black text-[#a3a3a3] hover:bg-[#0a0a0a] hover:text-white"
                   >
                     <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
                       <path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path>
@@ -261,16 +261,16 @@ export default function LoginPage() {
               <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)}>
                 <CardContent className="space-y-4 pt-2">
                   <div className="space-y-2">
-                    <Label htmlFor="reg-name" className="text-slate-300 text-xs font-semibold">
+                    <Label htmlFor="reg-name" className="text-[#a3a3a3] text-xs font-semibold">
                       Full Name
                     </Label>
                     <div className="relative">
-                      <User className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+                      <User className="absolute left-3 top-3 h-4 w-4 text-[#a3a3a3]" />
                       <Input
                         id="reg-name"
                         type="text"
                         placeholder="John Doe"
-                        className="pl-10 bg-slate-950 border-slate-800 text-slate-100 placeholder:text-slate-600 focus-visible:ring-blue-500/50"
+                        className="pl-10 bg-black border-[#1a1a1a] text-white placeholder:text-[#a3a3a3] focus-visible:ring-emerald-500/50"
                         {...registerForm.register("name")}
                       />
                     </div>
@@ -280,16 +280,16 @@ export default function LoginPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="reg-email" className="text-slate-300 text-xs font-semibold">
+                    <Label htmlFor="reg-email" className="text-[#a3a3a3] text-xs font-semibold">
                       Email Address
                     </Label>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+                      <Mail className="absolute left-3 top-3 h-4 w-4 text-[#a3a3a3]" />
                       <Input
                         id="reg-email"
                         type="email"
                         placeholder="name@example.com"
-                        className="pl-10 bg-slate-950 border-slate-800 text-slate-100 placeholder:text-slate-600 focus-visible:ring-blue-500/50"
+                        className="pl-10 bg-black border-[#1a1a1a] text-white placeholder:text-[#a3a3a3] focus-visible:ring-emerald-500/50"
                         {...registerForm.register("email")}
                       />
                     </div>
@@ -299,16 +299,16 @@ export default function LoginPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="reg-password" className="text-slate-300 text-xs font-semibold">
+                    <Label htmlFor="reg-password" className="text-[#a3a3a3] text-xs font-semibold">
                       Password
                     </Label>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+                      <Lock className="absolute left-3 top-3 h-4 w-4 text-[#a3a3a3]" />
                       <Input
                         id="reg-password"
                         type="password"
                         placeholder="••••••••"
-                        className="pl-10 bg-slate-950 border-slate-800 text-slate-100 placeholder:text-slate-600 focus-visible:ring-blue-500/50"
+                        className="pl-10 bg-black border-[#1a1a1a] text-white placeholder:text-[#a3a3a3] focus-visible:ring-emerald-500/50"
                         {...registerForm.register("password")}
                       />
                     </div>
@@ -318,16 +318,16 @@ export default function LoginPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="reg-confirm" className="text-slate-300 text-xs font-semibold">
+                    <Label htmlFor="reg-confirm" className="text-[#a3a3a3] text-xs font-semibold">
                       Confirm Password
                     </Label>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+                      <Lock className="absolute left-3 top-3 h-4 w-4 text-[#a3a3a3]" />
                       <Input
                         id="reg-confirm"
                         type="password"
                         placeholder="••••••••"
-                        className="pl-10 bg-slate-950 border-slate-800 text-slate-100 placeholder:text-slate-600 focus-visible:ring-blue-500/50"
+                        className="pl-10 bg-black border-[#1a1a1a] text-white placeholder:text-[#a3a3a3] focus-visible:ring-emerald-500/50"
                         {...registerForm.register("confirmPassword")}
                       />
                     </div>
@@ -341,7 +341,7 @@ export default function LoginPage() {
                   <Button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-slate-100 font-bold transition-all duration-300 shadow-[0_4px_15px_rgba(59,130,246,0.2)]"
+                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-slate-950 font-bold transition-all duration-300 shadow-[0_4px_15px_rgba(16,185,129,0.2)]"
                   >
                     {isLoading ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin text-slate-100" />

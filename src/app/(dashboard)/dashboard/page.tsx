@@ -93,10 +93,10 @@ export default function DashboardPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
-              <h1 className="text-xl font-extrabold tracking-tight text-slate-100 sm:text-2xl">
+              <h1 className="text-xl font-extrabold tracking-tight text-white sm:text-2xl">
                 Investor Dashboard
               </h1>
-              <p className="text-xs text-slate-450">
+              <p className="text-xs text-[#a3a3a3]">
                 Direct mutual fund investing, XIRR returns, and tax diagnostics.
               </p>
             </div>
@@ -104,7 +104,7 @@ export default function DashboardPage() {
               <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs px-2.5 py-1 rounded-md font-bold">
                 KRA Verified
               </Badge>
-              <Badge className="bg-slate-900 border border-slate-800 text-slate-350 text-xs px-2.5 py-1 rounded-md font-bold">
+              <Badge className="bg-black border border-[#1a1a1a] text-[#a3a3a3] text-xs px-2.5 py-1 rounded-md font-bold">
                 Moderate Risk Profile
               </Badge>
             </div>
@@ -113,12 +113,12 @@ export default function DashboardPage() {
           {/* Metrics summary cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Net assets card */}
-            <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] flex flex-col justify-between space-y-4">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col justify-between space-y-4">
               <div className="space-y-1">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                <span className="text-[10px] text-[#a3a3a3] font-bold uppercase tracking-wider">
                   Total Worth
                 </span>
-                <h2 className="text-2xl font-extrabold tracking-tight text-slate-100">
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
                   ₹18,45,200.00
                 </h2>
               </div>
@@ -126,23 +126,23 @@ export default function DashboardPage() {
                 <Badge className="bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/10 border-none font-bold">
                   +₹6,45,200 Absolute Gain
                 </Badge>
-                <span className="text-slate-500 font-semibold text-[10px]">
+                <span className="text-[#a3a3a3] font-semibold text-[10px]">
                   Daily: +1.12%
                 </span>
               </div>
             </div>
 
             {/* XIRR meter card */}
-            <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] flex flex-col justify-between space-y-4">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col justify-between space-y-4">
               <div className="space-y-1">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                <span className="text-[10px] text-[#a3a3a3] font-bold uppercase tracking-wider">
                   Annualized Returns (XIRR)
                 </span>
                 <h2 className="text-2xl font-extrabold tracking-tight text-emerald-400">
                   {stats?.avgEquityReturns || "18.42"}%
                 </h2>
               </div>
-              <div className="flex items-center justify-between text-xs text-slate-500">
+              <div className="flex items-center justify-between text-xs text-[#a3a3a3]">
                 <span className="flex items-center text-[10px]">
                   <TrendingUp className="h-3.5 w-3.5 mr-1 text-emerald-400" />
                   Direct Plans alpha beat: +3.8%
@@ -151,9 +151,9 @@ export default function DashboardPage() {
             </div>
 
             {/* Active Goals card */}
-            <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] flex flex-col justify-between space-y-4">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col justify-between space-y-4">
               <div className="space-y-1">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                <span className="text-[10px] text-[#a3a3a3] font-bold uppercase tracking-wider">
                   Goals Completion
                 </span>
                 <h2 className="text-2xl font-extrabold tracking-tight text-blue-400">
@@ -161,18 +161,18 @@ export default function DashboardPage() {
                 </h2>
               </div>
               <div className="space-y-2">
-                <div className="flex justify-between text-[10px] text-slate-400 font-bold">
+                <div className="flex justify-between text-[10px] text-[#a3a3a3] font-bold">
                   <span>Retirement Fund 2045</span>
                   <span>60% reached</span>
                 </div>
-                <Progress value={60} className="h-1 bg-slate-950 [&>div]:bg-emerald-400" />
+                <Progress value={60} className="h-1 bg-black [&>div]:bg-emerald-400" />
               </div>
             </div>
           </div>
 
           {/* Quick Actions Panel */}
-          <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Quick Actions</h3>
+          <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  space-y-4">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#a3a3a3]">Quick Actions</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
                 { name: "Invest Direct", desc: "Purchase mutual funds", icon: PlusCircleIcon, action: "Invest Direct" },
@@ -185,14 +185,14 @@ export default function DashboardPage() {
                   <button
                     key={act.name}
                     onClick={() => handleQuickAction(act.action)}
-                    className="p-4 bg-slate-950 border border-slate-850 hover:border-slate-800 hover:bg-slate-900/60 rounded-xl transition-all duration-300 text-left space-y-2 group"
+                    className="p-4 bg-black border border-[#1a1a1a] hover:border-[#1a1a1a] hover:bg-black/60 rounded-xl transition-all duration-300 text-left space-y-2 group"
                   >
                     <div className="p-1.5 bg-emerald-500/10 rounded-lg w-fit text-emerald-400 group-hover:scale-[1.05] transition-transform">
                       <Icon className="h-4 w-4" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold text-slate-200">{act.name}</h4>
-                      <p className="text-[10px] text-slate-500 mt-0.5">{act.desc}</p>
+                      <h4 className="text-xs font-bold text-white">{act.name}</h4>
+                      <p className="text-[10px] text-[#a3a3a3] mt-0.5">{act.desc}</p>
                     </div>
                   </button>
                 );
@@ -208,10 +208,10 @@ export default function DashboardPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
-              <h1 className="text-xl font-extrabold tracking-tight text-slate-100 sm:text-2xl">
+              <h1 className="text-xl font-extrabold tracking-tight text-white sm:text-2xl">
                 Advisor Portal
               </h1>
-              <p className="text-xs text-slate-450">
+              <p className="text-xs text-[#a3a3a3]">
                 Manage client portfolios, inbound leads, and recurring commission dashboards.
               </p>
             </div>
@@ -226,12 +226,12 @@ export default function DashboardPage() {
 
           {/* Advisor stats cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] flex flex-col justify-between space-y-4">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col justify-between space-y-4">
               <div className="space-y-1">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                <span className="text-[10px] text-[#a3a3a3] font-bold uppercase tracking-wider">
                   Assets Under Advisory (AUA)
                 </span>
-                <h2 className="text-2xl font-extrabold tracking-tight text-slate-100">
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
                   ₹8.45 Crore
                 </h2>
               </div>
@@ -242,30 +242,30 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] flex flex-col justify-between space-y-4">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col justify-between space-y-4">
               <div className="space-y-1">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                <span className="text-[10px] text-[#a3a3a3] font-bold uppercase tracking-wider">
                   Monthly Brokerage / Fees
                 </span>
-                <h2 className="text-2xl font-extrabold tracking-tight text-slate-100">
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
                   ₹42,500.00
                 </h2>
               </div>
-              <span className="text-slate-500 font-semibold text-[10px]">
+              <span className="text-[#a3a3a3] font-semibold text-[10px]">
                 SIP Commission payout: +₹8,400 monthly
               </span>
             </div>
 
-            <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] flex flex-col justify-between space-y-4">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col justify-between space-y-4">
               <div className="space-y-1">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                <span className="text-[10px] text-[#a3a3a3] font-bold uppercase tracking-wider">
                   Inbound Client Leads
                 </span>
                 <h2 className="text-2xl font-extrabold tracking-tight text-emerald-400">
                   3 Pending Match
                 </h2>
               </div>
-              <div className="flex items-center text-[10px] text-slate-500">
+              <div className="flex items-center text-[10px] text-[#a3a3a3]">
                 <Sparkles className="h-3.5 w-3.5 mr-1 text-emerald-400" />
                 Algorithm score matched based on HNI status
               </div>
@@ -273,8 +273,8 @@ export default function DashboardPage() {
           </div>
 
           {/* Active Clients List */}
-          <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Your Active Clients</h3>
+          <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  space-y-4">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#a3a3a3]">Your Active Clients</h3>
             <div className="space-y-3">
               {[
                 { name: "Arjun Sharma", value: "₹2.45 Cr", status: "Balanced Hybrid", change: "+14.8%" },
@@ -283,19 +283,19 @@ export default function DashboardPage() {
               ].map((client) => (
                 <div
                   key={client.name}
-                  className="flex items-center justify-between p-4 bg-slate-950 border border-slate-850 hover:border-slate-800 rounded-xl transition-all duration-300"
+                  className="flex items-center justify-between p-4 bg-black border border-[#1a1a1a] hover:border-[#1a1a1a] rounded-xl transition-all duration-300"
                 >
                   <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-slate-900 border border-slate-800 rounded-lg text-slate-400">
+                    <div className="p-2 bg-black border border-[#1a1a1a] rounded-lg text-[#a3a3a3]">
                       <UserCheck className="h-4 w-4" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold text-slate-200">{client.name}</h4>
-                      <p className="text-[9px] text-slate-500 mt-0.5">{client.status} profile</p>
+                      <h4 className="text-xs font-bold text-white">{client.name}</h4>
+                      <p className="text-[9px] text-[#a3a3a3] mt-0.5">{client.status} profile</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className="text-xs font-extrabold text-slate-200 block">{client.value}</span>
+                    <span className="text-xs font-extrabold text-white block">{client.value}</span>
                     <span className="text-[9px] font-bold text-emerald-400 mt-0.5">{client.change} Returns</span>
                   </div>
                 </div>
@@ -311,10 +311,10 @@ export default function DashboardPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
-              <h1 className="text-xl font-extrabold tracking-tight text-slate-100 sm:text-2xl">
+              <h1 className="text-xl font-extrabold tracking-tight text-white sm:text-2xl">
                 AMC Control Center
               </h1>
-              <p className="text-xs text-slate-450">
+              <p className="text-xs text-[#a3a3a3]">
                 Track assets under management, daily views, and document uploads.
               </p>
             </div>
@@ -329,12 +329,12 @@ export default function DashboardPage() {
 
           {/* AMC stats cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] flex flex-col justify-between space-y-4">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col justify-between space-y-4">
               <div className="space-y-1">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                <span className="text-[10px] text-[#a3a3a3] font-bold uppercase tracking-wider">
                   Total Managed AUM
                 </span>
-                <h2 className="text-2xl font-extrabold tracking-tight text-slate-100">
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
                   ₹{(stats?.totalAum / 1000).toFixed(2)} Lakh Crore
                 </h2>
               </div>
@@ -345,30 +345,30 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] flex flex-col justify-between space-y-4">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col justify-between space-y-4">
               <div className="space-y-1">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                <span className="text-[10px] text-[#a3a3a3] font-bold uppercase tracking-wider">
                   Fund Page Views (24h)
                 </span>
-                <h2 className="text-2xl font-extrabold tracking-tight text-slate-100">
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
                   18,900 Views
                 </h2>
               </div>
-              <span className="text-slate-500 font-semibold text-[10px]">
+              <span className="text-[#a3a3a3] font-semibold text-[10px]">
                 Scheme code 120847 captures 38% clicks
               </span>
             </div>
 
-            <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] flex flex-col justify-between space-y-4">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col justify-between space-y-4">
               <div className="space-y-1">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                <span className="text-[10px] text-[#a3a3a3] font-bold uppercase tracking-wider">
                   Direct Inflows (Weekly)
                 </span>
                 <h2 className="text-2xl font-extrabold tracking-tight text-emerald-400">
                   +₹4.2 Crore
                 </h2>
               </div>
-              <div className="flex items-center text-[10px] text-slate-500">
+              <div className="flex items-center text-[10px] text-[#a3a3a3]">
                 <TrendingUp className="h-3.5 w-3.5 mr-1 text-emerald-400" />
                 SIP inflows active for 12,400 mandates
               </div>
@@ -376,8 +376,8 @@ export default function DashboardPage() {
           </div>
 
           {/* Daily views chart */}
-          <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Fund Views By Category</h3>
+          <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  space-y-4">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#a3a3a3]">Fund Views By Category</h3>
             <div className="h-48 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <RechartsBarChart data={amcChartData}>
@@ -398,10 +398,10 @@ export default function DashboardPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
-              <h1 className="text-xl font-extrabold tracking-tight text-slate-100 sm:text-2xl">
+              <h1 className="text-xl font-extrabold tracking-tight text-white sm:text-2xl">
                 Research Center
               </h1>
-              <p className="text-xs text-slate-450">
+              <p className="text-xs text-[#a3a3a3]">
                 Publish insights, monetize fund analyses, and track viewership analytics.
               </p>
             </div>
@@ -416,12 +416,12 @@ export default function DashboardPage() {
 
           {/* Researcher stats cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] flex flex-col justify-between space-y-4">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col justify-between space-y-4">
               <div className="space-y-1">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                <span className="text-[10px] text-[#a3a3a3] font-bold uppercase tracking-wider">
                   Total Article Views
                 </span>
-                <h2 className="text-2xl font-extrabold tracking-tight text-slate-100">
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
                   48,200 Views
                 </h2>
               </div>
@@ -432,30 +432,30 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] flex flex-col justify-between space-y-4">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col justify-between space-y-4">
               <div className="space-y-1">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                <span className="text-[10px] text-[#a3a3a3] font-bold uppercase tracking-wider">
                   Insight Subscriptions Revenue
                 </span>
-                <h2 className="text-2xl font-extrabold tracking-tight text-slate-100">
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
                   ₹8,900.00
                 </h2>
               </div>
-              <span className="text-slate-500 font-semibold text-[10px]">
+              <span className="text-[#a3a3a3] font-semibold text-[10px]">
                 Paid readers: 48 active HNIs
               </span>
             </div>
 
-            <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] flex flex-col justify-between space-y-4">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col justify-between space-y-4">
               <div className="space-y-1">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                <span className="text-[10px] text-[#a3a3a3] font-bold uppercase tracking-wider">
                   Peer Review Credibility Score
                 </span>
                 <h2 className="text-2xl font-extrabold tracking-tight text-emerald-400">
                   98.4%
                 </h2>
               </div>
-              <div className="flex items-center text-[10px] text-slate-500">
+              <div className="flex items-center text-[10px] text-[#a3a3a3]">
                 <Award className="h-3.5 w-3.5 mr-1 text-emerald-400" />
                 Top 5% researcher inside direct investing
               </div>
@@ -470,10 +470,10 @@ export default function DashboardPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
-              <h1 className="text-xl font-extrabold tracking-tight text-slate-100 sm:text-2xl">
+              <h1 className="text-xl font-extrabold tracking-tight text-white sm:text-2xl">
                 System Console
               </h1>
-              <p className="text-xs text-slate-450">
+              <p className="text-xs text-[#a3a3a3]">
                 Platform telemetries, database pool monitoring, and AMFI cron scheduler logs.
               </p>
             </div>
@@ -488,10 +488,10 @@ export default function DashboardPage() {
 
           {/* Admin stats cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] flex flex-col justify-between space-y-4">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col justify-between space-y-4">
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                  <span className="text-[10px] text-[#a3a3a3] font-bold uppercase tracking-wider">
                     Next.js Edge Clusters
                   </span>
                   <Server className="h-4 w-4 text-emerald-400" />
@@ -500,41 +500,41 @@ export default function DashboardPage() {
                   99.99% Up
                 </h2>
               </div>
-              <span className="text-slate-500 font-semibold text-[10px]">
+              <span className="text-[#a3a3a3] font-semibold text-[10px]">
                 Edge locations active in Mumbai, Singapore
               </span>
             </div>
 
-            <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] flex flex-col justify-between space-y-4">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col justify-between space-y-4">
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                  <span className="text-[10px] text-[#a3a3a3] font-bold uppercase tracking-wider">
                     PostgreSQL DB Schemes
                   </span>
                   <Database className="h-4 w-4 text-emerald-400" />
                 </div>
-                <h2 className="text-2xl font-extrabold tracking-tight text-slate-100">
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
                   {stats?.fundsCount || "0"} Seeded Funds
                 </h2>
               </div>
-              <span className="text-slate-500 font-semibold text-[10px]">
+              <span className="text-[#a3a3a3] font-semibold text-[10px]">
                 AMFI NAV parsing pipeline healthy
               </span>
             </div>
 
-            <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] flex flex-col justify-between space-y-4">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col justify-between space-y-4">
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                  <span className="text-[10px] text-[#a3a3a3] font-bold uppercase tracking-wider">
                     Registered Accounts
                   </span>
                   <Layers className="h-4 w-4 text-emerald-400" />
                 </div>
-                <h2 className="text-2xl font-extrabold tracking-tight text-slate-100">
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
                   {stats?.usersCount || "0"} Active Users
                 </h2>
               </div>
-              <span className="text-slate-500 font-semibold text-[10px]">
+              <span className="text-[#a3a3a3] font-semibold text-[10px]">
                 Role-based access controls active
               </span>
             </div>
