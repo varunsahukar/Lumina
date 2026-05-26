@@ -1,0 +1,134 @@
+import { FundsService } from './funds.service';
+import { ScreenerService } from './screener.service';
+import { ComparisonService } from './comparison.service';
+export declare class FundsController {
+    private readonly fundsService;
+    private readonly screenerService;
+    private readonly comparisonService;
+    constructor(fundsService: FundsService, screenerService: ScreenerService, comparisonService: ComparisonService);
+    getFunds(skip?: number, take?: number, category?: string, search?: string): Promise<{
+        items: {
+            id: string;
+            createdAt: Date;
+            updatedAt: Date;
+            schemeCode: string;
+            schemeName: string;
+            amcName: string;
+            category: string;
+            subCategory: string | null;
+            nav: import("@prisma/client-runtime-utils").Decimal;
+            aum: import("@prisma/client-runtime-utils").Decimal | null;
+            expenseRatio: import("@prisma/client-runtime-utils").Decimal | null;
+            sharpeRatio: import("@prisma/client-runtime-utils").Decimal | null;
+            alpha: import("@prisma/client-runtime-utils").Decimal | null;
+            beta: import("@prisma/client-runtime-utils").Decimal | null;
+            stdDeviation: import("@prisma/client-runtime-utils").Decimal | null;
+            returns1y: import("@prisma/client-runtime-utils").Decimal | null;
+            returns3y: import("@prisma/client-runtime-utils").Decimal | null;
+            returns5y: import("@prisma/client-runtime-utils").Decimal | null;
+            returns10y: import("@prisma/client-runtime-utils").Decimal | null;
+            managerName: string | null;
+            launchDate: Date | null;
+            benchmarkIndex: string | null;
+            isActive: boolean;
+        }[];
+        total: number;
+    }>;
+    getCategories(): Promise<string[]>;
+    compare(idsString: string): Promise<{
+        comparedFunds: {
+            id: string;
+            schemeName: string;
+            schemeCode: string;
+            amcName: string;
+            category: string;
+            subCategory: string | null;
+            nav: import("@prisma/client-runtime-utils").Decimal;
+            aum: import("@prisma/client-runtime-utils").Decimal | null;
+            expenseRatio: import("@prisma/client-runtime-utils").Decimal | null;
+            sharpeRatio: import("@prisma/client-runtime-utils").Decimal | null;
+            alpha: import("@prisma/client-runtime-utils").Decimal | null;
+            beta: import("@prisma/client-runtime-utils").Decimal | null;
+            stdDeviation: import("@prisma/client-runtime-utils").Decimal | null;
+            returns1y: import("@prisma/client-runtime-utils").Decimal | null;
+            returns3y: import("@prisma/client-runtime-utils").Decimal | null;
+            returns5y: import("@prisma/client-runtime-utils").Decimal | null;
+            returns10y: import("@prisma/client-runtime-utils").Decimal | null;
+            managerName: string | null;
+            benchmarkIndex: string | null;
+            navTrend: {
+                date: Date;
+                nav: import("@prisma/client-runtime-utils").Decimal;
+            }[];
+        }[];
+        bestPerformer1y: string | null;
+        bestPerformer3y: string | null;
+        lowestExpenseRatio: string | null;
+        highestSharpeRatio: string | null;
+    }>;
+    screen(category?: string, minAum?: number, maxExpenseRatio?: number, minSharpe?: number, minReturns1y?: number, minReturns3y?: number, minReturns5y?: number, sortBy?: 'aum' | 'sharpeRatio' | 'returns1y' | 'returns3y' | 'returns5y' | 'expenseRatio', sortOrder?: 'asc' | 'desc', limit?: number): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        schemeCode: string;
+        schemeName: string;
+        amcName: string;
+        category: string;
+        subCategory: string | null;
+        nav: import("@prisma/client-runtime-utils").Decimal;
+        aum: import("@prisma/client-runtime-utils").Decimal | null;
+        expenseRatio: import("@prisma/client-runtime-utils").Decimal | null;
+        sharpeRatio: import("@prisma/client-runtime-utils").Decimal | null;
+        alpha: import("@prisma/client-runtime-utils").Decimal | null;
+        beta: import("@prisma/client-runtime-utils").Decimal | null;
+        stdDeviation: import("@prisma/client-runtime-utils").Decimal | null;
+        returns1y: import("@prisma/client-runtime-utils").Decimal | null;
+        returns3y: import("@prisma/client-runtime-utils").Decimal | null;
+        returns5y: import("@prisma/client-runtime-utils").Decimal | null;
+        returns10y: import("@prisma/client-runtime-utils").Decimal | null;
+        managerName: string | null;
+        launchDate: Date | null;
+        benchmarkIndex: string | null;
+        isActive: boolean;
+    }[]>;
+    getFund(id: string): Promise<{
+        navHistory: {
+            id: string;
+            createdAt: Date;
+            nav: import("@prisma/client-runtime-utils").Decimal;
+            fundId: string;
+            date: Date;
+        }[];
+    } & {
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        schemeCode: string;
+        schemeName: string;
+        amcName: string;
+        category: string;
+        subCategory: string | null;
+        nav: import("@prisma/client-runtime-utils").Decimal;
+        aum: import("@prisma/client-runtime-utils").Decimal | null;
+        expenseRatio: import("@prisma/client-runtime-utils").Decimal | null;
+        sharpeRatio: import("@prisma/client-runtime-utils").Decimal | null;
+        alpha: import("@prisma/client-runtime-utils").Decimal | null;
+        beta: import("@prisma/client-runtime-utils").Decimal | null;
+        stdDeviation: import("@prisma/client-runtime-utils").Decimal | null;
+        returns1y: import("@prisma/client-runtime-utils").Decimal | null;
+        returns3y: import("@prisma/client-runtime-utils").Decimal | null;
+        returns5y: import("@prisma/client-runtime-utils").Decimal | null;
+        returns10y: import("@prisma/client-runtime-utils").Decimal | null;
+        managerName: string | null;
+        launchDate: Date | null;
+        benchmarkIndex: string | null;
+        isActive: boolean;
+    }>;
+    getNavHistory(id: string, limit?: number): Promise<{
+        id: string;
+        createdAt: Date;
+        nav: import("@prisma/client-runtime-utils").Decimal;
+        fundId: string;
+        date: Date;
+    }[]>;
+}
