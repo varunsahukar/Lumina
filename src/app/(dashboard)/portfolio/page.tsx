@@ -82,31 +82,31 @@ export default function PortfolioPage() {
   };
 
   return (
-    <div className="space-y-6 text-slate-100">
+    <div className="space-y-6 text-white">
       {/* Title Header */}
       <div className="flex flex-col space-y-1">
         <div className="flex items-center space-x-2.5">
           <div className="p-2 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/25 rounded-xl">
             <PieChartIcon className="h-5 w-5 text-emerald-400 stroke-[2]" />
           </div>
-          <h1 className="text-xl font-extrabold tracking-tight text-slate-100 sm:text-2xl">
+          <h1 className="text-xl font-extrabold tracking-tight text-white sm:text-2xl">
             My Portfolio Analytics
           </h1>
         </div>
-        <p className="text-xs text-slate-450 pl-1">
+        <p className="text-xs text-[#a3a3a3] pl-1">
           Perform immediate diagnostics, absolute return parsing, and XIRR tracking on your personal investments.
         </p>
       </div>
 
       {!isUploaded ? (
         // State 1: Premium CAS Upload Drag-Drop simulation panel
-        <div className="max-w-2xl mx-auto bg-slate-900/40 backdrop-blur-md border border-slate-800 rounded-3xl p-8 space-y-6 text-center shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
+        <div className="max-w-2xl mx-auto bg-black/40 backdrop-blur-md border border-[#1a1a1a] rounded-3xl p-8 space-y-6 text-center ">
           <div className="flex flex-col items-center space-y-4">
-            <div className="p-4 bg-slate-950 border border-slate-850 rounded-2xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]">
+            <div className="p-4 bg-black border border-[#1a1a1a] rounded-2xl ">
               <UploadCloud className="h-10 w-10 text-emerald-400 stroke-[1.5]" />
             </div>
             <div className="space-y-2">
-              <h2 className="text-lg font-bold text-slate-200">Parse Common Account Statement (CAS)</h2>
+              <h2 className="text-lg font-bold text-white">Parse Common Account Statement (CAS)</h2>
               <p className="text-xs text-slate-550 max-w-md mx-auto leading-relaxed">
                 Drag and drop your CAMS / Karvy consolidated PDF statement here to immediately perform diagnostics on direct vs regular plan leakage.
               </p>
@@ -116,24 +116,24 @@ export default function PortfolioPage() {
           {parsing ? (
             // Simulation progress bar
             <div className="space-y-3 max-w-sm mx-auto">
-              <div className="flex justify-between text-xs text-slate-400 font-bold">
+              <div className="flex justify-between text-xs text-[#a3a3a3] font-bold">
                 <span>Parsing PDF & matching AMFI feeds...</span>
                 <span>{progress}%</span>
               </div>
-              <Progress value={progress} className="h-2 bg-slate-950 [&>div]:bg-gradient-to-r [&>div]:from-emerald-500 [&>div]:to-teal-500" />
+              <Progress value={progress} className="h-2 bg-black [&>div]:bg-gradient-to-r [&>div]:from-emerald-500 [&>div]:to-teal-500" />
             </div>
           ) : (
             // Upload trigger buttons
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
               <Button
                 onClick={handleCasSimulation}
-                className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-slate-950 hover:text-slate-950 font-extrabold text-xs px-6 py-5 rounded-xl shadow-[0_4px_20px_rgba(16,185,129,0.15)] transition-all duration-300"
+                className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-slate-950 hover:text-slate-950 font-extrabold text-xs px-6 py-5 rounded-xl  transition-all duration-300"
               >
                 Simulate CAS Statement Upload
               </Button>
               <Button
                 variant="outline"
-                className="w-full sm:w-auto border-slate-800 bg-slate-950 text-slate-350 hover:bg-slate-900 text-xs px-6 py-5 rounded-xl transition-all duration-300"
+                className="w-full sm:w-auto border-[#1a1a1a] bg-black text-slate-350 hover:bg-black text-xs px-6 py-5 rounded-xl transition-all duration-300"
               >
                 Learn How to Download CAS Statement
               </Button>
@@ -141,7 +141,7 @@ export default function PortfolioPage() {
           )}
 
           {/* Secure indicator tag */}
-          <div className="pt-4 border-t border-slate-900/60 flex items-center justify-center text-[10px] text-slate-650 font-medium">
+          <div className="pt-4 border-t border-[#1a1a1a]/60 flex items-center justify-center text-[10px] text-slate-650 font-medium">
             <ShieldCheck className="h-4 w-4 mr-1 text-emerald-500" />
             We support zero-storage PII isolation inside localized Edge sandboxes.
           </div>
@@ -152,9 +152,9 @@ export default function PortfolioPage() {
           {/* Metrics summary highlights */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Total Portfolio Value FROST card */}
-            <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.2)] flex flex-col justify-between space-y-4">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col justify-between space-y-4">
               <div className="space-y-1">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                <span className="text-[10px] text-[#a3a3a3] font-bold uppercase tracking-wider">
                   Total Portfolio Worth
                 </span>
                 <h2 className="text-2xl font-extrabold tracking-tight text-slate-105">
@@ -165,23 +165,23 @@ export default function PortfolioPage() {
                 <Badge className="bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/10 border-none font-bold">
                   +₹62,167.00 Absolute Gain
                 </Badge>
-                <span className="text-slate-500 font-semibold text-[10px]">
+                <span className="text-[#a3a3a3] font-semibold text-[10px]">
                   Invested: ₹1.25L
                 </span>
               </div>
             </div>
 
             {/* XIRR Rate Speedometer FROST card */}
-            <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.2)] flex flex-col justify-between space-y-4">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col justify-between space-y-4">
               <div className="space-y-1">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+                <span className="text-[10px] text-[#a3a3a3] font-bold uppercase tracking-wider">
                   Personal Annualized XIRR
                 </span>
                 <h2 className="text-2xl font-extrabold tracking-tight text-emerald-400">
                   24.82%
                 </h2>
               </div>
-              <div className="flex items-center justify-between text-xs text-slate-500">
+              <div className="flex items-center justify-between text-xs text-[#a3a3a3]">
                 <span className="flex items-center text-[10px]">
                   <TrendingUp className="h-3.5 w-3.5 mr-1 text-emerald-400" />
                   Outperforming Benchmark by +4.2%
@@ -190,7 +190,7 @@ export default function PortfolioPage() {
             </div>
 
             {/* AI Diagnostics Advice FROST card */}
-            <div className="bg-gradient-to-br from-slate-900/40 to-emerald-950/10 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.2)] flex flex-col justify-between space-y-4 group">
+            <div className="bg-gradient-to-br from-slate-900/40 to-emerald-950/10 backdrop-blur-sm border border-[#1a1a1a] p-6 rounded-2xl  flex flex-col justify-between space-y-4 group">
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">
@@ -202,7 +202,7 @@ export default function PortfolioPage() {
                   &quot;Switched 100% to direct plans. High Sharpe ratios index. Your small cap mid cap overlap is under 8%—optimally diversified.&quot;
                 </p>
               </div>
-              <button className="text-[11px] text-slate-450 hover:text-slate-200 font-bold flex items-center transition-colors">
+              <button className="text-[11px] text-[#a3a3a3] hover:text-white font-bold flex items-center transition-colors">
                 Run Advanced Holding Scan
                 <ChevronRight className="h-3 w-3 ml-1" />
               </button>
@@ -212,10 +212,10 @@ export default function PortfolioPage() {
           {/* Asset Allocation Recharts and Goals grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Donut Chart visual widget */}
-            <div className="lg:col-span-2 bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.2)] flex flex-col space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-850 pb-3">
-                <h3 className="text-sm font-bold text-slate-200">Asset Division Diagnostic</h3>
-                <span className="text-[10px] text-slate-500 font-semibold uppercase">Mutual Funds Only</span>
+            <div className="lg:col-span-2 rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col space-y-4">
+              <div className="flex items-center justify-between border-b border-[#1a1a1a] pb-3">
+                <h3 className="text-sm font-bold text-white">Asset Division Diagnostic</h3>
+                <span className="text-[10px] text-[#a3a3a3] font-semibold uppercase">Mutual Funds Only</span>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
@@ -242,7 +242,7 @@ export default function PortfolioPage() {
                     </PieChart>
                   </ResponsiveContainer>
                   <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <span className="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Holdings</span>
+                    <span className="text-[10px] text-[#a3a3a3] uppercase tracking-widest font-bold">Holdings</span>
                     <span className="text-md font-extrabold">4 Plans</span>
                   </div>
                 </div>
@@ -253,7 +253,7 @@ export default function PortfolioPage() {
                     <div key={item.name} className="flex items-center justify-between text-xs">
                       <div className="flex items-center space-x-2">
                         <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: COLORS[idx] }} />
-                        <span className="text-slate-400 font-semibold">{item.name}</span>
+                        <span className="text-[#a3a3a3] font-semibold">{item.name}</span>
                       </div>
                       <span className="font-extrabold text-slate-250">
                         {((item.value / 187167) * 100).toFixed(1)}%
@@ -265,13 +265,13 @@ export default function PortfolioPage() {
             </div>
 
             {/* Financial Goal milestoner tracking lists */}
-            <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.2)] flex flex-col space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-850 pb-3">
+            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col space-y-4">
+              <div className="flex items-center justify-between border-b border-[#1a1a1a] pb-3">
                 <div className="flex items-center space-x-1.5">
                   <Target className="h-4 w-4 text-emerald-400" />
-                  <h3 className="text-sm font-bold text-slate-200">Linked Wealth Goals</h3>
+                  <h3 className="text-sm font-bold text-white">Linked Wealth Goals</h3>
                 </div>
-                <button className="text-[10px] text-slate-450 hover:text-slate-200 font-bold">Edit</button>
+                <button className="text-[10px] text-[#a3a3a3] hover:text-white font-bold">Edit</button>
               </div>
 
               {/* Goals Progress bar list */}
@@ -281,7 +281,7 @@ export default function PortfolioPage() {
                     <span className="font-semibold text-slate-350">Retirement Fund 2045</span>
                     <span className="font-bold text-emerald-400">62% reached</span>
                   </div>
-                  <Progress value={62} className="h-1.5 bg-slate-950 [&>div]:bg-emerald-400" />
+                  <Progress value={62} className="h-1.5 bg-black [&>div]:bg-emerald-400" />
                   <span className="text-[9px] text-slate-550 block font-medium">Target: ₹1.5 Cr | Current: ₹93,500</span>
                 </div>
 
@@ -290,7 +290,7 @@ export default function PortfolioPage() {
                     <span className="font-semibold text-slate-350">First Home Downpayment</span>
                     <span className="font-bold text-blue-400">30% reached</span>
                   </div>
-                  <Progress value={30} className="h-1.5 bg-slate-950 [&>div]:bg-blue-400" />
+                  <Progress value={30} className="h-1.5 bg-black [&>div]:bg-blue-400" />
                   <span className="text-[9px] text-slate-550 block font-medium">Target: ₹20 Lakhs | Current: ₹60,000</span>
                 </div>
               </div>
@@ -298,13 +298,13 @@ export default function PortfolioPage() {
           </div>
 
           {/* Holdings breakdown table list */}
-          <div className="bg-slate-900/40 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.2)] space-y-4">
+          <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  space-y-4">
             <h3 className="text-sm font-bold text-slate-250">Individual Portfolio Breakdown</h3>
             
             <div className="overflow-x-auto">
               <table className="w-full text-xs text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-850/60 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+                  <tr className="border-b border-[#1a1a1a]/60 text-[#a3a3a3] font-bold uppercase tracking-wider text-[10px]">
                     <th className="py-3 pr-4">Direct Scheme Option Name</th>
                     <th className="py-3 px-4">Allotted Units</th>
                     <th className="py-3 px-4">Invested Amount</th>
@@ -312,13 +312,13 @@ export default function PortfolioPage() {
                     <th className="py-3 px-4">Abs. Returns</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-850/30 text-slate-300">
+                <tbody className="divide-y divide-slate-850/30 text-[#a3a3a3]">
                   {MOCK_HOLDINGS.map((h, i) => (
-                    <tr key={i} className="hover:bg-slate-900/10">
-                      <td className="py-4 pr-4 font-bold text-slate-100">{h.name}</td>
+                    <tr key={i} className="hover:bg-black/10">
+                      <td className="py-4 pr-4 font-bold text-white">{h.name}</td>
                       <td className="py-4 px-4 font-semibold text-slate-350">{h.units.toFixed(2)}</td>
                       <td className="py-4 px-4 font-bold">₹{h.invested.toLocaleString("en-IN")}</td>
-                      <td className="py-4 px-4 font-extrabold text-slate-100">₹{h.value.toLocaleString("en-IN")}</td>
+                      <td className="py-4 px-4 font-extrabold text-white">₹{h.value.toLocaleString("en-IN")}</td>
                       <td className="py-4 px-4 font-extrabold text-emerald-400">+{formatPercent(h.returns)}</td>
                     </tr>
                   ))}

@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, ShieldCheck, Mail, Lock, User, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 // Form Validation Schemas
 const loginSchema = z.object({
@@ -128,6 +129,13 @@ export default function LoginPage() {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden px-4">
+      {/* Corner Logo Redirect */}
+      <Link href="/" className="absolute top-6 left-6 md:top-8 md:left-8 z-50 flex items-center hover:opacity-80 transition-opacity">
+        <span className="font-bold text-xl tracking-tight text-white">
+          Lumina<span className="text-emerald-400">Vest</span>
+        </span>
+      </Link>
+
       {/* Premium Ambient Background Effects */}
       <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-emerald-500/10 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] rounded-full bg-blue-500/10 blur-[120px] pointer-events-none" />
@@ -138,19 +146,19 @@ export default function LoginPage() {
       <div className="relative z-10 w-full max-w-md">
         {/* Brand Header */}
         <div className="flex flex-col items-center mb-8 space-y-2">
-          <div className="p-3 bg-gradient-to-br from-emerald-400 to-blue-500 rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+          <div className="p-3 bg-gradient-to-br from-emerald-400 to-blue-500 rounded-2xl ">
             <ShieldCheck className="h-8 w-8 text-slate-950 stroke-[2]" />
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-white">
             LuminaVest
           </h1>
-          <p className="text-slate-400 text-sm text-center">
+          <p className="text-[#a3a3a3] text-sm text-center">
             AI-powered SEBI-compliant wealth intelligence
           </p>
         </div>
 
         {/* Glassmorphic Tabs Card */}
-        <Card className="border-[#1a1a1a] bg-black shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
+        <Card className="border-[#1a1a1a] bg-black ">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <CardHeader className="pb-4">
               <TabsList className="grid w-full grid-cols-2 bg-[#0a0a0a] border border-[#1a1a1a] p-1">
@@ -221,7 +229,7 @@ export default function LoginPage() {
                   <Button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-slate-950 font-bold transition-all duration-300 shadow-[0_4px_15px_rgba(16,185,129,0.2)]"
+                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-slate-950 font-bold transition-all duration-300 "
                   >
                     {isLoading ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin text-slate-950" />
@@ -341,13 +349,13 @@ export default function LoginPage() {
                   <Button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-slate-950 font-bold transition-all duration-300 shadow-[0_4px_15px_rgba(16,185,129,0.2)]"
+                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-slate-950 font-bold transition-all duration-300 "
                   >
                     {isLoading ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin text-slate-100" />
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin text-white" />
                     ) : (
                       <>
-                        Create Account <ArrowRight className="ml-2 h-4 w-4 text-slate-100" />
+                        Create Account <ArrowRight className="ml-2 h-4 w-4 text-white" />
                       </>
                     )}
                   </Button>
