@@ -37,61 +37,64 @@ export default async function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#000000] text-[#ffffff] font-sans">
+    <div className="min-h-screen bg-[#000000] text-[#ffffff] font-sans overflow-x-hidden">
       <Navbar minimal />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Hero Section */}
-        <section className="py-16 md:py-24 flex flex-col items-center text-center">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight leading-tight mb-4">
-            Trade the{" "}
-            <span className="bg-gradient-to-r from-emerald-400 to-sky-400 bg-clip-text text-transparent">
-              markets
-            </span>{" "}
-            like a quant.
-          </h1>
-          <p className="text-[#a3a3a3] text-sm md:text-base lg:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
-            LuminaVest turns India&apos;s mutual fund universe into a live stock market terminal —
-            screen direct plans, backtest strategies, and deploy capital in a matte-black, pro-grade
-            console.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button
-              asChild
-              className="bg-white text-black hover:bg-slate-100 font-semibold px-6 py-3 text-sm rounded-full flex items-center justify-center gap-2 w-full sm:w-auto"
-            >
-              <a href="/screener">
-                Launch Market Screener
-                <TrendingUp className="h-4 w-4" />
-              </a>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              className="border-[#1a1a1a] bg-black hover:bg-[#0a0a0a] text-white font-semibold px-6 py-3 text-sm rounded-full flex items-center justify-center w-full sm:w-auto"
-            >
-              <a href="/register">Create Free Account</a>
-            </Button>
+      <main className="w-full">
+        {/* Hero Section - Full width, content centred */}
+        <section className="w-full py-16 md:py-24 flex items-center justify-center">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight leading-tight mb-4">
+              Trade the{" "}
+              <span className="bg-gradient-to-r from-emerald-400 to-sky-400 bg-clip-text text-transparent">
+                markets
+              </span>{" "}
+              like a quant.
+            </h1>
+            <p className="text-[#a3a3a3] text-sm md:text-base lg:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+              LuminaVest turns India&apos;s mutual fund universe into a live stock market terminal —
+              screen direct plans, backtest strategies, and deploy capital in a matte-black, pro-grade
+              console.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Button
+                asChild
+                className="bg-white text-black hover:bg-slate-100 font-semibold px-6 py-3 text-sm rounded-full flex items-center justify-center gap-2 w-full sm:w-auto"
+              >
+                <a href="/screener">
+                  Launch Market Screener
+                  <TrendingUp className="h-4 w-4" />
+                </a>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                className="border-[#1a1a1a] bg-black hover:bg-[#0a0a0a] text-white font-semibold px-6 py-3 text-sm rounded-full flex items-center justify-center w-full sm:w-auto"
+              >
+                <a href="/register">Create Free Account</a>
+              </Button>
+            </div>
           </div>
         </section>
 
         {/* Section Spacer */}
-        <div className="h-12 md:h-16" />
+        <div className="h-12 md:h-16 w-full" />
 
-        {/* India Indices Snapshot (Scrolling Ticker) */}
-        <section className="mb-12 md:mb-16 w-full">
-          <div className="flex items-center justify-between mb-4 px-2">
+        {/* India Indices Snapshot (Scrolling Ticker) - FULL WIDTH */}
+        <section className="w-full mb-12 md:mb-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between mb-4">
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#a3a3a3]">
               Scroll Velocity
             </span>
             <span className="text-xs text-[#a3a3a3] font-medium">Live · 15 min delay</span>
           </div>
-          <div className="overflow-hidden border-y border-[#1a1a1a] bg-black py-4">
+          {/* Ticker strip - FULL WIDTH, NO SIDE PADDING */}
+          <div className="w-full overflow-hidden border-y border-[#1a1a1a] bg-black py-4">
             <div className="flex gap-12 animate-[scrollRightToLeft_30s_linear_infinite]">
-              {[...sampleTickers, ...sampleTickers].map((t, idx) => (
+              {[...sampleTickers, ...sampleTickers, ...sampleTickers].map((t, idx) => (
                 <div
                   key={`${t.symbol}-${idx}`}
-                  className="flex flex-col items-start min-w-[120px] flex-shrink-0"
+                  className="flex flex-col items-start min-w-[140px] flex-shrink-0"
                 >
                   <span className="font-semibold text-sm text-white">{t.symbol}</span>
                   <span className="font-bold text-lg text-white mt-0.5">{t.price}</span>
@@ -109,107 +112,111 @@ export default async function Home() {
         </section>
 
         {/* Section Spacer */}
-        <div className="h-12 md:h-16" />
+        <div className="h-12 md:h-16 w-full" />
 
         {/* Direct Plan Flow & Mutual Fund Universe */}
-        <section className="mb-12 md:mb-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 flex flex-col justify-between">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <p className="text-xs uppercase tracking-widest text-[#a3a3a3] font-semibold mb-1">
-                    Direct plan flow
-                  </p>
-                  <p className="text-xl font-bold text-emerald-400">+₹4.2 Cr</p>
+        <section className="w-full mb-12 md:mb-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+              <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <p className="text-xs uppercase tracking-widest text-[#a3a3a3] font-semibold mb-1">
+                      Direct plan flow
+                    </p>
+                    <p className="text-xl font-bold text-emerald-400">+₹4.2 Cr</p>
+                  </div>
+                  <div className="p-3 rounded-xl border border-[#1a1a1a] text-emerald-400">
+                    <LineChart className="h-5 w-5" />
+                  </div>
                 </div>
-                <div className="p-3 rounded-xl border border-[#1a1a1a] text-emerald-400">
-                  <LineChart className="h-5 w-5" />
+                <div className="h-24 w-full rounded-xl bg-gradient-to-tr from-emerald-500/10 via-sky-500/5 to-black relative overflow-hidden">
+                  <div className="absolute inset-x-3 bottom-3 flex items-end gap-1">
+                    {[40, 55, 38, 80, 62, 90, 70].map((h, idx) => (
+                      <div
+                        key={idx}
+                        className="flex-1 rounded-full bg-emerald-400"
+                        style={{ height: `${h}%` }}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
-              <div className="h-24 w-full rounded-xl bg-gradient-to-tr from-emerald-500/10 via-sky-500/5 to-black relative overflow-hidden">
-                <div className="absolute inset-x-3 bottom-3 flex items-end gap-1">
-                  {[40, 55, 38, 80, 62, 90, 70].map((h, idx) => (
-                    <div
-                      key={idx}
-                      className="flex-1 rounded-full bg-emerald-400"
-                      style={{ height: `${h}%` }}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
 
-            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 flex flex-col justify-between">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <p className="text-xs uppercase tracking-widest text-[#a3a3a3] font-semibold mb-1">
-                    Mutual fund universe
-                  </p>
-                  <p className="text-xl font-bold text-white">{fundsCount}+ screened schemes</p>
+              <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <p className="text-xs uppercase tracking-widest text-[#a3a3a3] font-semibold mb-1">
+                      Mutual fund universe
+                    </p>
+                    <p className="text-xl font-bold text-white">{fundsCount}+ screened schemes</p>
+                  </div>
+                  <div className="p-3 rounded-xl border border-[#1a1a1a] text-white">
+                    <Database className="h-5 w-5" />
+                  </div>
                 </div>
-                <div className="p-3 rounded-xl border border-[#1a1a1a] text-white">
-                  <Database className="h-5 w-5" />
-                </div>
+                <ul className="space-y-3 text-sm text-[#a3a3a3]">
+                  <li className="flex items-center justify-between">
+                    <span>Equity · Mid / Small Cap baskets</span>
+                    <span className="font-semibold text-emerald-400">High Sharpe</span>
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span>Debt · Roll-down & Gilt ladders</span>
+                    <span className="font-semibold text-sky-400">Stable duration</span>
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span>Hybrid · Balanced advantage</span>
+                    <span className="font-semibold text-amber-300">Smart beta</span>
+                  </li>
+                </ul>
               </div>
-              <ul className="space-y-3 text-sm text-[#a3a3a3]">
-                <li className="flex items-center justify-between">
-                  <span>Equity · Mid / Small Cap baskets</span>
-                  <span className="font-semibold text-emerald-400">High Sharpe</span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span>Debt · Roll-down & Gilt ladders</span>
-                  <span className="font-semibold text-sky-400">Stable duration</span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span>Hybrid · Balanced advantage</span>
-                  <span className="font-semibold text-amber-300">Smart beta</span>
-                </li>
-              </ul>
             </div>
           </div>
         </section>
 
         {/* Bottom Stats Block */}
-        <section className="pb-16 md:pb-24">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
-            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-xl border border-[#1a1a1a] text-white">
-                  <Database className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-[#a3a3a3] mb-1">
-                    Active Mutual Funds
-                  </p>
-                  <p className="text-xl font-bold text-white">{fundsCount}+</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-xl border border-[#1a1a1a] text-white">
-                  <Users className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-[#a3a3a3] mb-1">
-                    Registered Investors
-                  </p>
-                  <p className="text-xl font-bold text-white">{usersCount}+</p>
+        <section className="w-full pb-16 md:pb-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+              <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 rounded-xl border border-[#1a1a1a] text-white">
+                    <Database className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-[#a3a3a3] mb-1">
+                      Active Mutual Funds
+                    </p>
+                    <p className="text-xl font-bold text-white">{fundsCount}+</p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 sm:col-span-2 lg:col-span-1">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-xl border border-[#1a1a1a] text-white">
-                  <TrendingUp className="h-5 w-5" />
+              <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 rounded-xl border border-[#1a1a1a] text-white">
+                    <Users className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-[#a3a3a3] mb-1">
+                      Registered Investors
+                    </p>
+                    <p className="text-xl font-bold text-white">{usersCount}+</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-[#a3a3a3] mb-1">
-                    Tracked Assets (AUM)
-                  </p>
-                  <p className="text-xl font-bold text-white">{formattedAum}</p>
+              </div>
+
+              <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 sm:col-span-2 lg:col-span-1">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 rounded-xl border border-[#1a1a1a] text-white">
+                    <TrendingUp className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-[#a3a3a3] mb-1">
+                      Tracked Assets (AUM)
+                    </p>
+                    <p className="text-xl font-bold text-white">{formattedAum}</p>
+                  </div>
                 </div>
               </div>
             </div>
