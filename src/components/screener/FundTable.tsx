@@ -86,9 +86,9 @@ export default function FundTable() {
   return (
     <div className="space-y-4">
       {/* Search status panel */}
-      <div className="flex items-center justify-between text-xs text-slate-450 px-1">
+      <div className="flex items-center justify-between text-xs text-[#a3a3a3] px-1">
         <span>Showing {loading ? "..." : funds.length} funds matching criteria</span>
-        <span className="flex items-center text-slate-500 font-medium">
+        <span className="flex items-center text-[#a3a3a3] font-medium">
           <Star className="h-3 w-3 text-amber-500 mr-1 fill-amber-500" />
           Direct Plan - Growth Options Only
         </span>
@@ -101,20 +101,20 @@ export default function FundTable() {
           Array.from({ length: 4 }).map((_, idx) => (
             <div
               key={idx}
-              className="bg-slate-900/20 border border-slate-900/60 p-5 rounded-2xl flex flex-col space-y-4"
+              className="bg-black/20 border border-[#1a1a1a]/60 p-5 rounded-2xl flex flex-col space-y-4"
             >
               <div className="flex items-start justify-between">
                 <div className="space-y-2 flex-1">
-                  <Skeleton className="h-5 w-2/3 bg-slate-800" />
-                  <Skeleton className="h-3 w-1/3 bg-slate-800" />
+                  <Skeleton className="h-5 w-2/3 bg-[#1a1a1a]" />
+                  <Skeleton className="h-3 w-1/3 bg-[#1a1a1a]" />
                 </div>
-                <Skeleton className="h-9 w-24 bg-slate-800" />
+                <Skeleton className="h-9 w-24 bg-[#1a1a1a]" />
               </div>
               <div className="grid grid-cols-4 gap-4 pt-2">
                 {Array.from({ length: 4 }).map((_, i) => (
                   <div key={i} className="space-y-1.5">
-                    <Skeleton className="h-3 w-1/2 bg-slate-800" />
-                    <Skeleton className="h-4 w-3/4 bg-slate-800" />
+                    <Skeleton className="h-3 w-1/2 bg-[#1a1a1a]" />
+                    <Skeleton className="h-4 w-3/4 bg-[#1a1a1a]" />
                   </div>
                 ))}
               </div>
@@ -122,10 +122,10 @@ export default function FundTable() {
           ))
         ) : funds.length === 0 ? (
           // Empty State illustration card
-          <div className="bg-slate-900/20 border border-slate-850 p-12 rounded-2xl flex flex-col items-center justify-center text-center">
-            <AlertCircle className="h-10 w-10 text-slate-600 mb-3 stroke-[1.5]" />
+          <div className="bg-black/20 border border-[#1a1a1a] p-12 rounded-2xl flex flex-col items-center justify-center text-center">
+            <AlertCircle className="h-10 w-10 text-[#a3a3a3] mb-3 stroke-[1.5]" />
             <h3 className="font-bold text-slate-350 text-sm">No funds found</h3>
-            <p className="text-xs text-slate-500 mt-1 max-w-sm">
+            <p className="text-xs text-[#a3a3a3] mt-1 max-w-sm">
               We couldn&apos;t find any direct plans matching your keywords. Adjust your category filters or double check spelling!
             </p>
           </div>
@@ -136,21 +136,21 @@ export default function FundTable() {
             return (
               <div
                 key={fund.id}
-                className="bg-slate-900/40 backdrop-blur-sm border border-slate-850 hover:border-slate-800/80 p-5 rounded-2xl transition-all duration-300 group shadow-[0_2px_12px_rgba(0,0,0,0.15)] flex flex-col space-y-4"
+                className="bg-black border border-[#1a1a1a] hover:border-[#1a1a1a]/80 p-5 rounded-2xl transition-all duration-300 group  flex flex-col space-y-4"
               >
                 {/* Header Row */}
                 <div className="flex items-start justify-between">
                   <div className="space-y-1 flex-1 pr-4">
-                    <h3 className="font-bold text-sm text-slate-100 group-hover:text-emerald-400 transition-colors duration-300 leading-snug">
+                    <h3 className="font-bold text-sm text-white group-hover:text-emerald-400 transition-colors duration-300 leading-snug">
                       {fund.schemeName}
                     </h3>
                     <div className="flex flex-wrap gap-2 items-center">
-                      <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
+                      <span className="text-[10px] text-[#a3a3a3] font-semibold uppercase tracking-wider">
                         {fund.amcName.split(" Mutual Fund")[0]}
                       </span>
                       <Badge
                         variant="secondary"
-                        className="bg-slate-850 text-slate-400 border-none hover:bg-slate-800 text-[10px] px-2 py-0.5 rounded-md"
+                        className="bg-slate-850 text-[#a3a3a3] border-none hover:bg-[#1a1a1a] text-[10px] px-2 py-0.5 rounded-md"
                       >
                         {fund.category} • {fund.subCategory || "Direct Plan"}
                       </Badge>
@@ -169,7 +169,7 @@ export default function FundTable() {
                       className={`flex items-center space-x-1 px-3 py-1.5 rounded-xl border text-[11px] font-bold transition-all duration-300 ${
                         isCompared
                           ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-400"
-                          : "bg-slate-950/60 border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-750"
+                          : "bg-black/60 border-[#1a1a1a] text-[#a3a3a3] hover:text-white hover:border-slate-750"
                       }`}
                     >
                       {isCompared ? (
@@ -194,17 +194,17 @@ export default function FundTable() {
                 </div>
 
                 {/* Metrics Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-3 border-t border-slate-850/60">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-3 border-t border-[#1a1a1a]/60">
                   <div className="space-y-0.5">
-                    <span className="text-[10px] text-slate-500 font-semibold tracking-wide uppercase">
+                    <span className="text-[10px] text-[#a3a3a3] font-semibold tracking-wide uppercase">
                       Current NAV
                     </span>
-                    <p className="text-xs font-extrabold text-slate-200">
+                    <p className="text-xs font-extrabold text-white">
                       ₹{fund.nav.toFixed(2)}
                     </p>
                   </div>
                   <div className="space-y-0.5">
-                    <span className="text-[10px] text-slate-500 font-semibold tracking-wide uppercase">
+                    <span className="text-[10px] text-[#a3a3a3] font-semibold tracking-wide uppercase">
                       3-Year returns (CAGR)
                     </span>
                     <p className="text-xs font-extrabold text-emerald-400">
@@ -212,15 +212,15 @@ export default function FundTable() {
                     </p>
                   </div>
                   <div className="space-y-0.5">
-                    <span className="text-[10px] text-slate-500 font-semibold tracking-wide uppercase">
+                    <span className="text-[10px] text-[#a3a3a3] font-semibold tracking-wide uppercase">
                       Total Assets (AUM)
                     </span>
-                    <p className="text-xs font-extrabold text-slate-200">
+                    <p className="text-xs font-extrabold text-white">
                       {formatAUM(fund.aum)}
                     </p>
                   </div>
                   <div className="space-y-0.5">
-                    <span className="text-[10px] text-slate-500 font-semibold tracking-wide uppercase">
+                    <span className="text-[10px] text-[#a3a3a3] font-semibold tracking-wide uppercase">
                       Expense Ratio
                     </span>
                     <p className="text-xs font-extrabold text-slate-350">

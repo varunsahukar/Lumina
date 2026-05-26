@@ -12,11 +12,11 @@ export default function ScreenerPage() {
           <div className="p-2 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/25 rounded-xl">
             <Compass className="h-5 w-5 text-emerald-400 stroke-[2]" />
           </div>
-          <h1 className="text-xl font-extrabold tracking-tight text-slate-100 sm:text-2xl">
+          <h1 className="text-xl font-extrabold tracking-tight text-white sm:text-2xl">
             Mutual Fund Screener
           </h1>
         </div>
-        <p className="text-xs text-slate-450 pl-1">
+        <p className="text-xs text-[#a3a3a3] pl-1">
           Explore and filter Direct Plan mutual funds using daily AMFI NAV data and risk-adjusted Sharpe metrics.
         </p>
       </div>
