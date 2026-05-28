@@ -44,6 +44,17 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## Mutual Fund Data Sync
+
+After starting the NestJS backend, trigger a manual admin refresh with:
+
+```bash
+curl -X POST http://localhost:3000/api/funds/refresh \
+  -H "Authorization: Bearer <admin_jwt>"
+```
+
+The refresh queues `sync-india-funds`, `sync-usa-funds`, and `sync-amfi-bulk` BullMQ jobs. Set `ALPHA_VANTAGE_KEY` before syncing USA funds.
+
 ## Run tests
 
 ```bash

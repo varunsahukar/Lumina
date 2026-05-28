@@ -16,37 +16,60 @@ exports.RedisService = void 0;
 const common_1 = require("@nestjs/common");
 const ioredis_1 = __importDefault(require("ioredis"));
 const config_1 = require("@nestjs/config");
+const runtime_flags_1 = require("./runtime-flags");
 let RedisService = class RedisService {
     configService;
     client;
+    enabled = (0, runtime_flags_1.isRedisEnabled)();
     constructor(configService) {
         this.configService = configService;
     }
     onModuleInit() {
-        const redisUrl = this.configService.get('REDIS_URL') || 'redis://localhost:6379';
-        this.client = new ioredis_1.default(redisUrl, {
-            maxRetriesPerRequest: null,
-        });
+        if (!this.enabled) {
+            return;
+        }
+        const redisUrl = this.configService.get('REDIS_URL');
+        const redisHost = this.configService.get('REDIS_HOST') || 'localhost';
+        const redisPort = Number(this.configService.get('REDIS_PORT')) || 6379;
+        this.client = redisUrl
+            ? new ioredis_1.default(redisUrl, { maxRetriesPerRequest: null })
+            : new ioredis_1.default({
+                host: redisHost,
+                port: redisPort,
+                maxRetriesPerRequest: null,
+            });
     }
     onModuleDestroy() {
         this.client?.disconnect();
     }
+    isEnabled() {
+        return this.enabled;
+    }
     getClient() {
+        if (!this.client) {
+            throw new Error('Redis is disabled or not initialized');
+        }
         return this.client;
     }
     async get(key) {
-        return this.client.get(key);
+        if (!this.enabled)
+            return null;
+        return this.getClient().get(key);
     }
     async set(key, value, ttlSeconds) {
+        if (!this.enabled)
+            return;
         if (ttlSeconds) {
-            await this.client.set(key, value, 'EX', ttlSeconds);
+            await this.getClient().set(key, value, 'EX', ttlSeconds);
         }
         else {
-            await this.client.set(key, value);
+            await this.getClient().set(key, value);
         }
     }
     async del(key) {
-        return this.client.del(key);
+        if (!this.enabled)
+            return 0;
+        return this.getClient().del(key);
     }
     async setJson(key, value, ttlSeconds) {
         await this.set(key, JSON.stringify(value), ttlSeconds);

@@ -1,3 +1,5 @@
+import AgencyAuthExperience from "@/components/auth/AgencyAuthExperience";
+
 export default function RegisterPage() {
-  return <div>Register</div>;
+  return <AgencyAuthExperience initialMode="register" />;
 }

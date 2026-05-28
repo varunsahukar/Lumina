@@ -1,333 +1,440 @@
 "use client";
 
-import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  ResponsiveContainer,
-  BarChart,
+  ArrowUpRight,
+  HelpCircle,
+  Loader2,
+  PieChartIcon,
+  RefreshCcw,
+  ShieldCheck,
+  Sparkles,
+  Target,
+  TrendingUp,
+} from "lucide-react";
+import {
   Bar,
+  BarChart,
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
-import {
-  TrendingUp,
-  UploadCloud,
-  FileText,
-  PieChartIcon,
-  Target,
-  Sparkles,
-  ChevronRight,
-  ShieldCheck,
-  CheckCircle,
-  HelpCircle,
-} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
-// Mock holdings populated upon CAS parsing simulation
-const MOCK_HOLDINGS = [
-  { name: "Parag Parikh Flexi Cap Direct", units: 480.20, nav: 84.62, value: 40634.50, invested: 28000, returns: 0.451 },
-  { name: "HDFC Mid-Cap Opportunities Direct", units: 280.12, nav: 174.15, value: 48782.90, invested: 32000, returns: 0.524 },
-  { name: "Nippon India Small Cap Direct", units: 320.40, nav: 162.80, value: 52161.10, invested: 30000, returns: 0.738 },
-  { name: "ICICI Prudential Equity & Debt Hybrid", units: 140.10, nav: 325.40, value: 45588.50, invested: 35000, returns: 0.302 },
-];
+interface PortfolioHolding {
+  id: string;
+  name: string;
+  schemeName?: string;
+  units: number;
+  nav: number;
+  value: number;
+  invested: number;
+  returns: number;
+  category?: string;
+}
 
-const COLORS = ["#10b981", "#3b82f6", "#f59e0b", "#a855f7"];
+interface PortfolioSummary {
+  id: string;
+  name: string;
+  invested: number;
+  value: number;
+  gain: number;
+  returns: number;
+  holdings: PortfolioHolding[];
+}
+
+const COLORS = ["#c95545", "#2d8188", "#7b9cc8", "#f0b75d", "#4ba1a7", "#0b0b0b"];
 
 export default function PortfolioPage() {
-  const { toast } = useToast();
-  const [isUploaded, setIsUploaded] = useState(false);
-  const [parsing, setParsing] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [portfolios, setPortfolios] = useState<PortfolioSummary[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleCasSimulation = () => {
-    setParsing(true);
-    setProgress(10);
-    
-    // Simulate real-time progress steps for high-fidelity interactive liveness
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            setParsing(false);
-            setIsUploaded(true);
-            toast({
-              title: "CAS Upload parsed successfully!",
-              description: "Extracted 4 direct plan portfolios with full XIRR analysis.",
-            });
-          }, 400);
-          return 100;
-        }
-        return prev + 15;
-      });
-    }, 200);
+  const loadPortfolio = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/portfolio", { cache: "no-store" });
+      const json = await response.json();
+
+      if (!response.ok || !json.success) {
+        throw new Error(json.error || "Unable to load portfolio");
+      }
+
+      setPortfolios(json.data || []);
+    } catch (err) {
+      console.error("Failed to load portfolio", err);
+      setError(err instanceof Error ? err.message : "Unable to load portfolio");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const chartData = [
-    { name: "Flexi Cap", value: 40634.50 },
-    { name: "Mid Cap", value: 48782.90 },
-    { name: "Small Cap", value: 52161.10 },
-    { name: "Hybrid", value: 45588.50 },
-  ];
+  useEffect(() => {
+    void loadPortfolio();
+  }, []);
 
-  const formatPercent = (value: number | null) => {
-    if (!value) return "N/A";
-    return `${(value * 100).toFixed(2)}%`;
-  };
+  const holdings = useMemo(
+    () => portfolios.flatMap((portfolio) => portfolio.holdings || []),
+    [portfolios]
+  );
+  const totalValue = holdings.reduce((sum, holding) => sum + holding.value, 0);
+  const totalInvested = holdings.reduce((sum, holding) => sum + holding.invested, 0);
+  const totalGain = totalValue - totalInvested;
+  const portfolioReturn = totalInvested > 0 ? totalGain / totalInvested : 0;
+
+  const categoryData = useMemo(() => {
+    const byCategory = new Map<string, number>();
+    holdings.forEach((holding) => {
+      const key = normalizeCategory(holding.category);
+      byCategory.set(key, (byCategory.get(key) || 0) + holding.value);
+    });
+    return Array.from(byCategory, ([name, value]) => ({ name, value })).sort(
+      (a, b) => b.value - a.value
+    );
+  }, [holdings]);
+
+  const barData = holdings.slice(0, 8).map((holding) => ({
+    name: compactName(holding.schemeName || holding.name),
+    value: holding.value,
+    invested: holding.invested,
+  }));
 
   return (
-    <div className="space-y-6 text-white">
-      {/* Title Header */}
-      <div className="flex flex-col space-y-1">
-        <div className="flex items-center space-x-2.5">
-          <div className="p-2 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/25 rounded-xl">
-            <PieChartIcon className="h-5 w-5 text-emerald-400 stroke-[2]" />
+    <div className="space-y-8 text-[#070707] dark:text-[#f7eee8]">
+      <div className="flex flex-col gap-4 border-b-[3px] border-black pb-7 dark:border-[#f7eee8]/25 md:flex-row md:items-center md:justify-between">
+        <div className="flex items-center gap-3">
+          <div className="grid h-12 w-12 place-items-center border-[3px] border-black bg-[#4ba1a7] shadow-[5px_5px_0_#000] dark:border-[#f7eee8] dark:bg-[#123f45] dark:shadow-[5px_5px_0_#c95545]">
+            <PieChartIcon className="h-5 w-5 text-black dark:text-[#f7eee8]" />
           </div>
-          <h1 className="text-xl font-extrabold tracking-tight text-white sm:text-2xl">
-            My Portfolio Analytics
-          </h1>
+          <div>
+            <h1 className="text-4xl font-black leading-none sm:text-5xl">
+              Portfolio Analytics
+            </h1>
+            <p className="mt-2 max-w-3xl text-sm font-semibold leading-6 text-[#5b5652] dark:text-[#bdb5ae]">
+              Live holdings, allocation, returns and goal-readiness from the investment database.
+            </p>
+          </div>
         </div>
-        <p className="text-xs text-[#a3a3a3] pl-1">
-          Perform immediate diagnostics, absolute return parsing, and XIRR tracking on your personal investments.
-        </p>
+        <Button
+          type="button"
+          onClick={loadPortfolio}
+          disabled={isLoading}
+          className="h-12 rounded-none border-[3px] border-black bg-[#4ba1a7] px-5 font-bold text-black shadow-[5px_5px_0_#000] hover:bg-[#5fb8be] dark:border-[#f7eee8]/25"
+        >
+          {isLoading ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <RefreshCcw className="mr-2 h-4 w-4" />
+          )}
+          Sync portfolio
+        </Button>
       </div>
 
-      {!isUploaded ? (
-        // State 1: Premium CAS Upload Drag-Drop simulation panel
-        <div className="max-w-2xl mx-auto bg-black/40 backdrop-blur-md border border-[#1a1a1a] rounded-3xl p-8 space-y-6 text-center ">
-          <div className="flex flex-col items-center space-y-4">
-            <div className="p-4 bg-black border border-[#1a1a1a] rounded-2xl ">
-              <UploadCloud className="h-10 w-10 text-emerald-400 stroke-[1.5]" />
-            </div>
-            <div className="space-y-2">
-              <h2 className="text-lg font-bold text-white">Parse Common Account Statement (CAS)</h2>
-              <p className="text-xs text-slate-550 max-w-md mx-auto leading-relaxed">
-                Drag and drop your CAMS / Karvy consolidated PDF statement here to immediately perform diagnostics on direct vs regular plan leakage.
-              </p>
-            </div>
-          </div>
+      {error ? (
+        <div className="border-[3px] border-[#c95545] bg-[#ffe5df] px-4 py-3 text-sm font-bold text-[#721f17] dark:bg-[#32110e] dark:text-[#ffd9d2]">
+          {error}
+        </div>
+      ) : null}
 
-          {parsing ? (
-            // Simulation progress bar
-            <div className="space-y-3 max-w-sm mx-auto">
-              <div className="flex justify-between text-xs text-[#a3a3a3] font-bold">
-                <span>Parsing PDF & matching AMFI feeds...</span>
-                <span>{progress}%</span>
-              </div>
-              <Progress value={progress} className="h-2 bg-black [&>div]:bg-gradient-to-r [&>div]:from-emerald-500 [&>div]:to-teal-500" />
-            </div>
-          ) : (
-            // Upload trigger buttons
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-              <Button
-                onClick={handleCasSimulation}
-                className="w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-slate-950 hover:text-slate-950 font-extrabold text-xs px-6 py-5 rounded-xl  transition-all duration-300"
-              >
-                Simulate CAS Statement Upload
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full sm:w-auto border-[#1a1a1a] bg-black text-slate-350 hover:bg-black text-xs px-6 py-5 rounded-xl transition-all duration-300"
-              >
-                Learn How to Download CAS Statement
-              </Button>
-            </div>
-          )}
-
-          {/* Secure indicator tag */}
-          <div className="pt-4 border-t border-[#1a1a1a]/60 flex items-center justify-center text-[10px] text-slate-650 font-medium">
-            <ShieldCheck className="h-4 w-4 mr-1 text-emerald-500" />
-            We support zero-storage PII isolation inside localized Edge sandboxes.
+      {isLoading ? (
+        <div className="grid min-h-[45vh] place-items-center">
+          <div className="flex items-center gap-4 border-[3px] border-black bg-[#f7eee8] px-8 py-6 shadow-[8px_8px_0_#000] dark:border-[#f7eee8]/25 dark:bg-[#0b0b0b]">
+            <Loader2 className="h-6 w-6 animate-spin text-[#c95545] dark:text-[#4ba1a7]" />
+            <span className="text-sm font-bold uppercase tracking-[0.18em]">
+              Loading live holdings
+            </span>
           </div>
         </div>
+      ) : holdings.length === 0 ? (
+        <EmptyPortfolioState />
       ) : (
-        // State 2: High-end Diagnostics Dashboard View
-        <div className="space-y-6 animate-fade-in">
-          {/* Metrics summary highlights */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Total Portfolio Value FROST card */}
-            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col justify-between space-y-4">
-              <div className="space-y-1">
-                <span className="text-[10px] text-[#a3a3a3] font-bold uppercase tracking-wider">
-                  Total Portfolio Worth
-                </span>
-                <h2 className="text-2xl font-extrabold tracking-tight text-slate-105">
-                  ₹1,87,167.00
-                </h2>
-              </div>
-              <div className="flex items-center space-x-1.5 text-xs">
-                <Badge className="bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/10 border-none font-bold">
-                  +₹62,167.00 Absolute Gain
-                </Badge>
-                <span className="text-[#a3a3a3] font-semibold text-[10px]">
-                  Invested: ₹1.25L
-                </span>
-              </div>
-            </div>
-
-            {/* XIRR Rate Speedometer FROST card */}
-            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col justify-between space-y-4">
-              <div className="space-y-1">
-                <span className="text-[10px] text-[#a3a3a3] font-bold uppercase tracking-wider">
-                  Personal Annualized XIRR
-                </span>
-                <h2 className="text-2xl font-extrabold tracking-tight text-emerald-400">
-                  24.82%
-                </h2>
-              </div>
-              <div className="flex items-center justify-between text-xs text-[#a3a3a3]">
-                <span className="flex items-center text-[10px]">
-                  <TrendingUp className="h-3.5 w-3.5 mr-1 text-emerald-400" />
-                  Outperforming Benchmark by +4.2%
-                </span>
-              </div>
-            </div>
-
-            {/* AI Diagnostics Advice FROST card */}
-            <div className="bg-gradient-to-br from-slate-900/40 to-emerald-950/10 backdrop-blur-sm border border-[#1a1a1a] p-6 rounded-2xl  flex flex-col justify-between space-y-4 group">
-              <div className="space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">
-                    Lumina AI Doctor Insight
-                  </span>
-                  <Sparkles className="h-4 w-4 text-emerald-400 fill-emerald-400/20 group-hover:animate-pulse" />
-                </div>
-                <p className="text-xs text-slate-350 leading-relaxed pt-1.5">
-                  &quot;Switched 100% to direct plans. High Sharpe ratios index. Your small cap mid cap overlap is under 8%—optimally diversified.&quot;
-                </p>
-              </div>
-              <button className="text-[11px] text-[#a3a3a3] hover:text-white font-bold flex items-center transition-colors">
-                Run Advanced Holding Scan
-                <ChevronRight className="h-3 w-3 ml-1" />
-              </button>
-            </div>
+        <>
+          <div className="grid gap-6 md:grid-cols-3">
+            <MetricCard
+              label="Total portfolio worth"
+              value={formatCurrency(totalValue)}
+              note={`${holdings.length} live holdings`}
+              tone="cream"
+            />
+            <MetricCard
+              label="Personal return"
+              value={formatPercent(portfolioReturn)}
+              note={`${formatCurrency(totalGain)} absolute gain`}
+              tone="red"
+            />
+            <MetricCard
+              label="Invested capital"
+              value={formatCurrency(totalInvested)}
+              note={`${portfolios.length} active portfolios`}
+              tone="teal"
+            />
           </div>
 
-          {/* Asset Allocation Recharts and Goals grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Donut Chart visual widget */}
-            <div className="lg:col-span-2 rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col space-y-4">
-              <div className="flex items-center justify-between border-b border-[#1a1a1a] pb-3">
-                <h3 className="text-sm font-bold text-white">Asset Division Diagnostic</h3>
-                <span className="text-[10px] text-[#a3a3a3] font-semibold uppercase">Mutual Funds Only</span>
+          <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+            <section className="agency-hard-shadow border-[3px] border-black bg-[#f7eee8] p-6 dark:border-[#f7eee8]/25 dark:bg-[#0b0b0b]">
+              <div className="mb-6 flex items-center justify-between border-b-[3px] border-black pb-4 dark:border-[#f7eee8]/20">
+                <h2 className="text-2xl font-bold">Asset allocation</h2>
+                <Badge className="rounded-none border border-black bg-[#4ba1a7] text-black hover:bg-[#4ba1a7]">
+                  Mutual funds
+                </Badge>
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-                {/* Donut graph */}
-                <div className="h-48 relative">
+              <div className="grid gap-6 md:grid-cols-[0.9fr_1fr] md:items-center">
+                <div className="relative h-72">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={chartData}
+                        data={categoryData}
                         cx="50%"
                         cy="50%"
-                        innerRadius={60}
-                        outerRadius={80}
+                        innerRadius={68}
+                        outerRadius={102}
                         paddingAngle={4}
                         dataKey="value"
                       >
-                        {chartData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        {categoryData.map((entry, index) => (
+                          <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
-                      <Tooltip
-                        contentStyle={{ backgroundColor: "#020617", border: "1px solid #1e293b", borderRadius: "12px", fontSize: "11px" }}
-                      />
+                      <Tooltip content={<PortfolioTooltip />} />
                     </PieChart>
                   </ResponsiveContainer>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <span className="text-[10px] text-[#a3a3a3] uppercase tracking-widest font-bold">Holdings</span>
-                    <span className="text-md font-extrabold">4 Plans</span>
+                  <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-xs font-bold uppercase tracking-[0.16em] text-[#5b5652] dark:text-[#bdb5ae]">
+                      Holdings
+                    </span>
+                    <span className="text-3xl font-black">{holdings.length}</span>
                   </div>
                 </div>
 
-                {/* Donut chart legend list */}
-                <div className="space-y-2.5">
-                  {chartData.map((item, idx) => (
-                    <div key={item.name} className="flex items-center justify-between text-xs">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: COLORS[idx] }} />
-                        <span className="text-[#a3a3a3] font-semibold">{item.name}</span>
-                      </div>
-                      <span className="font-extrabold text-slate-250">
-                        {((item.value / 187167) * 100).toFixed(1)}%
+                <div className="space-y-3">
+                  {categoryData.map((item, index) => (
+                    <div
+                      key={item.name}
+                      className="flex items-center justify-between gap-3 border-[3px] border-black bg-white p-3 text-sm font-bold dark:border-[#f7eee8]/25 dark:bg-[#141414]"
+                    >
+                      <span className="flex min-w-0 items-center gap-2">
+                        <span
+                          className="h-3 w-3 shrink-0"
+                          style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                        />
+                        <span className="truncate">{item.name}</span>
                       </span>
+                      <span>{formatPercent(totalValue > 0 ? item.value / totalValue : 0)}</span>
                     </div>
                   ))}
                 </div>
               </div>
-            </div>
+            </section>
 
-            {/* Financial Goal milestoner tracking lists */}
-            <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  flex flex-col space-y-4">
-              <div className="flex items-center justify-between border-b border-[#1a1a1a] pb-3">
-                <div className="flex items-center space-x-1.5">
-                  <Target className="h-4 w-4 text-emerald-400" />
-                  <h3 className="text-sm font-bold text-white">Linked Wealth Goals</h3>
-                </div>
-                <button className="text-[10px] text-[#a3a3a3] hover:text-white font-bold">Edit</button>
+            <section className="agency-hard-shadow-sm border-[3px] border-black bg-[#4ba1a7] p-6 text-[#082f33] dark:border-[#f7eee8]/25 dark:bg-[#123f45] dark:text-[#bcece6]">
+              <div className="mb-6 flex items-center justify-between border-b-[3px] border-[#082f33]/40 pb-4">
+                <h2 className="text-2xl font-bold">Goal readiness</h2>
+                <Target className="h-6 w-6" />
               </div>
-
-              {/* Goals Progress bar list */}
-              <div className="space-y-4.5 flex-1">
-                <div className="space-y-2">
-                  <div className="flex justify-between text-xs">
-                    <span className="font-semibold text-slate-350">Retirement Fund 2045</span>
-                    <span className="font-bold text-emerald-400">62% reached</span>
-                  </div>
-                  <Progress value={62} className="h-1.5 bg-black [&>div]:bg-emerald-400" />
-                  <span className="text-[9px] text-slate-550 block font-medium">Target: ₹1.5 Cr | Current: ₹93,500</span>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex justify-between text-xs">
-                    <span className="font-semibold text-slate-350">First Home Downpayment</span>
-                    <span className="font-bold text-blue-400">30% reached</span>
-                  </div>
-                  <Progress value={30} className="h-1.5 bg-black [&>div]:bg-blue-400" />
-                  <span className="text-[9px] text-slate-550 block font-medium">Target: ₹20 Lakhs | Current: ₹60,000</span>
-                </div>
+              <div className="space-y-5">
+                <GoalReadiness
+                  label="Core wealth goal"
+                  current={totalValue}
+                  target={Math.max(1000000, totalValue * 2.5)}
+                />
+                <GoalReadiness
+                  label="Risk buffer"
+                  current={Math.min(totalValue, Math.max(totalInvested * 0.25, 0))}
+                  target={Math.max(250000, totalInvested * 0.5)}
+                />
               </div>
-            </div>
+              <div className="mt-7 flex items-start gap-3 border-[3px] border-[#082f33]/60 bg-[#dff5f1] p-4 text-sm font-bold dark:bg-[#0b0b0b]">
+                <Sparkles className="mt-0.5 h-5 w-5 shrink-0" />
+                Goals are computed from real holdings until a dedicated goal table is added.
+              </div>
+            </section>
           </div>
 
-          {/* Holdings breakdown table list */}
-          <div className="rounded-2xl border border-[#1a1a1a] bg-black p-6 rounded-2xl  space-y-4">
-            <h3 className="text-sm font-bold text-slate-250">Individual Portfolio Breakdown</h3>
-            
+          <section className="agency-hard-shadow border-[3px] border-black bg-[#f7eee8] p-6 dark:border-[#f7eee8]/25 dark:bg-[#0b0b0b]">
+            <div className="mb-6 flex items-center justify-between border-b-[3px] border-black pb-4 dark:border-[#f7eee8]/20">
+              <h2 className="text-2xl font-bold">Holding value map</h2>
+              <TrendingUp className="h-6 w-6 text-[#c95545] dark:text-[#4ba1a7]" />
+            </div>
+            <div className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={barData}>
+                  <XAxis dataKey="name" stroke="currentColor" fontSize={11} tickLine={false} />
+                  <YAxis stroke="currentColor" fontSize={11} tickLine={false} />
+                  <Tooltip content={<PortfolioTooltip />} />
+                  <Bar dataKey="value" fill="#c95545" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </section>
+
+          <section className="agency-hard-shadow border-[3px] border-black bg-[#f7eee8] p-6 dark:border-[#f7eee8]/25 dark:bg-[#0b0b0b]">
+            <div className="mb-5 flex items-center justify-between">
+              <h2 className="text-2xl font-bold">Individual holdings</h2>
+              <ShieldCheck className="h-6 w-6 text-[#2d8188] dark:text-[#4ba1a7]" />
+            </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-xs text-left border-collapse">
+              <table className="w-full min-w-[760px] border-collapse text-left text-xs">
                 <thead>
-                  <tr className="border-b border-[#1a1a1a]/60 text-[#a3a3a3] font-bold uppercase tracking-wider text-[10px]">
-                    <th className="py-3 pr-4">Direct Scheme Option Name</th>
-                    <th className="py-3 px-4">Allotted Units</th>
-                    <th className="py-3 px-4">Invested Amount</th>
-                    <th className="py-3 px-4">Current Value</th>
-                    <th className="py-3 px-4">Abs. Returns</th>
+                  <tr className="border-y-[3px] border-black text-[10px] font-bold uppercase tracking-[0.12em] text-[#5b5652] dark:border-[#f7eee8]/25 dark:text-[#bdb5ae]">
+                    <th className="py-3 pr-4">Direct scheme</th>
+                    <th className="px-4 py-3">Units</th>
+                    <th className="px-4 py-3">Invested</th>
+                    <th className="px-4 py-3">Current value</th>
+                    <th className="px-4 py-3">Returns</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-850/30 text-[#a3a3a3]">
-                  {MOCK_HOLDINGS.map((h, i) => (
-                    <tr key={i} className="hover:bg-black/10">
-                      <td className="py-4 pr-4 font-bold text-white">{h.name}</td>
-                      <td className="py-4 px-4 font-semibold text-slate-350">{h.units.toFixed(2)}</td>
-                      <td className="py-4 px-4 font-bold">₹{h.invested.toLocaleString("en-IN")}</td>
-                      <td className="py-4 px-4 font-extrabold text-white">₹{h.value.toLocaleString("en-IN")}</td>
-                      <td className="py-4 px-4 font-extrabold text-emerald-400">+{formatPercent(h.returns)}</td>
+                <tbody className="divide-y-[3px] divide-black dark:divide-[#f7eee8]/20">
+                  {holdings.map((holding) => (
+                    <tr key={holding.id} className="font-bold">
+                      <td className="max-w-[360px] py-4 pr-4 text-black dark:text-[#f7eee8]">
+                        <span className="block truncate">
+                          {holding.schemeName || holding.name}
+                        </span>
+                        <span className="mt-1 block text-[10px] uppercase tracking-[0.1em] text-[#5b5652] dark:text-[#bdb5ae]">
+                          {normalizeCategory(holding.category)}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4">{holding.units.toFixed(4)}</td>
+                      <td className="px-4 py-4">{formatCurrency(holding.invested)}</td>
+                      <td className="px-4 py-4 text-black dark:text-[#f7eee8]">
+                        {formatCurrency(holding.value)}
+                      </td>
+                      <td className="px-4 py-4 text-[#16804d] dark:text-[#4ba1a7]">
+                        {formatPercent(holding.returns)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-          </div>
-        </div>
+          </section>
+        </>
       )}
     </div>
   );
+}
+
+function EmptyPortfolioState() {
+  return (
+    <section className="agency-hard-shadow mx-auto max-w-3xl border-[3px] border-black bg-[#f7eee8] p-8 text-center dark:border-[#f7eee8]/25 dark:bg-[#0b0b0b]">
+      <div className="mx-auto grid h-16 w-16 place-items-center border-[3px] border-black bg-[#4ba1a7] shadow-[5px_5px_0_#000] dark:border-[#f7eee8]/25">
+        <HelpCircle className="h-8 w-8 text-black" />
+      </div>
+      <h2 className="mt-6 text-4xl font-black text-black dark:text-[#f7eee8]">
+        No live holdings yet
+      </h2>
+      <p className="mx-auto mt-4 max-w-xl text-sm font-semibold leading-6 text-[#5b5652] dark:text-[#bdb5ae]">
+        Use the Investor Console to add a direct investment. This page will then show real holdings, allocation and goal progress from the database.
+      </p>
+      <Button
+        asChild
+        className="mt-7 h-12 rounded-none border-[3px] border-black bg-[#c95545] px-6 font-bold text-white shadow-[5px_5px_0_#000] hover:bg-[#d26354]"
+      >
+        <Link href="/dashboard?invest=1">
+          Add investment
+          <ArrowUpRight className="ml-2 h-4 w-4" />
+        </Link>
+      </Button>
+    </section>
+  );
+}
+
+function MetricCard({
+  label,
+  value,
+  note,
+  tone,
+}: {
+  label: string;
+  value: string;
+  note: string;
+  tone: "cream" | "red" | "teal";
+}) {
+  const className = {
+    cream: "bg-[#f7eee8] text-black dark:bg-[#0b0b0b] dark:text-[#f7eee8]",
+    red: "bg-[#cf6a5f] text-black",
+    teal: "bg-[#4ba1a7] text-[#082f33]",
+  }[tone];
+
+  return (
+    <article className={`agency-hard-shadow-sm border-[3px] border-black p-6 dark:border-[#f7eee8]/25 ${className}`}>
+      <p className="mb-8 text-xs font-bold uppercase tracking-[0.18em] opacity-70">
+        {label}
+      </p>
+      <p className="agency-pixel text-[3.3rem] leading-none">{value}</p>
+      <p className="mt-6 text-sm font-bold opacity-70">{note}</p>
+    </article>
+  );
+}
+
+function GoalReadiness({
+  label,
+  current,
+  target,
+}: {
+  label: string;
+  current: number;
+  target: number;
+}) {
+  const progress = target > 0 ? Math.min(100, (current / target) * 100) : 0;
+
+  return (
+    <div className="border-[3px] border-[#082f33]/60 bg-[#dff5f1] p-4 dark:bg-[#0b0b0b]">
+      <div className="flex items-center justify-between gap-4 text-sm font-bold">
+        <span>{label}</span>
+        <span>{progress.toFixed(0)}%</span>
+      </div>
+      <div className="mt-4 h-3 border-2 border-[#082f33] bg-white/50">
+        <div className="h-full bg-[#c95545]" style={{ width: `${Math.max(2, progress)}%` }} />
+      </div>
+      <p className="mt-3 text-xs font-bold opacity-75">
+        {formatCurrency(current)} of {formatCurrency(target)}
+      </p>
+    </div>
+  );
+}
+
+function PortfolioTooltip({ active, payload }: any) {
+  if (!active || !payload?.length) return null;
+  const row = payload[0];
+
+  return (
+    <div className="border-[3px] border-black bg-[#0b0b0b] px-4 py-3 text-xs font-bold text-[#f7eee8] shadow-[5px_5px_0_#c95545]">
+      <p>{row.name}</p>
+      <p className="mt-1 text-[#4ba1a7]">{formatCurrency(Number(row.value || 0))}</p>
+    </div>
+  );
+}
+
+function formatCurrency(value: number) {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(Number.isFinite(value) ? value : 0);
+}
+
+function formatPercent(value: number | null) {
+  if (value === null || value === undefined || !Number.isFinite(Number(value))) {
+    return "N/A";
+  }
+  const numeric = Number(value);
+  const displayValue = Math.abs(numeric) <= 1 ? numeric * 100 : numeric;
+  return `${displayValue.toFixed(2)}%`;
+}
+
+function normalizeCategory(category: unknown) {
+  return String(category || "Uncategorised").replace(/\s+Scheme$/i, "");
+}
+
+function compactName(name: string) {
+  return name.replace(/\s+-\s+Direct.*$/i, "").slice(0, 18);
 }

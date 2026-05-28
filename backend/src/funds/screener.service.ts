@@ -24,6 +24,9 @@ export interface ScreenerFilterDto {
 export class ScreenerService {
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * Screens funds using category, performance, risk, and sorting filters.
+   */
   async screenFunds(filters: ScreenerFilterDto) {
     const {
       category,

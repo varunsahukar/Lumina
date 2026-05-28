@@ -60,6 +60,13 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      fontFamily: {
+        heading: ["var(--font-heading)", "system-ui", "sans-serif"],
+        subheading: ["var(--font-subheading)", "Georgia", "serif"],
+        body: ["var(--font-body)", "Georgia", "serif"],
+        sans: ["var(--font-heading)", "system-ui", "sans-serif"],
+        serif: ["var(--font-body)", "Georgia", "serif"],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

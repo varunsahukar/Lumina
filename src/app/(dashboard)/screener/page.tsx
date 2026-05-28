@@ -5,24 +5,22 @@ import { Compass } from "lucide-react";
 
 export default function ScreenerPage() {
   return (
-    <div className="space-y-6">
-      {/* Title Header */}
-      <div className="flex flex-col space-y-1">
-        <div className="flex items-center space-x-2.5">
-          <div className="p-2 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/25 rounded-xl">
-            <Compass className="h-5 w-5 text-emerald-400 stroke-[2]" />
+    <div className="space-y-8 text-[#070707] dark:text-[#f7eee8]">
+      <div className="flex flex-col gap-2 border-b-[3px] border-black pb-7 dark:border-[#f7eee8]/25">
+        <div className="flex items-center gap-3">
+          <div className="grid h-12 w-12 place-items-center border-[3px] border-black bg-[#4ba1a7] shadow-[5px_5px_0_#000] dark:border-[#f7eee8] dark:bg-[#123f45] dark:shadow-[5px_5px_0_#c95545]">
+            <Compass className="h-5 w-5 text-black dark:text-[#f7eee8]" />
           </div>
-          <h1 className="text-xl font-extrabold tracking-tight text-white sm:text-2xl">
+          <h1 className="text-4xl font-black leading-none sm:text-5xl">
             Mutual Fund Screener
           </h1>
         </div>
-        <p className="text-xs text-[#a3a3a3] pl-1">
+        <p className="max-w-3xl text-sm font-semibold leading-6 text-[#5b5652] dark:text-[#bdb5ae]">
           Explore and filter Direct Plan mutual funds using daily AMFI NAV data and risk-adjusted Sharpe metrics.
         </p>
       </div>
 
-      {/* Grid Layout splits filter controls and data grids */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
         <div className="lg:col-span-1">
           <FilterPanel />
         </div>

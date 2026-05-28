@@ -9,7 +9,7 @@ export declare class OrdersService {
     constructor(prisma: PrismaService, camsService: CamsService, kfintechService: KfintechService);
     placeOrder(params: {
         userId: string;
-        portfolioId: string;
+        portfolioId?: string;
         fundId: string;
         amount: number;
         type: TransactionType;
@@ -20,4 +20,5 @@ export declare class OrdersService {
         referenceNumber: any;
         remarks: any;
     }>;
+    private getOrCreatePortfolio;
 }

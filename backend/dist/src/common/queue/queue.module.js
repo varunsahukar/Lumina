@@ -22,7 +22,7 @@ exports.QueueConfigModule = QueueConfigModule = __decorate([
                 useFactory: (configService) => ({
                     connection: {
                         host: configService.get('REDIS_HOST') || 'localhost',
-                        port: configService.get('REDIS_PORT') || 6379,
+                        port: Number(configService.get('REDIS_PORT')) || 6379,
                     },
                 }),
                 inject: [config_1.ConfigService],

@@ -18,7 +18,7 @@ export class OrdersService {
 
   async placeOrder(params: {
     userId: string;
-    portfolioId: string;
+    portfolioId?: string;
     fundId: string;
     amount: number;
     type: TransactionType;
@@ -26,10 +26,7 @@ export class OrdersService {
     const { userId, portfolioId, fundId, amount, type } = params;
 
     // 1. Verify User, Portfolio and Fund
-    const portfolio = await this.prisma.portfolio.findFirst({
-      where: { id: portfolioId, userId },
-    });
-    if (!portfolio) throw new NotFoundException('Portfolio not found');
+    const portfolio = await this.getOrCreatePortfolio(userId, portfolioId);
 
     const fund = await this.prisma.fund.findUnique({
       where: { id: fundId },
@@ -70,7 +67,7 @@ export class OrdersService {
     } else if (type === TransactionType.SELL) {
       // For sell, we need to check if user has enough units
       const holding = await this.prisma.holding.findFirst({
-        where: { portfolioId, fundId },
+        where: { portfolioId: portfolio.id, fundId },
       });
 
       if (!holding || Number(holding.units) <= 0) {
@@ -121,7 +118,7 @@ export class OrdersService {
 
     // 4. Update Portfolio Holdings
     const existingHolding = await this.prisma.holding.findFirst({
-      where: { portfolioId, fundId },
+      where: { portfolioId: portfolio.id, fundId },
     });
 
     if (type === TransactionType.BUY || type === TransactionType.SIP) {
@@ -143,7 +140,7 @@ export class OrdersService {
       } else {
         await this.prisma.holding.create({
           data: {
-            portfolioId,
+            portfolioId: portfolio.id,
             fundId,
             units: allocatedUnits,
             investedAmount: amount,
@@ -184,5 +181,33 @@ export class OrdersService {
       referenceNumber: rtaResult.referenceNumber,
       remarks: rtaResult.remarks,
     };
+  }
+
+  private async getOrCreatePortfolio(userId: string, portfolioId?: string) {
+    if (portfolioId) {
+      const portfolio = await this.prisma.portfolio.findFirst({
+        where: { id: portfolioId, userId },
+      });
+
+      if (!portfolio) throw new NotFoundException('Portfolio not found');
+
+      return portfolio;
+    }
+
+    const existingPortfolio = await this.prisma.portfolio.findFirst({
+      where: { userId },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    if (existingPortfolio) {
+      return existingPortfolio;
+    }
+
+    return this.prisma.portfolio.create({
+      data: {
+        userId,
+        name: 'Core Portfolio',
+      },
+    });
   }
 }

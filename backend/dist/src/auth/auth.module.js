@@ -12,6 +12,7 @@ const jwt_1 = require("@nestjs/jwt");
 const passport_1 = require("@nestjs/passport");
 const config_1 = require("@nestjs/config");
 const axios_1 = require("@nestjs/axios");
+const auth_controller_1 = require("./auth.controller");
 const auth_service_1 = require("./auth.service");
 const kyc_service_1 = require("./kyc.service");
 const jwt_strategy_1 = require("./guards/jwt.strategy");
@@ -36,6 +37,7 @@ exports.AuthModule = AuthModule = __decorate([
             }),
             axios_1.HttpModule,
         ],
+        controllers: [auth_controller_1.AuthController],
         providers: [auth_service_1.AuthService, kyc_service_1.KycService, jwt_strategy_1.JwtStrategy, roles_guard_1.RolesGuard],
         exports: [auth_service_1.AuthService, kyc_service_1.KycService, passport_1.PassportModule, jwt_1.JwtModule],
     })

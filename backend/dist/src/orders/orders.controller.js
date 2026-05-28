@@ -28,7 +28,7 @@ let OrdersController = class OrdersController {
             portfolioId,
             fundId,
             amount,
-            type,
+            type: type || prisma_1.TransactionType.BUY,
         });
     }
 };
@@ -41,7 +41,7 @@ __decorate([
     __param(3, (0, common_1.Body)('amount')),
     __param(4, (0, common_1.Body)('type')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String, String, Number, String]),
+    __metadata("design:paramtypes", [Object, Object, String, Number, String]),
     __metadata("design:returntype", Promise)
 ], OrdersController.prototype, "executeOrder", null);
 exports.OrdersController = OrdersController = __decorate([
