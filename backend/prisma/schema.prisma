@@ -43,6 +43,12 @@ enum RiskCategory {
   AGGRESSIVE
 }
 
+enum FundMarket {
+  INDIA
+  USA
+  INTERNATIONAL
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -97,44 +103,64 @@ model VerificationToken {
 }
 
 model Fund {
-  id             String   @id @default(cuid())
-  schemeCode     String   @unique
-  schemeName     String
-  amcName        String
-  category       String
-  subCategory    String?
-  nav            Decimal  @db.Decimal(12, 4)
-  aum            Decimal? @db.Decimal(15, 2)
-  expenseRatio   Decimal? @db.Decimal(5, 4)
-  sharpeRatio    Decimal? @db.Decimal(6, 4)
-  alpha          Decimal? @db.Decimal(6, 4)
-  beta           Decimal? @db.Decimal(6, 4)
-  stdDeviation   Decimal? @db.Decimal(6, 4)
-  returns1y      Decimal? @db.Decimal(10, 4)
-  returns3y      Decimal? @db.Decimal(10, 4)
-  returns5y      Decimal? @db.Decimal(10, 4)
-  returns10y     Decimal? @db.Decimal(10, 4)
+  id             String       @id @default(cuid())
+  schemeCode     String       @unique
+  name           String
+  category       String       @default("Equity")
+  subCategory    String       @default("")
+  amcName        String       @default("")
+  market         FundMarket   @default(INDIA)
+  currency       String       @default("INR")
+  nav            Float        @default(0)
+  navDate        DateTime?
+  prevNav        Float?
+  changePercent  Float?
+  aum            Float?
+  expenseRatio   Float?
+  minInvestment  Float?
+  sharpeRatio    Float?
+  alpha          Float?
+  beta           Float?
+  stdDeviation   Float?
+  returns1y      Float?
+  returns3y      Float?
+  returns5y      Float?
+  returns10y     Float?
   managerName    String?
   launchDate     DateTime?
   benchmarkIndex String?
-  isActive       Boolean  @default(true)
-  navHistory     NavHistory[]
+  isActive       Boolean      @default(true)
+  lastSyncedAt   DateTime?
+  history        NavHistory[]
   holdings       Holding[]
   transactions   Transaction[]
   watchlist      Watchlist[]
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([market, category])
+  @@index([changePercent])
 }
 
 model NavHistory {
   id        String   @id @default(cuid())
   fundId    String
-  nav       Decimal  @db.Decimal(12, 4)
+  nav       Float
   date      DateTime
   fund      Fund     @relation(fields: [fundId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
 
   @@unique([fundId, date])
+  @@index([fundId, date])
+}
+
+model SyncLog {
+  id        String   @id @default(cuid())
+  source    String
+  status    String
+  fundsSync Int      @default(0)
+  errors    String[]
+  duration  Int
+  createdAt DateTime @default(now())
 }
 
 model Portfolio {

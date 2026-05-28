@@ -1,22 +1,28 @@
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class YahooFinanceService {
   private readonly logger = new Logger(YahooFinanceService.name);
 
-  constructor(private httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {}
 
+  /**
+   * Returns a global index quote, using RapidAPI Yahoo Finance only when explicitly enabled.
+   */
   async getGlobalIndex(symbol: string) {
     // S&P 500: ^GSPC, Nasdaq: ^IXIC, Dow Jones: ^DJI, FTSE 100: ^FTSE, Nikkei: ^N225
     const cleanSymbol = symbol.trim();
 
     try {
-      // In production, we can pull from public yahoo queries:
-      // const url = `https://query1.finance.yahoo.com/v8/finance/chart/${cleanSymbol}`;
-      // const response = await firstValueFrom(this.httpService.get(url));
-      // return response.data;
+      if (this.isYahooFinanceEnabled()) {
+        return this.fetchRapidApiQuote(cleanSymbol);
+      }
 
       const mockValues: Record<string, number> = {
         '^GSPC': 5100.5,
@@ -45,6 +51,36 @@ export class YahooFinanceService {
         `Yahoo Finance index quote unavailable: ${error.message}`,
       );
     }
+  }
+
+  private async fetchRapidApiQuote(symbol: string) {
+    const apiKey = this.configService.get<string>('RAPIDAPI_KEY');
+    if (!apiKey) {
+      throw new BadRequestException('RAPIDAPI_KEY is required');
+    }
+
+    const host =
+      this.configService.get<string>('YAHOO_FINANCE_RAPIDAPI_HOST') ||
+      'yahoo-finance15.p.rapidapi.com';
+    const response = await firstValueFrom(
+      this.httpService.get(`https://${host}/api/v1/markets/stock/quotes`, {
+        params: { ticker: symbol },
+        headers: {
+          'x-rapidapi-key': apiKey,
+          'x-rapidapi-host': host,
+        },
+        timeout: 10000,
+      }),
+    );
+
+    return response.data;
+  }
+
+  private isYahooFinanceEnabled(): boolean {
+    return (
+      this.configService.get<string>('ENABLE_YAHOO_FINANCE')?.toLowerCase() ===
+      'true'
+    );
   }
 
   private getIndexNameBySymbol(symbol: string): string {

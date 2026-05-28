@@ -12,6 +12,7 @@ const config_1 = require("@nestjs/config");
 const prisma_service_1 = require("./prisma.service");
 const redis_service_1 = require("./redis.service");
 const queue_module_1 = require("./queue/queue.module");
+const runtime_flags_1 = require("./runtime-flags");
 let CommonModule = class CommonModule {
 };
 exports.CommonModule = CommonModule;
@@ -21,12 +22,17 @@ exports.CommonModule = CommonModule = __decorate([
         imports: [
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
-                envFilePath: ['.env.local', '.env'],
+                envFilePath: ['.env.local', '.env', '../.env'],
             }),
-            queue_module_1.QueueConfigModule,
+            ...((0, runtime_flags_1.isRedisEnabled)() ? [queue_module_1.QueueConfigModule] : []),
         ],
         providers: [prisma_service_1.PrismaService, redis_service_1.RedisService],
-        exports: [config_1.ConfigModule, prisma_service_1.PrismaService, redis_service_1.RedisService, queue_module_1.QueueConfigModule],
+        exports: [
+            config_1.ConfigModule,
+            prisma_service_1.PrismaService,
+            redis_service_1.RedisService,
+            ...((0, runtime_flags_1.isRedisEnabled)() ? [queue_module_1.QueueConfigModule] : []),
+        ],
     })
 ], CommonModule);
 //# sourceMappingURL=common.module.js.map

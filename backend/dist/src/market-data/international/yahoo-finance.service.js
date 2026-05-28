@@ -13,15 +13,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.YahooFinanceService = void 0;
 const common_1 = require("@nestjs/common");
 const axios_1 = require("@nestjs/axios");
+const config_1 = require("@nestjs/config");
+const rxjs_1 = require("rxjs");
 let YahooFinanceService = YahooFinanceService_1 = class YahooFinanceService {
     httpService;
+    configService;
     logger = new common_1.Logger(YahooFinanceService_1.name);
-    constructor(httpService) {
+    constructor(httpService, configService) {
         this.httpService = httpService;
+        this.configService = configService;
     }
     async getGlobalIndex(symbol) {
         const cleanSymbol = symbol.trim();
         try {
+            if (this.isYahooFinanceEnabled()) {
+                return this.fetchRapidApiQuote(cleanSymbol);
+            }
             const mockValues = {
                 '^GSPC': 5100.5,
                 '^IXIC': 16120.3,
@@ -45,6 +52,27 @@ let YahooFinanceService = YahooFinanceService_1 = class YahooFinanceService {
             throw new common_1.BadRequestException(`Yahoo Finance index quote unavailable: ${error.message}`);
         }
     }
+    async fetchRapidApiQuote(symbol) {
+        const apiKey = this.configService.get('RAPIDAPI_KEY');
+        if (!apiKey) {
+            throw new common_1.BadRequestException('RAPIDAPI_KEY is required');
+        }
+        const host = this.configService.get('YAHOO_FINANCE_RAPIDAPI_HOST') ||
+            'yahoo-finance15.p.rapidapi.com';
+        const response = await (0, rxjs_1.firstValueFrom)(this.httpService.get(`https://${host}/api/v1/markets/stock/quotes`, {
+            params: { ticker: symbol },
+            headers: {
+                'x-rapidapi-key': apiKey,
+                'x-rapidapi-host': host,
+            },
+            timeout: 10000,
+        }));
+        return response.data;
+    }
+    isYahooFinanceEnabled() {
+        return (this.configService.get('ENABLE_YAHOO_FINANCE')?.toLowerCase() ===
+            'true');
+    }
     getIndexNameBySymbol(symbol) {
         switch (symbol) {
             case '^GSPC':
@@ -63,6 +91,7 @@ let YahooFinanceService = YahooFinanceService_1 = class YahooFinanceService {
 exports.YahooFinanceService = YahooFinanceService;
 exports.YahooFinanceService = YahooFinanceService = YahooFinanceService_1 = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [axios_1.HttpService])
+    __metadata("design:paramtypes", [axios_1.HttpService,
+        config_1.ConfigService])
 ], YahooFinanceService);
 //# sourceMappingURL=yahoo-finance.service.js.map

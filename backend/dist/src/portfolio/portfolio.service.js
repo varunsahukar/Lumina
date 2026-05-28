@@ -65,7 +65,8 @@ let PortfolioService = class PortfolioService {
             return {
                 holdingId: holding.id,
                 fundId: holding.fundId,
-                schemeName: holding.fund.schemeName,
+                schemeName: holding.fund.name,
+                name: holding.fund.name,
                 units,
                 avgNav: Number(holding.avgNav),
                 currentNav,

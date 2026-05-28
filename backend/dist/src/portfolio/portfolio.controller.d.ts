@@ -10,29 +10,36 @@ export declare class PortfolioController {
     getPortfolios(req: any): Promise<({
         holdings: ({
             fund: {
+                name: string;
                 id: string;
                 createdAt: Date;
                 updatedAt: Date;
                 schemeCode: string;
-                schemeName: string;
-                amcName: string;
                 category: string;
-                subCategory: string | null;
-                nav: import("@prisma/client-runtime-utils").Decimal;
-                aum: import("@prisma/client-runtime-utils").Decimal | null;
-                expenseRatio: import("@prisma/client-runtime-utils").Decimal | null;
-                sharpeRatio: import("@prisma/client-runtime-utils").Decimal | null;
-                alpha: import("@prisma/client-runtime-utils").Decimal | null;
-                beta: import("@prisma/client-runtime-utils").Decimal | null;
-                stdDeviation: import("@prisma/client-runtime-utils").Decimal | null;
-                returns1y: import("@prisma/client-runtime-utils").Decimal | null;
-                returns3y: import("@prisma/client-runtime-utils").Decimal | null;
-                returns5y: import("@prisma/client-runtime-utils").Decimal | null;
-                returns10y: import("@prisma/client-runtime-utils").Decimal | null;
+                subCategory: string;
+                amcName: string;
+                market: import("../generated/prisma").$Enums.FundMarket;
+                currency: string;
+                nav: number;
+                navDate: Date | null;
+                prevNav: number | null;
+                changePercent: number | null;
+                aum: number | null;
+                expenseRatio: number | null;
+                minInvestment: number | null;
+                sharpeRatio: number | null;
+                alpha: number | null;
+                beta: number | null;
+                stdDeviation: number | null;
+                returns1y: number | null;
+                returns3y: number | null;
+                returns5y: number | null;
+                returns10y: number | null;
                 managerName: string | null;
                 launchDate: Date | null;
                 benchmarkIndex: string | null;
                 isActive: boolean;
+                lastSyncedAt: Date | null;
             };
         } & {
             portfolioId: string;
@@ -71,6 +78,7 @@ export declare class PortfolioController {
             holdingId: string;
             fundId: string;
             schemeName: string;
+            name: string;
             units: number;
             avgNav: number;
             currentNav: number;

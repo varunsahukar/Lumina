@@ -10,6 +10,9 @@ interface CashFlow {
 export class PortfolioService {
   constructor(private prisma: PrismaService) {}
 
+  /**
+   * Creates a portfolio for a user.
+   */
   async createPortfolio(userId: string, name: string) {
     return this.prisma.portfolio.create({
       data: {
@@ -19,6 +22,9 @@ export class PortfolioService {
     });
   }
 
+  /**
+   * Returns all portfolios for a user with fund holdings.
+   */
   async getPortfolios(userId: string) {
     return this.prisma.portfolio.findMany({
       where: { userId },
@@ -32,6 +38,9 @@ export class PortfolioService {
     });
   }
 
+  /**
+   * Calculates current valuation, profit/loss, and XIRR for a portfolio.
+   */
   async getPortfolioValuation(portfolioId: string) {
     const portfolio = await this.prisma.portfolio.findUnique({
       where: { id: portfolioId },
@@ -65,7 +74,8 @@ export class PortfolioService {
       return {
         holdingId: holding.id,
         fundId: holding.fundId,
-        schemeName: holding.fund.schemeName,
+        schemeName: holding.fund.name,
+        name: holding.fund.name,
         units,
         avgNav: Number(holding.avgNav),
         currentNav,

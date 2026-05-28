@@ -26,7 +26,7 @@ let RebalanceService = class RebalanceService {
             throw new Error('Target allocation percentages must sum up to exactly 100%');
         }
         const valuation = await this.portfolioService.getPortfolioValuation(portfolioId);
-        const totalCurrentValue = valuation.totalCurrentValue;
+        const { totalCurrentValue } = valuation;
         if (totalCurrentValue === 0) {
             throw new common_1.NotFoundException('Cannot rebalance an empty portfolio. Please purchase assets first.');
         }
@@ -39,7 +39,7 @@ let RebalanceService = class RebalanceService {
             const schemeName = currentHolding
                 ? currentHolding.schemeName
                 : (await this.prisma.fund.findUnique({ where: { id: target.fundId } }))
-                    ?.schemeName || 'Unknown Fund';
+                    ?.name || 'Unknown Fund';
             const difference = targetValue - currentValue;
             const currentWeightPct = (currentValue / totalCurrentValue) * 100;
             suggestions.push({

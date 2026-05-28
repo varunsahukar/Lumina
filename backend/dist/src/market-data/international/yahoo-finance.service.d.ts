@@ -1,15 +1,12 @@
 import { HttpService } from '@nestjs/axios';
+import { ConfigService } from '@nestjs/config';
 export declare class YahooFinanceService {
-    private httpService;
+    private readonly httpService;
+    private readonly configService;
     private readonly logger;
-    constructor(httpService: HttpService);
-    getGlobalIndex(symbol: string): Promise<{
-        symbol: string;
-        indexName: string;
-        price: number;
-        change: number;
-        pChange: number;
-        timestamp: string;
-    }>;
+    constructor(httpService: HttpService, configService: ConfigService);
+    getGlobalIndex(symbol: string): Promise<any>;
+    private fetchRapidApiQuote;
+    private isYahooFinanceEnabled;
     private getIndexNameBySymbol;
 }

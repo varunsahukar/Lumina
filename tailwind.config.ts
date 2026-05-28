@@ -12,8 +12,15 @@ const config = {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: {
+        DEFAULT: "24px",
+        md: "48px",
+      },
       screens: {
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
         "2xl": "1400px",
       },
     },
@@ -52,6 +59,13 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+      },
+      fontFamily: {
+        heading: ["var(--font-heading)", "system-ui", "sans-serif"],
+        subheading: ["var(--font-subheading)", "Georgia", "serif"],
+        body: ["var(--font-body)", "Georgia", "serif"],
+        sans: ["var(--font-heading)", "system-ui", "sans-serif"],
+        serif: ["var(--font-body)", "Georgia", "serif"],
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -2,177 +2,133 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ChevronDown, Compass, FileText, Layers, PieChart, Settings, Shield, Target, Users } from "lucide-react";
 import { useAppStore, UserRole } from "@/store/useStore";
 import { cn } from "@/lib/utils";
-import {
-  Compass,
-  PieChart,
-  Target,
-  FileText,
-  Users,
-  Award,
-  BookOpen,
-  Briefcase,
-  Layers,
-  Settings,
-  Shield,
-  Sparkles,
-  TrendingUp,
-  ChevronDown,
-  Building,
-  UserCheck
-} from "lucide-react";
+import { AgencyLogo } from "@/components/agency/AgencyPrimitives";
+import ThemeToggle from "@/components/layout/ThemeToggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 
 interface NavItem {
   name: string;
   href: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
+  code: string;
 }
+
+const navItems: Record<UserRole, NavItem[]> = {
+  INVESTOR: [
+    { name: "Market Screener", href: "/screener", icon: Compass, code: "01" },
+    { name: "My Portfolio", href: "/portfolio", icon: PieChart, code: "02" },
+    { name: "Goal Planner", href: "/dashboard", icon: Target, code: "03" },
+    { name: "Tax Reports", href: "/reports", icon: FileText, code: "04" },
+  ],
+  ADVISOR: [
+    { name: "Client Console", href: "/dashboard", icon: Users, code: "01" },
+    { name: "Lead Referrals", href: "/dashboard", icon: Target, code: "02" },
+    { name: "Research", href: "/screener", icon: FileText, code: "03" },
+  ],
+  AMC: [
+    { name: "Fund Manager", href: "/dashboard", icon: Layers, code: "01" },
+    { name: "Factsheets", href: "/dashboard", icon: FileText, code: "02" },
+    { name: "Analytics", href: "/dashboard", icon: PieChart, code: "03" },
+  ],
+  RESEARCHER: [
+    { name: "Research Center", href: "/dashboard", icon: FileText, code: "01" },
+    { name: "Publish Insight", href: "/dashboard", icon: Compass, code: "02" },
+    { name: "Readership", href: "/dashboard", icon: PieChart, code: "03" },
+  ],
+  ADMIN: [
+    { name: "System Control", href: "/dashboard", icon: Shield, code: "01" },
+    { name: "Users", href: "/dashboard", icon: Users, code: "02" },
+    { name: "Settings", href: "/reports", icon: Settings, code: "03" },
+  ],
+};
+
+const roleLabels: Record<UserRole, { label: string; desc: string }> = {
+  INVESTOR: { label: "Investor Console", desc: "Screen, plan, invest" },
+  ADVISOR: { label: "Advisor Workspace", desc: "Manage client portfolios" },
+  AMC: { label: "AMC Control", desc: "Track fund products" },
+  RESEARCHER: { label: "Research Hub", desc: "Publish insights" },
+  ADMIN: { label: "System Admin", desc: "Operate the platform" },
+};
 
 export default function Sidebar() {
   const pathname = usePathname();
   const { activeRole, setActiveRole } = useAppStore();
 
-  // Define navigation lists for each of the 5 roles
-  const navItems: Record<UserRole, NavItem[]> = {
-    INVESTOR: [
-      { name: "Market Screener", href: "/screener", icon: Compass },
-      { name: "My Portfolio", href: "/portfolio", icon: PieChart },
-      { name: "Goal Planner", href: "/dashboard", icon: Target },
-      { name: "Advisor Hub", href: "/dashboard", icon: Sparkles },
-      { name: "Tax Planner", href: "/reports", icon: FileText },
-    ],
-    ADVISOR: [
-      { name: "Client Console", href: "/dashboard", icon: Users },
-      { name: "Lead referrals", href: "/dashboard", icon: Award },
-      { name: "Commissions", href: "/dashboard", icon: TrendingUp },
-      { name: "Research Console", href: "/screener", icon: BookOpen },
-    ],
-    AMC: [
-      { name: "Fund Manager", href: "/dashboard", icon: Building },
-      { name: "AMC Factsheets", href: "/dashboard", icon: FileText },
-      { name: "Lead Pipeline", href: "/dashboard", icon: Users },
-      { name: "Views & Analytics", href: "/dashboard", icon: TrendingUp },
-    ],
-    RESEARCHER: [
-      { name: "Research Center", href: "/dashboard", icon: BookOpen },
-      { name: "Publish Insight", href: "/dashboard", icon: Sparkles },
-      { name: "Readership Stats", href: "/dashboard", icon: TrendingUp },
-    ],
-    ADMIN: [
-      { name: "System Control", href: "/dashboard", icon: Shield },
-      { name: "User Settings", href: "/dashboard", icon: Settings },
-      { name: "Audit Logging", href: "/reports", icon: FileText },
-      { name: "Integrations", href: "/dashboard", icon: Layers },
-    ],
-  };
-
-  const currentNav = navItems[activeRole] || [];
-
-  // Helper to map role keys to readable labels
-  const roleLabels: Record<UserRole, { label: string; color: string; desc: string }> = {
-    INVESTOR: { label: "Investor Console", color: "from-emerald-400 to-teal-500 text-emerald-400", desc: "Browse, screen & buy" },
-    ADVISOR: { label: "Advisor Panel", color: "from-blue-400 to-indigo-500 text-blue-400", desc: "Manage client portfolios" },
-    AMC: { label: "AMC Control", color: "from-amber-400 to-orange-500 text-amber-400", desc: "List & track fund products" },
-    RESEARCHER: { label: "Researcher Hub", color: "from-purple-400 to-pink-500 text-purple-400", desc: "Publish insights & analysis" },
-    ADMIN: { label: "Platform Admin", color: "from-rose-400 to-red-500 text-rose-400", desc: "Full control & analytics" },
-  };
-
   return (
-    <aside className="hidden md:flex md:w-64 md:flex-col md:border-r md:border-slate-900 bg-black text-white min-h-screen">
-      {/* Brand Header */}
-      <div className="flex h-16 items-center px-6 border-b border-slate-900 justify-between">
-        <Link href="/" className="flex items-center space-x-2">
-          <div className="p-1.5 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg shadow-[0_0_15px_rgba(16,185,129,0.15)]">
-            <Shield className="h-5 w-5 text-slate-950 stroke-[2.5]" />
-          </div>
-          <span className="font-extrabold text-lg tracking-tight text-white">
-            LuminaVest
-          </span>
-        </Link>
+    <aside className="hidden min-h-screen w-[290px] shrink-0 border-r-[3px] border-black bg-[#0b0b0b] text-[#f7eee8] md:flex md:flex-col">
+      <div className="border-b border-[#262626] px-7 py-7">
+        <AgencyLogo dark />
       </div>
 
-      {/* Role Indicator Widget */}
-      <div className="px-4 py-3 border-b border-slate-900 bg-slate-900/30">
-        <div className="flex flex-col space-y-1">
-          <span className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">
-            Active Workspace
-          </span>
-          <span className={cn(
-            "text-xs font-bold text-white"
-          )}>
-            {roleLabels[activeRole].label}
-          </span>
-        </div>
+      <div className="border-b border-[#262626] px-7 py-6">
+        <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#77716d]">
+          Active workspace
+        </p>
+        <p className="text-xl font-bold text-[#f7eee8]">{roleLabels[activeRole].label}</p>
+        <p className="mt-1 text-sm font-semibold text-[#9d9793]">{roleLabels[activeRole].desc}</p>
       </div>
 
-      {/* Navigation Links */}
-      <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">
-        {currentNav.map((item) => {
+      <nav className="flex-1 space-y-2 px-4 py-6">
+        {navItems[activeRole].map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
           return (
             <Link
-              key={item.name}
+              key={`${item.code}-${item.name}`}
               href={item.href}
               className={cn(
-                "flex items-center rounded-xl px-3 py-2.5 text-xs font-medium transition-all duration-300 group border border-transparent",
+                "group grid grid-cols-[2rem_1fr_auto] items-center border border-transparent px-3 py-4 text-sm font-bold transition-colors",
                 isActive
-                  ? "bg-slate-900 text-slate-100 border-slate-800/60 shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/40 hover:border-slate-900"
+                  ? "border-[#4ba1a7] bg-[#123f45] text-[#f7eee8]"
+                  : "text-[#9d9793] hover:border-[#333] hover:bg-[#111]",
               )}
             >
-              <Icon
-                className={cn(
-                  "mr-3 h-4 w-4 stroke-[2] transition-colors duration-300",
-                  isActive
-                    ? "text-emerald-400"
-                    : "text-slate-500 group-hover:text-slate-400"
-                )}
-              />
-              {item.name}
+              <span className={isActive ? "text-[#4ba1a7]" : "text-[#77716d]"}>{item.code}</span>
+              <span>{item.name}</span>
+              <Icon className="h-4 w-4" />
             </Link>
           );
         })}
       </nav>
 
-      {/* Bottom Switcher Control Panel */}
-      <div className="p-4 border-t border-slate-900 bg-slate-900/20">
+      <div className="space-y-4 border-t border-[#262626] p-4">
+        <ThemeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className="w-full justify-between bg-slate-950 border-slate-800 hover:bg-slate-900 text-slate-300 hover:text-slate-100 text-xs px-3 py-5 rounded-xl transition-all duration-300"
-            >
-              <span className="flex items-center">
-                <UserCheck className="mr-2 h-4 w-4 text-emerald-400 stroke-[2]" />
-                Switch Role
-              </span>
-              <ChevronDown className="h-4 w-4 text-slate-500" />
-            </Button>
+            <button className="flex h-14 w-full items-center justify-between border-[3px] border-[#77716d] bg-[#0b0b0b] px-4 text-sm font-bold text-[#f7eee8] shadow-[7px_7px_0_#4b4b4b]">
+              Switch Role
+              <ChevronDown className="h-4 w-4" />
+            </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            align="end"
-            className="w-56 bg-slate-950 border-slate-800 text-slate-300 rounded-xl p-1 shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+            side="top"
+            align="start"
+            sideOffset={10}
+            className="w-[260px] rounded-none border-[3px] border-black bg-[#f7eee8] p-1 text-black shadow-[8px_8px_0_#000]"
           >
             {(Object.keys(roleLabels) as UserRole[]).map((role) => (
               <DropdownMenuItem
                 key={role}
                 onClick={() => setActiveRole(role)}
                 className={cn(
-                  "flex flex-col items-start px-3 py-2 rounded-lg cursor-pointer focus:bg-slate-900 transition-colors duration-200",
-                  activeRole === role ? "bg-slate-900 text-emerald-400" : "text-slate-400 focus:text-slate-200"
+                  "flex cursor-pointer flex-col items-start gap-1 rounded-none px-4 py-3 text-left focus:bg-[#c95545] focus:text-[#f7eee8]",
+                  activeRole === role && "bg-[#4ba1a7] text-black",
                 )}
               >
-                <span className="text-xs font-bold">{roleLabels[role].label}</span>
-                <span className="text-[10px] text-slate-500 mt-0.5">{roleLabels[role].desc}</span>
+                <span className="font-heading text-sm font-extrabold leading-none">
+                  {roleLabels[role].label}
+                </span>
+                <span className="font-body text-[0.72rem] font-bold leading-snug opacity-70">
+                  {roleLabels[role].desc}
+                </span>
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>

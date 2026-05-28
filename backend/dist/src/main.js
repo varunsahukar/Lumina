@@ -17,7 +17,7 @@ async function bootstrap() {
         forbidNonWhitelisted: true,
     }));
     app.useGlobalInterceptors(new logging_interceptor_1.LoggingInterceptor());
-    const port = process.env.PORT || 3000;
+    const port = process.env.PORT || 3001;
     await app.listen(port);
     console.log(`Application is running on: http://localhost:${port}/api`);
 }

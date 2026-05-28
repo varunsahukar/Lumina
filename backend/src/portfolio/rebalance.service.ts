@@ -14,6 +14,9 @@ export class RebalanceService {
     private prisma: PrismaService,
   ) {}
 
+  /**
+   * Calculates rebalance buy/sell suggestions against target allocations.
+   */
   async calculateRebalanceSuggestions(
     portfolioId: string,
     targets: TargetAllocation[],
@@ -27,7 +30,7 @@ export class RebalanceService {
 
     const valuation =
       await this.portfolioService.getPortfolioValuation(portfolioId);
-    const totalCurrentValue = valuation.totalCurrentValue;
+    const { totalCurrentValue } = valuation;
 
     if (totalCurrentValue === 0) {
       throw new NotFoundException(
@@ -49,7 +52,7 @@ export class RebalanceService {
       const schemeName = currentHolding
         ? currentHolding.schemeName
         : (await this.prisma.fund.findUnique({ where: { id: target.fundId } }))
-            ?.schemeName || 'Unknown Fund';
+            ?.name || 'Unknown Fund';
 
       const difference = targetValue - currentValue; // Positive means Buy, Negative means Sell
       const currentWeightPct = (currentValue / totalCurrentValue) * 100;

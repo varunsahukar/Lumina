@@ -30,7 +30,7 @@ let ComparisonService = class ComparisonService {
                 isActive: true,
             },
             include: {
-                navHistory: {
+                history: {
                     orderBy: { date: 'desc' },
                     take: 12,
                 },
@@ -42,7 +42,8 @@ let ComparisonService = class ComparisonService {
         return {
             comparedFunds: funds.map((fund) => ({
                 id: fund.id,
-                schemeName: fund.schemeName,
+                schemeName: fund.name,
+                name: fund.name,
                 schemeCode: fund.schemeCode,
                 amcName: fund.amcName,
                 category: fund.category,
@@ -60,15 +61,15 @@ let ComparisonService = class ComparisonService {
                 returns10y: fund.returns10y,
                 managerName: fund.managerName,
                 benchmarkIndex: fund.benchmarkIndex,
-                navTrend: fund.navHistory.reverse().map((h) => ({
+                navTrend: fund.history.reverse().map((h) => ({
                     date: h.date,
                     nav: h.nav,
                 })),
             })),
-            bestPerformer1y: [...funds].sort((a, b) => Number(b.returns1y || 0) - Number(a.returns1y || 0))[0]?.schemeName || null,
-            bestPerformer3y: [...funds].sort((a, b) => Number(b.returns3y || 0) - Number(a.returns3y || 0))[0]?.schemeName || null,
-            lowestExpenseRatio: [...funds].sort((a, b) => Number(a.expenseRatio || 99) - Number(b.expenseRatio || 99))[0]?.schemeName || null,
-            highestSharpeRatio: [...funds].sort((a, b) => Number(b.sharpeRatio || -99) - Number(a.sharpeRatio || -99))[0]?.schemeName || null,
+            bestPerformer1y: [...funds].sort((a, b) => Number(b.returns1y || 0) - Number(a.returns1y || 0))[0]?.name || null,
+            bestPerformer3y: [...funds].sort((a, b) => Number(b.returns3y || 0) - Number(a.returns3y || 0))[0]?.name || null,
+            lowestExpenseRatio: [...funds].sort((a, b) => Number(a.expenseRatio || 99) - Number(b.expenseRatio || 99))[0]?.name || null,
+            highestSharpeRatio: [...funds].sort((a, b) => Number(b.sharpeRatio || -99) - Number(a.sharpeRatio || -99))[0]?.name || null,
         };
     }
 };

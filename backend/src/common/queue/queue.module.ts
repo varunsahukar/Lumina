@@ -10,7 +10,7 @@ import { BackgroundProcessor } from './background.processor';
       useFactory: (configService: ConfigService) => ({
         connection: {
           host: configService.get<string>('REDIS_HOST') || 'localhost',
-          port: configService.get<number>('REDIS_PORT') || 6379,
+          port: Number(configService.get<string>('REDIS_PORT')) || 6379,
         },
       }),
       inject: [ConfigService],

@@ -11,7 +11,7 @@ export class OrdersController {
   @Post()
   async executeOrder(
     @Req() req: any,
-    @Body('portfolioId') portfolioId: string,
+    @Body('portfolioId') portfolioId: string | undefined,
     @Body('fundId') fundId: string,
     @Body('amount') amount: number,
     @Body('type') type: TransactionType,
@@ -21,7 +21,7 @@ export class OrdersController {
       portfolioId,
       fundId,
       amount,
-      type,
+      type: type || TransactionType.BUY,
     });
   }
 }
