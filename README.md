@@ -1,104 +1,109 @@
-<div align="center">
-
 # Lumina
 
-**Full-stack investment intelligence platform for mutual fund discovery, portfolio monitoring, and role-based financial workspaces.**
+Lumina is a full-stack investment intelligence platform for mutual fund
+discovery, direct investing, portfolio monitoring, and role-based financial
+operations.
 
-[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=next.js)](https://nextjs.org)
-[![NestJS](https://img.shields.io/badge/NestJS-11-E0234E?style=flat-square&logo=nestjs)](https://nestjs.com)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql)](https://www.postgresql.org)
-[![Redis](https://img.shields.io/badge/Redis-Cache%20%26%20Queues-DC382D?style=flat-square&logo=redis)](https://redis.io)
-[![License](https://img.shields.io/badge/License-Private-lightgrey?style=flat-square)](#license)
+The project contains a **Next.js frontend** at the repository root and a
+**NestJS backend API** in [`backend/`](backend/). It is designed around real fund
+data, PostgreSQL persistence, Redis-backed caching and queues, and separate
+workspaces for investors, advisors, AMC users, researchers, and admins.
 
-[Overview](#overview) · [Architecture](#architecture) · [Tech Stack](#tech-stack) · [Getting Started](#getting-started) · [API Reference](#api-reference) · [Deployment](#deployment) · [Troubleshooting](#troubleshooting)
+> **Status:** active product build. Some external data providers require API
+> keys or rate-limit-aware sync schedules before production use.
 
-</div>
+## Contents
 
----
+- [Features](#features)
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [Repository Layout](#repository-layout)
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [Common Commands](#common-commands)
+- [API Overview](#api-overview)
+- [Data Sources](#data-sources)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Overview
+## Features
 
-Lumina is a production-grade investment intelligence platform covering the full lifecycle of mutual fund operations — from discovery and direct investment to portfolio rebalancing, research, and compliance. It serves five distinct user roles from a unified codebase:
-
-| Role | What they can do |
-|---|---|
-| **Investor** | Screen and compare funds, track portfolio performance, initiate direct investments, plan goals |
-| **Advisor** | Monitor client portfolios, view aggregated operating metrics |
-| **AMC** | Manage fund products, AUM, categories, and operational views |
-| **Researcher** | Access fund, market, and research data through a dedicated insights workspace |
-| **Admin** | Oversee platform health, users, portfolios, transactions, and data sync status |
-
-The repository ships the **Next.js frontend** at the root and the **NestJS backend API** under `backend/`.
-
----
+- Fund discovery, filtering, comparison, and focused scheme views.
+- Investor dashboard with portfolio, goal planning, direct-invest, and payment
+  review flows.
+- Advisor, AMC, Research, and Admin workspaces powered by shared role metadata.
+- Real backend data through stable `/api/*` frontend routes.
+- NestJS services for funds, portfolios, orders, research, auth, KYC, market
+  data, and reports.
+- PostgreSQL plus Prisma for persistence.
+- Redis cache and BullMQ jobs for fund sync and operational workflows.
+- Scheduled data ingestion from mfapi.in, AMFI bulk NAV, Alpha Vantage, and
+  optional live market feeds.
 
 ## Architecture
 
 ```mermaid
 flowchart TD
-  User[Investor · Advisor · AMC · Researcher · Admin] --> Next[Next.js App Router Frontend]
-  Next --> Proxy[Next API Proxy Routes]
-  Proxy --> Nest[NestJS Backend API]
-  Proxy --> LocalDb[(Frontend Prisma Fallback)]
-  Nest --> Prisma[Prisma Service]
+  User[Users and role workspaces] --> Next[Next.js frontend]
+  Next --> Proxy[Next API routes]
+  Proxy --> Nest[NestJS backend API]
+  Proxy --> LocalDb[(Frontend Prisma fallback)]
+  Nest --> Prisma[Prisma services]
   Prisma --> Postgres[(PostgreSQL + pgvector)]
-  Nest --> Redis[(Redis Cache)]
-  Nest --> Queue[BullMQ Workers]
+  Nest --> Redis[(Redis cache)]
+  Nest --> Queue[BullMQ sync jobs]
   Queue --> MFAPI[mfapi.in]
   Queue --> AMFI[AMFI NAVAll.txt]
   Queue --> Alpha[Alpha Vantage]
-  Nest --> Finnhub[Finnhub WebSocket]
-  Nest --> Reports[PDF · Excel Reports]
 ```
 
-**Key design decisions:**
+### Request Flow
 
-- The frontend exposes a stable `/api/*` proxy contract and forwards requests to NestJS via `BACKEND_API_URL`, keeping the browser decoupled from the backend host.
-- Selected dashboard surfaces can fall back to the local Prisma database when the NestJS API is unavailable, keeping the UI functional during development.
-- Redis powers caching, BullMQ job queues for scheduled market-data sync, and rate-limiting in production.
-
----
+1. The UI calls frontend routes such as `/api/funds`, `/api/workspace`, or
+   `/api/investments`.
+2. The frontend normalizes responses for the app and forwards backend-backed
+   requests to `BACKEND_API_URL`.
+3. The NestJS backend reads and writes through Prisma.
+4. Redis caches fund responses and powers queue-backed sync jobs.
+5. The frontend receives consistent JSON even when the backend is deployed at a
+   different origin.
 
 ## Tech Stack
 
-| Layer | Technologies |
-|---|---|
-| **Frontend** | Next.js 14, React 18, App Router, TypeScript, Tailwind CSS, shadcn-style UI, Recharts, Zustand |
-| **Auth** | NextAuth, Prisma adapter, role-aware backend guards |
-| **Backend** | NestJS 11, TypeScript, Prisma 7, BullMQ, Redis, WebSockets, scheduled jobs |
-| **Database** | PostgreSQL 16 with pgvector |
-| **Market data** | mfapi.in, AMFI bulk NAV, Alpha Vantage, optional Yahoo Finance and Finnhub |
-| **Reports** | PDFKit, ExcelJS |
-| **Infrastructure** | Docker Compose, Adminer, Redis Commander |
-
----
+| Area | Tools |
+| --- | --- |
+| Frontend | Next.js 14, React 18, TypeScript, Tailwind CSS, Radix UI, Recharts, Zustand |
+| Backend | NestJS 11, TypeScript, Prisma 7, BullMQ, Redis, WebSockets |
+| Database | PostgreSQL 16, pgvector |
+| Auth | NextAuth on the frontend, JWT and role guards on the backend |
+| Data | mfapi.in, AMFI NAVAll.txt, Alpha Vantage, optional Finnhub / Yahoo Finance |
+| Reports | PDFKit, ExcelJS |
+| Local infra | Docker Compose, Adminer, Redis Commander |
 
 ## Repository Layout
 
-```
+```text
 .
 ├── src/
-│   ├── app/                 # Next.js routes, dashboards, API proxy routes
-│   ├── components/          # UI, landing, fund, screener, portfolio components
-│   ├── lib/                 # Backend API client, Prisma, calculations, data helpers
-│   └── store/               # Client-side state (Zustand)
+│   ├── app/                 # Next.js routes, dashboards, and API routes
+│   ├── components/          # UI, landing, dashboard, fund, and layout pieces
+│   ├── lib/                 # Backend client, Prisma, calculations, role data
+│   └── store/               # Client-side state
 ├── backend/
 │   ├── src/
 │   │   ├── auth/            # Register, login, JWT, roles, KYC
-│   │   ├── funds/           # Fund listing, detail, comparison, screener
-│   │   ├── market-data/     # AMFI, mfapi, Alpha Vantage, Finnhub, sync workers
-│   │   ├── orders/          # Direct-invest order orchestration
-│   │   ├── portfolio/       # Portfolio, valuation, rebalance, reports
-│   │   ├── research/        # Research and market insights
+│   │   ├── funds/           # Fund list, details, history, screener
+│   │   ├── market-data/     # AMFI, mfapi, Alpha Vantage, sync workers
+│   │   ├── orders/          # Direct-invest order flow
+│   │   ├── portfolio/       # Portfolios, valuation, rebalance, reports
+│   │   ├── research/        # Research reports and news
 │   │   └── common/          # Prisma, Redis, queues, interceptors
-│   └── prisma/schema.prisma # Backend data model
-├── prisma/schema.prisma     # Frontend Prisma model (NextAuth + fallbacks)
-├── docker-compose.yml       # Postgres, Redis, Adminer, Redis Commander
-└── docker/postgres/init.sql # pgvector bootstrap
+│   └── prisma/schema.prisma # Backend database model
+├── prisma/schema.prisma     # Frontend auth/fallback database model
+├── docker-compose.yml       # PostgreSQL, Redis, Adminer, Redis Commander
+└── docker/postgres/init.sql # pgvector setup
 ```
-
----
 
 ## Getting Started
 
@@ -107,271 +112,222 @@ flowchart TD
 - Node.js 20 LTS or newer
 - npm 10 or newer
 - Docker Desktop
-- An **Alpha Vantage API key** for USA fund sync
-- Redis (or use `ENABLE_REDIS=false` for a local backend-only startup)
+- Optional: Alpha Vantage API key for USA fund sync
 
-### 1. Clone and configure environment
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/varunsahukar/Lumina.git
 cd Lumina
+```
 
+### 2. Create environment files
+
+```bash
 cp .env.example .env
 cp backend/.env.example backend/.env
 ```
 
-Open both `.env` files and fill in the values described in the [Environment Variables](#environment-variables) section below.
+For local development, the example values work for Docker PostgreSQL and Redis.
+Replace API keys and secrets before using any shared or production environment.
 
-### 2. Start infrastructure
+### 3. Start local infrastructure
 
 ```bash
 docker compose up -d
 ```
 
-This starts PostgreSQL (with pgvector), Redis, Adminer, and Redis Commander.
+This starts:
 
-### 3. Install dependencies and run database migrations
+| Service | URL |
+| --- | --- |
+| PostgreSQL | `localhost:5432` |
+| Redis | `localhost:6379` |
+| Adminer | `http://localhost:8080` |
+| Redis Commander | `http://localhost:8081` |
+
+### 4. Install dependencies and generate Prisma clients
 
 ```bash
-# Root (frontend)
 npm install
 npx prisma generate
 
-# Backend
 cd backend
 npm install
 npx prisma generate
+cd ..
+```
+
+### 5. Run database migrations
+
+```bash
+cd backend
 npx prisma migrate dev
 cd ..
 ```
 
-### 4. Start the backend
+### 6. Start the backend
 
 ```bash
 cd backend
-npm run start:dev          # With Redis
-# or
-npm run start:local        # Without Redis (dev only)
+npm run start:dev
 ```
 
-### 5. Start the frontend
+If Redis is not running, build once and start the backend in local mode:
+
+```bash
+cd backend
+npm run build
+npm run start:local
+```
+
+### 7. Start the frontend
+
+In a second terminal:
 
 ```bash
 npm run dev
 ```
 
-### Running services
-
-| Service | URL |
-|---|---|
-| Frontend | http://localhost:3000 |
-| Backend API | http://localhost:3001/api |
-| Adminer (DB UI) | http://localhost:8080 |
-| Redis Commander | http://localhost:8081 |
-
----
+Open `http://localhost:3000`.
 
 ## Environment Variables
 
-Create both `.env` and `backend/.env` from their respective `.env.example` files. **Never commit real secrets.**
+Both the frontend and backend use `.env` files. Keep real secrets out of Git.
 
-| Variable | Used by | Description |
-|---|---|---|
-| `PORT` | Frontend / Backend | `3000` for Next.js, `3001` for NestJS |
-| `BACKEND_API_URL` | Frontend | Server-side URL for the NestJS API — `http://localhost:3001/api` locally |
-| `NEXT_PUBLIC_BACKEND_API_URL` | Frontend | Browser-visible backend URL for client surfaces |
-| `DATABASE_URL` | Frontend / Backend | PostgreSQL connection string |
-| `JWT_SECRET` | Backend / Auth | JWT signing secret — rotate per environment |
-| `MFAPI_BASE_URL` | Backend | Indian mutual fund API base URL |
-| `AMFI_NAV_URL` | Backend | AMFI bulk NAV text feed URL |
-| `INDIA_SCHEME_CODES` | Backend | Comma-separated India fund scheme codes for initial sync |
-| `ALPHA_VANTAGE_KEY` | Backend | Alpha Vantage API key for USA fund data |
-| `USA_TICKERS` | Backend | Comma-separated USA fund tickers to sync |
-| `ENABLE_REDIS` | Backend | Set `false` to disable Redis and BullMQ in local dev |
-| `REDIS_HOST` / `REDIS_PORT` | Backend | Redis connection details |
-| `AMFI_SYNC_CRON` / `USA_SYNC_CRON` | Backend | Cron schedule for data sync jobs |
+### Frontend `.env`
 
-Store all production secrets in your deployment provider's secret manager, never in source control.
+| Variable | Purpose |
+| --- | --- |
+| `PORT` | Frontend port, usually `3000` |
+| `BACKEND_API_URL` | Server-side Nest API URL, for example `http://localhost:3001/api` |
+| `NEXT_PUBLIC_BACKEND_API_URL` | Browser-visible backend URL for client features |
+| `DATABASE_URL` | Frontend Prisma database URL for auth/fallback data |
+| `JWT_SECRET` | Local auth secret |
 
----
+### Backend `backend/.env`
 
-## Scripts
+| Variable | Purpose |
+| --- | --- |
+| `PORT` | Backend port, usually `3001` |
+| `DATABASE_URL` | PostgreSQL connection string |
+| `JWT_SECRET` | JWT signing secret |
+| `MFAPI_BASE_URL` | Indian mutual fund API base URL |
+| `AMFI_NAV_URL` | AMFI bulk NAV text feed |
+| `INDIA_SCHEME_CODES` | Comma-separated Indian scheme codes to sync |
+| `ALPHA_VANTAGE_KEY` | Alpha Vantage key for USA fund data |
+| `USA_TICKERS` | Comma-separated USA tickers to sync |
+| `ENABLE_REDIS` | Set to `false` for local backend startup without Redis |
+| `REDIS_HOST` / `REDIS_PORT` | Redis connection settings |
+| `AMFI_SYNC_CRON` / `USA_SYNC_CRON` | Scheduled sync cron expressions |
+
+## Common Commands
 
 ### Frontend
 
 | Command | Description |
-|---|---|
-| `npm run dev` | Start Next.js development server |
-| `npm run build` | Build the production frontend |
-| `npm run start` | Serve the production build |
-| `npm run lint` | Run ESLint |
+| --- | --- |
+| `npm run dev` | Start the Next.js development server |
+| `npm run build` | Build the frontend |
+| `npm run start` | Serve the production frontend build |
+| `npm run lint` | Run the Next.js lint task |
 
 ### Backend
 
+Run these from `backend/`.
+
 | Command | Description |
-|---|---|
-| `npm run start:dev` | Start NestJS in watch mode (requires Redis) |
-| `npm run start:local` | Start compiled backend with Redis disabled |
-| `npm run build` | Type-check, compile, and copy generated Prisma assets |
-| `npm run start:prod` | Run the compiled production backend |
-| `npm run test` | Run Jest unit tests |
+| --- | --- |
+| `npm run start:dev` | Start NestJS in watch mode |
+| `npm run build` | Compile the backend and copy generated Prisma assets |
+| `npm run start:local` | Run the compiled backend with Redis disabled |
+| `npm run start:prod` | Run the compiled backend |
+| `npm run test` | Run unit tests |
 | `npm run test:e2e` | Run end-to-end tests |
-| `npm run lint` | Run ESLint |
+| `npm run lint` | Run backend linting |
 
----
+## API Overview
 
-## API Reference
+### Frontend API Routes
 
-### Frontend proxy routes
+These routes are consumed by the Next.js app and keep the UI decoupled from the
+backend host.
 
-| Method | Route | Description |
-|---|---|---|
-| `GET` | `/api/funds` | Fund listing for landing page, screener, and dashboards |
+| Method | Route | Purpose |
+| --- | --- | --- |
+| `GET` | `/api/funds` | Fund catalog |
 | `GET` | `/api/funds/:id` | Fund detail |
-| `GET` | `/api/funds/:id/history` | NAV and performance history |
+| `GET` | `/api/funds/:id/history` | Fund NAV/performance history |
 | `GET` | `/api/screener` | Filtered fund screen |
-| `GET` | `/api/dashboard` | Investor dashboard metrics |
-| `GET` | `/api/portfolio` | Portfolio holdings and summary |
-| `POST` | `/api/investments` | Direct-invest transaction flow |
-| `GET` | `/api/workspace?role=...` | Role-specific workspace data (Advisor, AMC, Research, Admin, Investor) |
+| `GET` | `/api/dashboard` | Investor dashboard data |
+| `GET` | `/api/portfolio` | Portfolio summary |
+| `GET` / `POST` | `/api/investments` | Investment summary and direct-invest records |
+| `GET` | `/api/workspace?role=INVESTOR` | Role-specific workspace data |
 | `POST` | `/api/ai` | AI-assisted research and summaries |
 
-### Backend routes
+### Backend API Routes
 
-**Funds**
+The NestJS app is served under `/api`.
 
-| Method | Route | Description |
-|---|---|---|
-| `GET` | `/api/funds` | Paginated, filtered fund catalog |
-| `GET` | `/api/funds/stats/summary` | Fund and sync summary metrics |
-| `POST` | `/api/funds/refresh` | Queue-backed fund data refresh |
-| `GET` | `/api/funds/categories` | Available fund categories |
-| `GET` | `/api/funds/compare` | Fund comparison |
-| `GET` | `/api/funds/screen` | Advanced screener |
-| `GET` | `/api/funds/:id` | Fund detail |
-| `GET` | `/api/funds/:id/history` | NAV history |
+| Area | Routes |
+| --- | --- |
+| Auth | `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me`, KYC endpoints |
+| Funds | `GET /api/funds`, `GET /api/funds/:id`, `GET /api/funds/:id/history`, stats, refresh, compare, screen |
+| Portfolio | `GET /api/portfolio`, `POST /api/portfolio`, valuation, rebalance, PDF and Excel reports |
+| Orders | `POST /api/orders` |
+| Research | `GET /api/research`, `GET /api/research/news`, `GET /api/research/:id` |
 
-**Portfolio**
+## Data Sources
 
-| Method | Route | Description |
-|---|---|---|
-| `GET` | `/api/portfolio` | User portfolios |
-| `POST` | `/api/portfolio` | Create a portfolio |
-| `GET` | `/api/portfolio/:id/valuation` | Portfolio valuation |
-| `POST` | `/api/portfolio/:id/rebalance` | Rebalance recommendation |
-| `GET` | `/api/portfolio/:id/report/pdf` | Download PDF report |
-| `GET` | `/api/portfolio/:id/report/excel` | Download Excel report |
+| Source | Used for | Notes |
+| --- | --- | --- |
+| mfapi.in | Indian fund metadata and NAV history | No key required |
+| AMFI NAVAll.txt | Bulk Indian NAV sync | Scheduled by cron |
+| Alpha Vantage | USA fund quotes and metadata | API key required |
+| Finnhub / Yahoo Finance | Optional live or extended market data | Feature-flagged |
 
-**Orders & Research**
-
-| Method | Route | Description |
-|---|---|---|
-| `POST` | `/api/orders` | Create an investment order |
-| `GET` | `/api/research` | Research reports |
-| `GET` | `/api/research/news` | Market news |
-
-**Auth & KYC**
-
-| Method | Route | Description |
-|---|---|---|
-| `POST` | `/api/auth/register` | User registration |
-| `POST` | `/api/auth/login` | User login |
-| `GET` | `/api/auth/me` | Current user profile |
-| `POST` | `/api/auth/kyc/initiate` | Start KYC process |
-| `POST` | `/api/auth/kyc/pan` | PAN verification |
-| `GET` | `/api/auth/kyc` | KYC status |
-
----
-
-## Data Sync
-
-Lumina syncs fund data from multiple external sources on a scheduled basis:
-
-| Source | Role |
-|---|---|
-| **mfapi.in** | Indian scheme metadata and NAV history |
-| **AMFI NAVAll.txt** | Bulk Indian NAV refresh |
-| **Alpha Vantage** | USA fund quotes and metadata |
-| **Finnhub WebSocket** | Optional live USA market ticks |
-
-The backend writes normalized fund and NAV history records via Prisma, logs sync status in `SyncLog`, invalidates Redis fund cache keys, and exposes fresh data to the frontend through stable API routes.
-
----
-
-## Deployment
-
-### Recommended production topology
-
-```mermaid
-flowchart LR
-  GitHub[GitHub main] --> Actions[CI: lint · test · build]
-  Actions --> Vercel[Vercel — Next.js Frontend]
-  Actions --> ECR[AWS ECR — Backend Image]
-  ECR --> ECS[AWS ECS Fargate]
-  ECS --> ALB[AWS ALB + HTTPS]
-  ECS --> RDS[(RDS PostgreSQL + pgvector)]
-  ECS --> Cache[(ElastiCache Redis)]
-  Vercel --> API[api.yourdomain.com]
-  API --> ALB
-  ECS --> CloudWatch[CloudWatch Logs]
-```
-
-### Deployment checklist
-
-- Run `npx prisma migrate deploy` inside the backend container before promoting a new image.
-- Set `BACKEND_API_URL` and `NEXT_PUBLIC_BACKEND_API_URL` to the production API origin.
-- Store `DATABASE_URL`, `JWT_SECRET`, all provider keys, and Redis credentials as encrypted secrets in your deployment environment.
-- Enable Redis in production — it is required for caching, BullMQ queue processing, rate limiting, and sync retry behavior.
-- Be mindful of Alpha Vantage free-tier rate limits; validate sync cadence against your provider plan before launch.
-- Place the backend behind HTTPS and enforce role guards on all administrative routes.
-
-### Pre-deploy verification
-
-```bash
-# Build both services
-npm run build
-cd backend && npm run build
-
-# Run tests
-npm run test
-
-# Smoke test a running stack
-curl http://localhost:3001/api
-curl "http://localhost:3001/api/funds?market=INDIA&limit=5"
-curl http://localhost:3000/api/funds
-```
-
----
+The backend normalizes provider responses into Prisma models, writes sync logs,
+invalidates Redis fund caches, and exposes fresh data to the frontend.
 
 ## Troubleshooting
 
-| Symptom | Resolution |
-|---|---|
-| Backend logs `ECONNREFUSED 127.0.0.1:6379` | Start Redis via `docker compose up -d redis`, or run the backend with `npm run start:local` to disable Redis. |
-| Frontend shows empty or stale data | Verify `BACKEND_API_URL=http://localhost:3001/api` is set and the backend responds at `/api/funds`. |
-| Prisma generated client missing in backend build | Run `cd backend && npx prisma generate && npm run build`. |
-| pgvector extension missing | Recreate the Docker DB volume, or manually run `CREATE EXTENSION IF NOT EXISTS vector;` in your database. |
-| Alpha Vantage data not updating | Check `ALPHA_VANTAGE_KEY` and `USA_TICKERS` are set and that you haven't hit the provider's rate limit. |
-| Role workspace panels appear empty | Seed or sync fund data, then create portfolios or transactions via the investor flow to populate role dashboards. |
+| Problem | What to check |
+| --- | --- |
+| Backend cannot connect to Redis | Run `docker compose up -d redis`, or use `npm run start:local` after building the backend. |
+| Frontend shows empty data | Confirm `BACKEND_API_URL=http://localhost:3001/api` and check `http://localhost:3001/api/funds`. |
+| Prisma client is missing after backend build | Run `cd backend && npx prisma generate && npm run build`. |
+| pgvector extension is missing | Recreate the Docker database volume or run `CREATE EXTENSION IF NOT EXISTS vector;`. |
+| USA data is stale | Check `ALPHA_VANTAGE_KEY`, `USA_TICKERS`, and provider rate limits. |
+| Role dashboards are empty | Sync funds first, then create portfolios, investments, or transactions. |
 
----
+## Contributing
+
+Contributions are easiest to review when they are small and focused.
+
+1. Open an issue or describe the change before large rewrites.
+2. Keep frontend requests going through the existing `/api/*` route contract.
+3. Keep backend configuration environment-driven.
+4. Run the relevant build or test command before opening a pull request.
+5. Do not commit `.env`, local database dumps, generated secrets, or provider
+   keys.
+
+Suggested local checks:
+
+```bash
+npm run build
+cd backend && npm run build
+```
 
 ## Security
 
-- Keep all secrets out of Git. Use `.env.example` files for documentation only.
-- Rotate `JWT_SECRET` and all third-party API keys per deployment environment.
-- Enforce role guards on Advisor, AMC, Researcher, and Admin surfaces.
-- All payment and order flows must be validated server-side — never trust client-calculated NAV, units, or totals.
-- Use HTTPS, secure cookies, and production-grade NextAuth configuration in every deployed environment.
-
----
-
-## Current Status
-
-Lumina supports the end-to-end local flow for real fund data, investor dashboarding, role-based workspaces, and direct-invest payment review. Some external integrations depend on third-party API keys and rate limits — validate provider accounts and sync schedules against production quotas before launch.
-
----
+- Never commit real credentials.
+- Rotate `JWT_SECRET` and provider keys per environment.
+- Validate payment, order, NAV, units, and totals on the server.
+- Keep admin, advisor, AMC, and research routes behind role checks.
+- Use HTTPS and secure cookies in production.
 
 ## License
 
-This repository is private and internal. No open-source license has been applied. All rights reserved unless a license file is added.
+No open-source license file is currently included. Until a license is added, the
+code is not automatically available for reuse or redistribution. Add a
+`LICENSE` file before accepting external open-source contributions.
