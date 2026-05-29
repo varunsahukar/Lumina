@@ -21,16 +21,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Area,
   AreaChart,
-  Bar,
-  BarChart,
   CartesianGrid,
-  Cell,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 import { AgencyLogo, PixelIcon } from "@/components/agency/AgencyPrimitives";
+import InstrumentPreviewCard from "@/components/market/InstrumentPreviewCard";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { ComponentType, PointerEvent } from "react";
@@ -127,6 +125,7 @@ const faqItems = [
 
 export default function LuminaLandingExperience() {
   const shellRef = useRef<HTMLDivElement>(null);
+  const selectedPreviewRef = useRef<HTMLDivElement>(null);
   const [theme, setTheme] = useState<Theme>("dark");
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
   const [funds, setFunds] = useState<Fund[]>([]);
@@ -270,6 +269,16 @@ export default function LuminaLandingExperience() {
     const y = (event.clientY - rect.top) / rect.height;
     shellRef.current?.style.setProperty("--tilt-x", `${(0.5 - y) * 5}deg`);
     shellRef.current?.style.setProperty("--tilt-y", `${(x - 0.5) * 5}deg`);
+  };
+
+  const handleSelectFund = (fundId: string) => {
+    setSelectedFundId(fundId);
+    window.requestAnimationFrame(() => {
+      selectedPreviewRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    });
   };
 
   return (
@@ -416,7 +425,8 @@ export default function LuminaLandingExperience() {
                   <button
                     type="button"
                     key={fund.id}
-                    onClick={() => setSelectedFundId(fund.id)}
+                    onClick={() => handleSelectFund(fund.id)}
+                    aria-pressed={selectedFund?.id === fund.id}
                     className={cn(
                       "lumina-fund-row group w-full text-left",
                       selectedFund?.id === fund.id && "is-active",
@@ -435,7 +445,9 @@ export default function LuminaLandingExperience() {
                       <span className="block text-lg font-black text-[var(--landing-green)]">
                         {formatPercent(fund.returns3y)}
                       </span>
-                      <span className="block text-xs font-bold text-[var(--landing-muted)]">3Y</span>
+                      <span className="block text-xs font-bold text-[var(--landing-muted)]">
+                        {selectedFund?.id === fund.id ? "Preview" : "3Y"}
+                      </span>
                     </span>
                   </button>
                 ))
@@ -446,7 +458,9 @@ export default function LuminaLandingExperience() {
           </div>
 
           <div className="grid gap-8">
-            <SelectedFundPanel fund={selectedFund} performanceData={performanceData} />
+            <div ref={selectedPreviewRef}>
+              <SelectedFundPanel fund={selectedFund} performanceData={performanceData} />
+            </div>
             <CategoryPanel data={categoryData} isLoading={isLoading} />
           </div>
         </section>
@@ -686,54 +700,37 @@ function SelectedFundPanel({
   fund: Fund | null;
   performanceData: Array<{ period: string; value: number }>;
 }) {
+  const fundName = fund?.schemeName || fund?.name || "No fund selected";
+  const fundDescription = fund
+    ? `${fundName} is shown with the same simple preview pattern used for stocks: details first, key stats second, and readable yearly history last.`
+    : "Select a live scheme to see company or AMC details, key stats and a compact yearly history preview.";
+  const history = performanceData.map((point) => ({
+    label: point.period,
+    value: Math.max(0, point.value),
+    displayValue: `${point.value.toFixed(1)}%`,
+  }));
+
   return (
-    <div className="lumina-panel lumina-reveal">
-      <div className="flex items-start justify-between gap-5">
-        <div className="min-w-0">
-          <p className="lumina-label">Focused scheme details</p>
-          <h3 className="mt-3 truncate text-3xl font-black">
-            {fund?.schemeName || fund?.name || "No fund selected"}
-          </h3>
-          <p className="mt-2 truncate text-xs font-black uppercase text-[var(--landing-muted)]">
-            {fund?.amcName || fund?.category || "Select a live scheme"}
-          </p>
-        </div>
-        <Link
-          className="lumina-icon-button shrink-0"
-          title={fund?.id ? "Open fund details" : "Open screener"}
-          aria-label={fund?.id ? "Open fund details" : "Open screener"}
-          href={fund?.id ? `/funds/${encodeURIComponent(fund.id)}` : "/screener"}
-        >
-          <ArrowUpRight className="h-5 w-5" />
-        </Link>
-      </div>
-
-      <div className="mt-8 grid gap-4 sm:grid-cols-4">
-        <BoardMetric label="1Y" value={formatPercent(fund?.returns1y)} />
-        <BoardMetric label="3Y" value={formatPercent(fund?.returns3y)} />
-        <BoardMetric label="5Y" value={formatPercent(fund?.returns5y)} />
-        <BoardMetric label="Sharpe" value={formatRatio(fund?.sharpeRatio)} />
-      </div>
-
-      <div className="mt-8 h-56">
-        {performanceData.length > 0 ? (
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={performanceData}>
-              <XAxis dataKey="period" stroke="var(--landing-muted)" tickLine={false} axisLine={false} />
-              <YAxis stroke="var(--landing-muted)" tickLine={false} axisLine={false} width={34} />
-              <Tooltip content={<LandingTooltip />} />
-              <Bar dataKey="value" radius={[4, 4, 0, 0]} animationDuration={850}>
-                {performanceData.map((entry, index) => (
-                  <Cell key={`${entry.period}-${index}`} fill={categoryColors[index % categoryColors.length]} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        ) : (
-          <EmptyState isLoading={false} label="Select a fund with return data" />
-        )}
-      </div>
-    </div>
+    <InstrumentPreviewCard
+      className="lumina-reveal"
+      kind="fund"
+      name={fundName}
+      ticker={fund?.id ? `FUND:${String(fund.id).slice(0, 8)}` : undefined}
+      issuer={fund?.amcName || "AMC pending"}
+      category={fund?.category || "Select a live scheme"}
+      description={fundDescription}
+      priceLabel="Current NAV"
+      priceValue={formatNav(fund?.nav)}
+      stats={[
+        { label: "1Y return", value: formatPercent(fund?.returns1y) },
+        { label: "3Y return", value: formatPercent(fund?.returns3y), tone: "positive" },
+        { label: "Expense", value: formatPercent(fund?.expenseRatio) },
+      ]}
+      history={history}
+      historyLabel="Return history"
+      actionHref={fund?.id ? `/funds/${encodeURIComponent(fund.id)}` : "/screener"}
+      actionLabel={fund?.id ? "Open fund details" : "Open screener"}
+    />
   );
 }
 
@@ -1022,11 +1019,6 @@ function formatNav(value: number | null | undefined) {
 function formatPercent(value: number | string | null | undefined) {
   const numeric = percentNumber(value);
   return numeric === null ? "Awaiting" : `${numeric.toFixed(2)}%`;
-}
-
-function formatRatio(value: number | string | null | undefined) {
-  const numeric = numberOrNull(value);
-  return numeric === null ? "Awaiting" : numeric.toFixed(2);
 }
 
 function formatTime(value: Date) {

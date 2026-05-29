@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useAppStore, Fund } from "@/store/useStore";
 import { Button } from "@/components/ui/button";
+import InstrumentPreviewCard from "@/components/market/InstrumentPreviewCard";
 
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -26,6 +27,7 @@ export default function FundTable() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [dataSource, setDataSource] = useState("backend");
+  const [previewFundId, setPreviewFundId] = useState<string | null>(null);
   const hasLoadedFundsRef = useRef(false);
 
   // Fetch filtered funds reactively when parameters change
@@ -73,6 +75,11 @@ export default function FundTable() {
 
         if (Array.isArray(nextFunds)) {
           setFunds(nextFunds);
+          setPreviewFundId((current) =>
+            current && nextFunds.some((fund: Fund) => fund.id === current)
+              ? current
+              : nextFunds[0]?.id ?? null
+          );
           setDataSource(nextSource);
           setError(null);
           setNotice(nextNotice);
@@ -114,6 +121,10 @@ export default function FundTable() {
         description: `${fund.schemeName.split(" - ")[0]} has been added.`,
       });
     }
+  };
+
+  const toggleFundPreview = (fundId: string) => {
+    setPreviewFundId((current) => (current === fundId ? null : fundId));
   };
 
   // Helper formatting routines
@@ -190,10 +201,22 @@ export default function FundTable() {
         ) : (
           funds.map((fund) => {
             const isCompared = !!compareList.find((f) => f.id === fund.id);
+            const isPreviewOpen = previewFundId === fund.id;
             return (
               <div
                 key={fund.id}
-                className="group flex flex-col space-y-4 border-[3px] border-black bg-[#f7eee8] p-5 shadow-[6px_6px_0_#000] transition-colors hover:bg-white dark:border-[#f7eee8]/25 dark:bg-[#0b0b0b] dark:shadow-[6px_6px_0_#c95545] dark:hover:bg-[#111]"
+                role="button"
+                tabIndex={0}
+                onClick={() => toggleFundPreview(fund.id)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    toggleFundPreview(fund.id);
+                  }
+                }}
+                className={`group flex cursor-pointer flex-col space-y-4 border-[3px] border-black bg-[#f7eee8] p-5 shadow-[6px_6px_0_#000] transition-colors hover:bg-white focus:outline-none focus:ring-4 focus:ring-[#4ba1a7]/35 dark:border-[#f7eee8]/25 dark:bg-[#0b0b0b] dark:shadow-[6px_6px_0_#c95545] dark:hover:bg-[#111] ${
+                  isPreviewOpen ? "bg-white dark:bg-[#111]" : ""
+                }`}
               >
                 <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
                   <div className="min-w-0 flex-1 space-y-2 pr-0 xl:pr-4">
@@ -221,7 +244,25 @@ export default function FundTable() {
                   <div className="flex items-center space-x-2 shrink-0">
                     <button
                       type="button"
-                      onClick={() => handleCompareClick(fund)}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        toggleFundPreview(fund.id);
+                      }}
+                      className={`flex items-center space-x-1 border-[3px] px-3 py-2 text-[11px] font-bold transition-colors ${
+                        isPreviewOpen
+                          ? "border-black bg-[#4ba1a7] text-black dark:border-[#f7eee8] dark:text-[#082f33]"
+                          : "border-black bg-white text-[#5b5652] hover:bg-[#eadfd8] dark:border-[#f7eee8]/25 dark:bg-[#141414] dark:text-[#bdb5ae] dark:hover:bg-[#1f1f1f]"
+                      }`}
+                      aria-expanded={isPreviewOpen}
+                    >
+                      <span>{isPreviewOpen ? "Hide Preview" : "Preview"}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleCompareClick(fund);
+                      }}
                       className={`flex items-center space-x-1 border-[3px] px-3 py-2 text-[11px] font-bold transition-colors ${
                         isCompared
                           ? "border-black bg-[#4ba1a7] text-black dark:border-[#f7eee8] dark:text-[#082f33]"
@@ -244,7 +285,10 @@ export default function FundTable() {
                       asChild
                       className="h-auto min-w-[132px] rounded-none border-[3px] border-black bg-[#c95545] px-5 py-2.5 text-xs font-extrabold text-white shadow-none transition-transform group-hover:scale-[1.02] hover:bg-[#d26354] dark:border-[#f7eee8]/25 dark:bg-[#4ba1a7] dark:text-[#082f33] dark:hover:bg-[#60b4ba]"
                     >
-                      <Link href={`/dashboard?invest=1&fundId=${encodeURIComponent(fund.id)}`}>
+                      <Link
+                        href={`/dashboard?invest=1&fundId=${encodeURIComponent(fund.id)}`}
+                        onClick={(event) => event.stopPropagation()}
+                      >
                         <span className="whitespace-nowrap">Invest Direct</span>
                         <span className="flex h-9 w-9 shrink-0 items-center justify-center border-2 border-black bg-white dark:bg-[#f7eee8]">
                           <ArrowUpRight className="h-4 w-4 text-black" />
@@ -253,6 +297,28 @@ export default function FundTable() {
                     </Button>
                   </div>
                 </div>
+
+                {isPreviewOpen ? (
+                  <InstrumentPreviewCard
+                    kind="fund"
+                    name={fund.schemeName}
+                    ticker={fund.schemeCode ? `FUND:${fund.schemeCode}` : `FUND:${fund.id.slice(0, 8)}`}
+                    issuer={fund.amcName || "AMC pending"}
+                    category={`${fund.category || "Category pending"} / ${fund.subCategory || "Direct Plan"}`}
+                    description={`${fund.schemeName} is managed by ${fund.amcName || "the AMC"}. This preview keeps the essentials readable before you compare, invest, or open the full fund detail page.`}
+                    priceLabel="Current NAV"
+                    priceValue={`₹${fund.nav.toFixed(2)}`}
+                    stats={[
+                      { label: "3Y return", value: formatPercent(fund.returns3y), tone: "positive" },
+                      { label: "AUM", value: formatAUM(fund.aum) },
+                      { label: "Expense", value: formatPercent(fund.expenseRatio) },
+                    ]}
+                    history={buildFundHistory(fund)}
+                    historyLabel="Return history"
+                    actionHref={`/funds/${encodeURIComponent(fund.id)}`}
+                    actionLabel="Open full details"
+                  />
+                ) : null}
 
                 <div className="grid grid-cols-2 gap-4 border-t-[3px] border-black pt-3 dark:border-[#f7eee8]/20 md:grid-cols-4">
                   <div className="space-y-0.5">
@@ -295,4 +361,27 @@ export default function FundTable() {
       </div>
     </div>
   );
+}
+
+function buildFundHistory(fund: Fund) {
+  return [
+    { label: "1Y", value: normalisePercent(fund.returns1y), displayValue: formatHistoryPercent(fund.returns1y) },
+    { label: "3Y", value: normalisePercent(fund.returns3y), displayValue: formatHistoryPercent(fund.returns3y) },
+    { label: "5Y", value: normalisePercent(fund.returns5y), displayValue: formatHistoryPercent(fund.returns5y) },
+    { label: "10Y", value: normalisePercent(fund.returns10y), displayValue: formatHistoryPercent(fund.returns10y) },
+  ].filter((point) => point.displayValue !== "N/A");
+}
+
+function normalisePercent(value: number | null) {
+  if (value === null || value === undefined || !Number.isFinite(Number(value))) return 0;
+  const numeric = Number(value);
+  const displayValue = Math.abs(numeric) <= 1 ? numeric * 100 : numeric;
+  return Math.max(0, displayValue);
+}
+
+function formatHistoryPercent(value: number | null) {
+  if (value === null || value === undefined || !Number.isFinite(Number(value))) return "N/A";
+  const numeric = Number(value);
+  const displayValue = Math.abs(numeric) <= 1 ? numeric * 100 : numeric;
+  return `${displayValue.toFixed(2)}%`;
 }

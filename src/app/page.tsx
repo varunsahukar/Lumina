@@ -1,5 +1,5 @@
-import LuminaLandingExperience from "@/components/landing/LuminaLandingExperience";
+import PrototypeIntroExperience from "@/components/landing/PrototypeIntroExperience";
 
 export default function Home() {
-  return <LuminaLandingExperience />;
+  return <PrototypeIntroExperience />;
 }

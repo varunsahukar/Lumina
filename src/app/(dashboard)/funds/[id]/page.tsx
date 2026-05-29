@@ -1,6 +1,5 @@
-import Navbar from "@/components/layout/Navbar";
-import Sidebar from "@/components/layout/Sidebar";
-import MobileNav from "@/components/layout/MobileNav";
+import Link from "next/link";
+import { ArrowLeft, X } from "lucide-react";
 import FundCard from "@/components/fund/FundCard";
 import FundDetail from "@/components/fund/FundDetail";
 import PerformanceChart from "@/components/fund/PerformanceChart";
@@ -26,36 +25,63 @@ export default async function FundDetailPage({ params }: { params: { id: string 
       : [];
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Navbar />
-      <div className="flex flex-1">
-        <Sidebar />
-        <main className="flex-1">
-          <div className="container py-6">
-            <div className="flex flex-col gap-6">
-              <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold">
-                  {fund?.schemeName || `Fund Details: ${params.id}`}
-                </h1>
-                <div className="flex gap-2">
-                  <Button>Add to Watchlist</Button>
-                  <Button>Invest Now</Button>
-                </div>
-              </div>
-              {!fund && (
-                <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
-                  Unable to load this fund from the backend. Check that the Nest API
-                  is running and that this fund id exists.
-                </div>
-              )}
-              <FundCard fund={fund || undefined} />
-              <PerformanceChart history={history} />
-              <FundDetail fund={fund || undefined} />
-            </div>
+    <div className="space-y-6 text-[#070707] dark:text-[#f7eee8]">
+      <div className="flex flex-col gap-4 border-b-[3px] border-black pb-6 dark:border-[#f7eee8]/25 lg:flex-row lg:items-start lg:justify-between">
+        <div className="min-w-0 space-y-4">
+          <Button
+            asChild
+            variant="outline"
+            className="rounded-none border-[3px] border-black bg-[#f7eee8] font-bold text-black shadow-[5px_5px_0_#000] hover:bg-[#4ba1a7] dark:border-[#f7eee8]/25 dark:bg-[#0b0b0b] dark:text-[#f7eee8] dark:shadow-[5px_5px_0_#c95545]"
+          >
+            <Link href="/screener">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to funds
+            </Link>
+          </Button>
+
+          <div>
+            <p className="agency-label mb-3">Fund Detail</p>
+            <h1 className="max-w-5xl text-4xl font-black leading-tight sm:text-5xl">
+              {fund?.schemeName || `Fund Details: ${params.id}`}
+            </h1>
           </div>
-        </main>
+        </div>
+
+        <div className="flex shrink-0 items-center gap-3">
+          {fund && (
+            <Button
+              asChild
+              className="rounded-none border-[3px] border-black bg-[#c95545] px-6 font-bold text-[#f7eee8] shadow-[5px_5px_0_#000] hover:bg-[#4ba1a7] hover:text-black dark:border-[#f7eee8]/25"
+            >
+              <Link href={`/dashboard?invest=1&fundId=${encodeURIComponent(fund.id)}`}>
+                Invest now
+              </Link>
+            </Button>
+          )}
+
+          <Button
+            asChild
+            variant="outline"
+            size="icon"
+            className="h-12 w-12 rounded-none border-[3px] border-black bg-[#f7eee8] text-black shadow-[5px_5px_0_#000] hover:bg-[#c95545] hover:text-[#f7eee8] dark:border-[#f7eee8]/25 dark:bg-[#0b0b0b] dark:text-[#f7eee8] dark:shadow-[5px_5px_0_#4ba1a7]"
+          >
+            <Link href="/screener" aria-label="Close fund details and return to funds">
+              <X className="h-5 w-5" />
+            </Link>
+          </Button>
+        </div>
       </div>
-      <MobileNav />
+
+      {!fund && (
+        <div className="border-[3px] border-[#c95545] bg-[#c95545]/10 p-4 text-sm font-bold text-[#c95545]">
+          Unable to load this fund from the backend. Check that the Nest API is
+          running and that this fund id exists.
+        </div>
+      )}
+
+      <FundCard fund={fund || undefined} />
+      <PerformanceChart history={history} />
+      <FundDetail fund={fund || undefined} />
     </div>
   );
 }
