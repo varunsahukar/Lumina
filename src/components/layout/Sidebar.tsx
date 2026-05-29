@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ChevronDown, Compass, FileText, Layers, PieChart, Settings, Shield, Target, Users } from "lucide-react";
 import { useAppStore, UserRole } from "@/store/useStore";
 import { cn } from "@/lib/utils";
+import { roleDefinitions, roleOrder } from "@/lib/roles";
 import { AgencyLogo } from "@/components/agency/AgencyPrimitives";
 import ThemeToggle from "@/components/layout/ThemeToggle";
 import {
@@ -17,50 +18,29 @@ import {
 interface NavItem {
   name: string;
   href: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: keyof typeof iconMap;
   code: string;
 }
 
-const navItems: Record<UserRole, NavItem[]> = {
-  INVESTOR: [
-    { name: "Market Screener", href: "/screener", icon: Compass, code: "01" },
-    { name: "My Portfolio", href: "/portfolio", icon: PieChart, code: "02" },
-    { name: "Goal Planner", href: "/dashboard", icon: Target, code: "03" },
-    { name: "Tax Reports", href: "/reports", icon: FileText, code: "04" },
-  ],
-  ADVISOR: [
-    { name: "Client Console", href: "/dashboard", icon: Users, code: "01" },
-    { name: "Lead Referrals", href: "/dashboard", icon: Target, code: "02" },
-    { name: "Research", href: "/screener", icon: FileText, code: "03" },
-  ],
-  AMC: [
-    { name: "Fund Manager", href: "/dashboard", icon: Layers, code: "01" },
-    { name: "Factsheets", href: "/dashboard", icon: FileText, code: "02" },
-    { name: "Analytics", href: "/dashboard", icon: PieChart, code: "03" },
-  ],
-  RESEARCHER: [
-    { name: "Research Center", href: "/dashboard", icon: FileText, code: "01" },
-    { name: "Publish Insight", href: "/dashboard", icon: Compass, code: "02" },
-    { name: "Readership", href: "/dashboard", icon: PieChart, code: "03" },
-  ],
-  ADMIN: [
-    { name: "System Control", href: "/dashboard", icon: Shield, code: "01" },
-    { name: "Users", href: "/dashboard", icon: Users, code: "02" },
-    { name: "Settings", href: "/reports", icon: Settings, code: "03" },
-  ],
+const iconMap = {
+  compass: Compass,
+  file: FileText,
+  layers: Layers,
+  pie: PieChart,
+  settings: Settings,
+  shield: Shield,
+  target: Target,
+  users: Users,
 };
 
-const roleLabels: Record<UserRole, { label: string; desc: string }> = {
-  INVESTOR: { label: "Investor Console", desc: "Screen, plan, invest" },
-  ADVISOR: { label: "Advisor Workspace", desc: "Manage client portfolios" },
-  AMC: { label: "AMC Control", desc: "Track fund products" },
-  RESEARCHER: { label: "Research Hub", desc: "Publish insights" },
-  ADMIN: { label: "System Admin", desc: "Operate the platform" },
-};
+const navItems = Object.fromEntries(
+  roleOrder.map((role) => [role, roleDefinitions[role].nav])
+) as Record<UserRole, NavItem[]>;
 
 export default function Sidebar() {
   const pathname = usePathname();
   const { activeRole, setActiveRole } = useAppStore();
+  const activeDefinition = roleDefinitions[activeRole];
 
   return (
     <aside className="hidden min-h-screen w-[290px] shrink-0 border-r-[3px] border-black bg-[#0b0b0b] text-[#f7eee8] md:flex md:flex-col">
@@ -72,14 +52,16 @@ export default function Sidebar() {
         <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#77716d]">
           Active workspace
         </p>
-        <p className="text-xl font-bold text-[#f7eee8]">{roleLabels[activeRole].label}</p>
-        <p className="mt-1 text-sm font-semibold text-[#9d9793]">{roleLabels[activeRole].desc}</p>
+        <p className="text-xl font-bold text-[#f7eee8]">{activeDefinition.label}</p>
+        <p className="mt-1 text-sm font-semibold leading-snug text-[#9d9793]">
+          {activeDefinition.description}
+        </p>
       </div>
 
       <nav className="flex-1 space-y-2 px-4 py-6">
         {navItems[activeRole].map((item) => {
           const isActive = pathname === item.href;
-          const Icon = item.icon;
+          const Icon = iconMap[item.icon];
           return (
             <Link
               key={`${item.code}-${item.name}`}
@@ -114,7 +96,7 @@ export default function Sidebar() {
             sideOffset={10}
             className="w-[260px] rounded-none border-[3px] border-black bg-[#f7eee8] p-1 text-black shadow-[8px_8px_0_#000]"
           >
-            {(Object.keys(roleLabels) as UserRole[]).map((role) => (
+            {roleOrder.map((role) => (
               <DropdownMenuItem
                 key={role}
                 onClick={() => setActiveRole(role)}
@@ -124,10 +106,10 @@ export default function Sidebar() {
                 )}
               >
                 <span className="font-heading text-sm font-extrabold leading-none">
-                  {roleLabels[role].label}
+                  {roleDefinitions[role].label}
                 </span>
                 <span className="font-body text-[0.72rem] font-bold leading-snug opacity-70">
-                  {roleLabels[role].desc}
+                  {roleDefinitions[role].description}
                 </span>
               </DropdownMenuItem>
             ))}

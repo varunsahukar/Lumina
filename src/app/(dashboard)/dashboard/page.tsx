@@ -21,7 +21,6 @@ import {
 } from "recharts";
 import {
   AccentSquare,
-  AgencyServiceCard,
   PixelIcon,
 } from "@/components/agency/AgencyPrimitives";
 import { Button } from "@/components/ui/button";
@@ -41,6 +40,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { roleDefinitions } from "@/lib/roles";
 import { useAppStore, UserRole } from "@/store/useStore";
 
 interface DashboardStats {
@@ -101,6 +101,11 @@ interface RoleProfile {
   intro: string;
   metrics: Metric[];
   included: string[];
+  capabilities?: Array<{ label: string; description: string }>;
+  permissions?: Array<{ label: string; description: string }>;
+  reports?: Array<{ label: string; description: string }>;
+  guardrail?: string;
+  primaryAction?: string;
   steps: Array<{ id: string; title: string; body: string; red?: boolean }>;
 }
 
@@ -120,6 +125,7 @@ interface GoalPlan {
 }
 
 interface WorkspaceData {
+  source?: string;
   profile: RoleProfile;
   chartData: Array<{
     name: string;
@@ -350,7 +356,11 @@ export default function DashboardPage() {
     }
   };
 
-  const handleQuickAction = (action: string) => {
+  const handleQuickAction = async (action: string) => {
+    const scrollTo = (id: string) => {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
     if (action === "Invest Direct" && activeRole === "INVESTOR") {
       setInvestmentDialogOpen(true);
       return;
@@ -362,13 +372,47 @@ export default function DashboardPage() {
     }
 
     if (action === "Goal Planner") {
-      document.getElementById("goal-planner")?.scrollIntoView({ behavior: "smooth" });
+      scrollTo("goal-planner");
+      return;
+    }
+
+    if (action === "Risk Profile") {
+      router.push("/onboarding");
+      return;
+    }
+
+    if (action === "Fund Shortlist") {
+      router.push("/screener");
+      return;
+    }
+
+    if (["Advisor Reports", "Factsheet Queue", "Draft Insight", "Research Queue", "Audit Trail", "User Registry"].includes(action)) {
+      router.push("/reports");
+      return;
+    }
+
+    if (["Review Clients", "Suitability Notes", "Scheme Monitor", "Inflow Review"].includes(action)) {
+      scrollTo("role-workspace");
+      return;
+    }
+
+    if (["AUM Ranking", "Signal Ranking", "Category Pulse"].includes(action)) {
+      scrollTo("category-distribution");
+      return;
+    }
+
+    if (["Runtime Check", "Fund Sync"].includes(action)) {
+      await loadWorkspaceData();
+      toast({
+        title: `${action} refreshed`,
+        description: "Live workspace totals and activity have been reloaded.",
+      });
       return;
     }
 
     toast({
-      title: `${action} triggered`,
-      description: "Feature running inside the early-stage LuminaVest workspace.",
+      title: `${action} opened`,
+      description: "Workspace action completed.",
     });
   };
 
@@ -416,55 +460,15 @@ export default function DashboardPage() {
             ))}
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-[1fr_0.72fr]">
-            <div className="grid gap-6 sm:grid-cols-3">
-              <AgencyServiceCard
-                title="Screening"
-                tone="cream"
-                number="01"
-                icon="brand"
-                className="min-h-[310px]"
-              />
-              <AgencyServiceCard
-                title="Allocation"
-                tone="red"
-                number="02"
-                icon="web"
-                className="min-h-[310px]"
-              />
-              <AgencyServiceCard
-                title="Monitor"
-                tone="blue"
-                number="03"
-                icon="desktop"
-                className="min-h-[310px]"
-              />
-            </div>
-
-            <aside className="agency-hard-shadow-sm flex min-h-[310px] flex-col justify-between bg-[#0b0b0b] text-[#f7eee8]">
-              <div className="p-7">
-                <p className="mb-6 text-xs font-bold uppercase tracking-[0.18em] text-[#8e8985]">
-                  What&apos;s included
-                </p>
-                <ul className="space-y-4 text-sm font-semibold">
-                  {profile.included.map((item) => (
-                    <li key={item} className="flex items-center gap-3">
-                      <span className="h-3 w-3 bg-[#4ba1a7]" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <button
-                type="button"
-                onClick={() => handleQuickAction("Open console action")}
-                className="flex h-16 items-center justify-between bg-[#4ba1a7] px-6 font-bold text-black"
-              >
-                OPEN ACTION
-                <ArrowUpRight className="h-5 w-5" />
-              </button>
-            </aside>
-          </div>
+          <RoleCommandCenter
+            role={activeRole}
+            profile={profile}
+            workspace={workspace}
+            chartData={roleChartData}
+            quickActions={quickActions}
+            isLoading={isWorkspaceLoading}
+            onAction={handleQuickAction}
+          />
         </div>
       </section>
 
@@ -530,7 +534,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="grid gap-8 lg:grid-cols-[1fr_0.42fr]">
+      <section id="category-distribution" className="grid gap-8 lg:grid-cols-[1fr_0.42fr]">
         <div className="agency-hard-shadow border-[3px] border-black bg-[#f7eee8] p-7 dark:border-[#f7eee8]/25 dark:bg-[#0b0b0b]">
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-2xl font-bold">Live category distribution</h2>
@@ -652,6 +656,230 @@ function GoalPlannerPanel({
   );
 }
 
+function RoleCommandCenter({
+  role,
+  profile,
+  workspace,
+  chartData,
+  quickActions,
+  isLoading,
+  onAction,
+}: {
+  role: UserRole;
+  profile: RoleProfile;
+  workspace: WorkspaceData | null;
+  chartData: WorkspaceData["chartData"];
+  quickActions: string[];
+  isLoading: boolean;
+  onAction: (action: string) => void | Promise<void>;
+}) {
+  const totals = workspace?.totals;
+  const activity = workspace?.activity || [];
+  const categories = chartData.length;
+  const roleDefinition = roleDefinitions[role];
+  const completion =
+    totals && totals.fundsCount > 0
+      ? Math.min(100, Math.max(18, Math.round((categories / Math.max(1, totals.fundsCount)) * 100)))
+      : 36;
+  const snapshot = [
+    {
+      label: "Live funds",
+      value: isLoading ? "--" : String(totals?.fundsCount ?? 0),
+      note: workspace?.source === "backend" ? "Backend data source" : "Workspace fallback",
+    },
+    {
+      label: "Transactions",
+      value: isLoading ? "--" : String(totals?.transactionsCount ?? 0),
+      note: `${totals?.portfoliosCount ?? 0} portfolios in scope`,
+    },
+    {
+      label: "Avg return",
+      value: isLoading ? "--" : `${(totals?.avgReturn ?? 0).toFixed(1)}%`,
+      note: `${categories} live categories`,
+    },
+  ];
+  const capabilityRows = profile.capabilities || roleDefinitions[role].capabilities;
+  const activityRows = activity.length
+    ? activity.slice(0, 3)
+    : capabilityRows.slice(0, 3).map((item, index) => ({
+        label: item.label,
+        value: `0${index + 1}`,
+        note: item.description,
+      }));
+
+  return (
+    <section className="agency-hard-shadow-sm overflow-hidden border-[3px] border-black bg-[#f7eee8] dark:border-[#f7eee8]/25 dark:bg-[#101010]">
+      <div className="border-b-[3px] border-black p-6 dark:border-[#f7eee8]/20">
+        <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-start">
+          <div>
+            <p className="agency-label mb-3">{roleDefinition.badge}</p>
+            <h2 className="text-3xl font-bold leading-tight text-[#082f33] dark:text-[#f7eee8] sm:text-4xl">
+              Role command center
+            </h2>
+            <p className="mt-3 max-w-3xl text-sm font-bold leading-[1.55] text-[#5b5652] dark:text-[#bdb5ae]">
+              {profile.guardrail || roleDefinition.guardrail}
+            </p>
+          </div>
+          <div className="min-w-[12rem] border-[3px] border-black bg-[#0b0b0b] p-4 text-[#f7eee8] dark:border-[#f7eee8]/25">
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#9d9793]">
+              Status
+            </p>
+            <div className="mt-4 flex items-end justify-between gap-4">
+              <span className="text-2xl font-black text-[#4ba1a7]">
+                {isLoading ? "Syncing" : "Live"}
+              </span>
+              <span className="flex h-5 items-end gap-1" aria-hidden="true">
+                {[0, 1, 2].map((item) => (
+                  <span
+                    key={item}
+                    className="block w-2 bg-[#4ba1a7]"
+                    style={{
+                      height: `${10 + item * 5}px`,
+                      animation: "luminaBarGrow 900ms ease-out both",
+                      animationDelay: `${item * 120}ms`,
+                    }}
+                  />
+                ))}
+              </span>
+            </div>
+            <p className="mt-2 text-xs font-bold text-[#bdb5ae]">
+              {workspace?.source === "backend" ? "Nest backend connected" : "Local fallback ready"}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-0 xl:grid-cols-[0.8fr_1.2fr]">
+        <div className="border-b-[3px] border-black p-6 dark:border-[#f7eee8]/20 xl:border-b-0 xl:border-r-[3px]">
+          <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#5b5652] dark:text-[#bdb5ae]">
+            Useful stats
+          </p>
+          <div className="grid gap-4 sm:grid-cols-3 xl:grid-cols-1">
+            {snapshot.map((item, index) => (
+              <article
+                key={item.label}
+                className="border-[3px] border-black bg-white p-4 dark:border-[#f7eee8]/25 dark:bg-[#171717]"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#5b5652] dark:text-[#bdb5ae]">
+                    {item.label}
+                  </p>
+                  <span className="shrink-0 text-xs font-black text-[#c95545]">0{index + 1}</span>
+                </div>
+                <p className="mt-4 break-words text-3xl font-black text-black dark:text-[#f7eee8]">
+                  {item.value}
+                </p>
+                <p className="mt-2 text-xs font-bold leading-[1.35] text-[#5b5652] dark:text-[#bdb5ae]">
+                  {item.note}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <div className="p-6">
+          <div className="grid gap-6 lg:grid-cols-[1fr_0.68fr]">
+            <div>
+              <div className="mb-4 flex items-center justify-between gap-4">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#5b5652] dark:text-[#bdb5ae]">
+                  Capabilities
+                </p>
+                <span className="text-xs font-black text-[#c95545]">{completion}% coverage</span>
+              </div>
+              <div className="grid gap-4">
+                {capabilityRows.map((item, index) => {
+                  const width = Math.min(100, Math.max(32, completion + index * 14));
+                  return (
+                    <article
+                      key={item.label}
+                      className="border-[3px] border-black bg-white p-4 dark:border-[#f7eee8]/25 dark:bg-[#171717]"
+                    >
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <h3 className="max-w-[28rem] text-base font-black leading-tight text-black dark:text-[#f7eee8]">
+                          {item.label}
+                        </h3>
+                        <span className="shrink-0 text-xs font-black text-[#c95545]">{width}%</span>
+                      </div>
+                      <div className="mt-3 h-3 border-2 border-black bg-[#f7eee8] dark:border-[#f7eee8]/25 dark:bg-[#252525]">
+                        <div
+                          className="h-full origin-left bg-[#c95545]"
+                          style={{
+                            width: `${width}%`,
+                            animation: "luminaBarGrow 700ms ease-out both",
+                            animationDelay: `${index * 90}ms`,
+                          }}
+                        />
+                      </div>
+                      <p className="mt-3 text-sm font-semibold leading-[1.45] text-[#5b5652] dark:text-[#bdb5ae]">
+                        {item.description}
+                      </p>
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+
+            <aside className="border-[3px] border-black bg-[#0b0b0b] p-5 text-[#f7eee8] shadow-[5px_5px_0_#000]">
+              <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#8e8985]">
+                Actions
+              </p>
+              <div className="grid gap-3">
+                {quickActions.map((action) => (
+                  <button
+                    key={action}
+                    type="button"
+                    onClick={() => onAction(action)}
+                    className="flex min-h-12 items-center justify-between gap-4 border-[3px] border-black bg-[#4ba1a7] px-4 text-left text-sm font-black text-black transition-transform hover:-translate-y-0.5"
+                  >
+                    <span>{action}</span>
+                    <ArrowUpRight className="h-4 w-4 shrink-0" />
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-6 border-t border-[#f7eee8]/20 pt-5">
+                <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#8e8985]">
+                  Live activity
+                </p>
+                <div className="space-y-3">
+                  {activityRows.map((item, index) => (
+                    <article key={`${item.label}-${index}`} className="border border-[#f7eee8]/20 p-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <p className="text-sm font-black leading-tight">{item.label}</p>
+                        <span className="text-sm font-black text-[#4ba1a7]">{item.value}</span>
+                      </div>
+                      <p className="mt-2 text-xs font-bold leading-[1.35] text-[#bdb5ae]">
+                        {item.note}
+                      </p>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </aside>
+          </div>
+
+          <div className="mt-6 border-t-[3px] border-black pt-5 dark:border-[#f7eee8]/20">
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.18em] text-[#5b5652] dark:text-[#bdb5ae]">
+              Included in this role
+            </p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {profile.included.map((item) => (
+                <div
+                  key={item}
+                  className="flex items-start gap-3 border-2 border-black bg-white p-3 text-sm font-black text-black dark:border-[#f7eee8]/25 dark:bg-[#171717] dark:text-[#f7eee8]"
+                >
+                  <span className="mt-1 h-3 w-3 shrink-0 bg-[#4ba1a7]" />
+                  <span className="leading-snug">{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function RoleWorkspaceConsole({
   role,
   workspace,
@@ -665,6 +893,10 @@ function RoleWorkspaceConsole({
 }) {
   const activity = workspace?.activity || [];
   const totals = workspace?.totals;
+  const profile = workspace?.profile;
+  const capabilities = profile?.capabilities || roleDefinitions[role].capabilities;
+  const permissions = profile?.permissions || roleDefinitions[role].permissions;
+  const reports = profile?.reports || roleDefinitions[role].reports;
 
   return (
     <section className="agency-hard-shadow border-[3px] border-black bg-[#f7eee8] dark:border-[#f7eee8]/25 dark:bg-[#0b0b0b]">
@@ -733,7 +965,71 @@ function RoleWorkspaceConsole({
           </div>
         </div>
       </div>
+
+      <div className="border-t-[3px] border-black p-7 dark:border-[#f7eee8]/20">
+        <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr_0.9fr]">
+          <RoleDetailColumn
+            eyebrow="Role capabilities"
+            title="What this workspace is for"
+            items={capabilities}
+            tone="cream"
+          />
+          <RoleDetailColumn
+            eyebrow="Access permissions"
+            title="What this role can do"
+            items={permissions}
+            tone="teal"
+          />
+          <RoleDetailColumn
+            eyebrow="Reports"
+            title="What this role can export"
+            items={reports}
+            tone="blue"
+          />
+        </div>
+        {profile?.guardrail ? (
+          <div className="mt-6 border-[3px] border-black bg-[#0b0b0b] p-5 text-sm font-bold leading-[1.5] text-[#f7eee8] shadow-[5px_5px_0_#c95545] dark:border-[#f7eee8]/25">
+            <span className="mr-3 text-[#4ba1a7]">Guardrail</span>
+            {profile.guardrail}
+          </div>
+        ) : null}
+      </div>
     </section>
+  );
+}
+
+function RoleDetailColumn({
+  eyebrow,
+  title,
+  items,
+  tone,
+}: {
+  eyebrow: string;
+  title: string;
+  items: Array<{ label: string; description: string }>;
+  tone: "cream" | "teal" | "blue";
+}) {
+  const toneClass = {
+    cream: "bg-white dark:bg-[#141414]",
+    teal: "bg-[#4ba1a7] text-[#092d31]",
+    blue: "bg-[#7b9cc8] text-[#102132]",
+  }[tone];
+
+  return (
+    <article className={`border-[3px] border-black p-5 shadow-[5px_5px_0_#000] dark:border-[#f7eee8]/25 ${toneClass}`}>
+      <p className="text-xs font-bold uppercase tracking-[0.16em] opacity-70">{eyebrow}</p>
+      <h3 className="mt-3 text-2xl font-bold leading-tight">{title}</h3>
+      <div className="mt-5 space-y-4">
+        {items.map((item) => (
+          <div key={item.label} className="border-t border-black/25 pt-4 dark:border-[#f7eee8]/20">
+            <p className="text-sm font-black">{item.label}</p>
+            <p className="mt-1 text-xs font-bold leading-[1.45] opacity-75">
+              {item.description}
+            </p>
+          </div>
+        ))}
+      </div>
+    </article>
   );
 }
 
@@ -1083,30 +1379,15 @@ function MetricCard({ metric }: { metric: Metric }) {
 }
 
 function buildQuickActions(role: UserRole) {
-  const actions: Record<UserRole, string[]> = {
-    INVESTOR: ["Invest Direct", "My Portfolio", "Goal Planner", "Risk Profile"],
-    ADVISOR: ["Review Clients", "Suitability Notes", "Fund Shortlist", "Advisor Reports"],
-    AMC: ["Scheme Monitor", "AUM Ranking", "Factsheet Queue", "Inflow Review"],
-    RESEARCHER: ["Signal Ranking", "Category Pulse", "Draft Insight", "Research Queue"],
-    ADMIN: ["Runtime Check", "User Registry", "Fund Sync", "Audit Trail"],
-  };
-
-  return actions[role];
+  return roleDefinitions[role].quickActions;
 }
 
 function roleLabel(role: UserRole) {
-  const labels: Record<UserRole, string> = {
-    INVESTOR: "Investor workspace",
-    ADVISOR: "Advisor workspace",
-    AMC: "AMC control",
-    RESEARCHER: "Research hub",
-    ADMIN: "System admin",
-  };
-
-  return labels[role];
+  return roleDefinitions[role].dashboardLabel;
 }
 
 function buildRoleProfile(role: UserRole, stats: DashboardStats | null): RoleProfile {
+  const definition = roleDefinitions[role];
   const fundsCount = stats?.fundsCount ?? 65;
   const usersCount = stats?.usersCount ?? 12;
   const totalAum = Number(stats?.totalAum ?? 1565000);
@@ -1137,11 +1418,10 @@ function buildRoleProfile(role: UserRole, stats: DashboardStats | null): RolePro
 
   const profiles: Record<UserRole, RoleProfile> = {
     INVESTOR: {
-      eyebrow: "Investor workspace",
-      title: "From capital to",
-      pixel: "confident moves",
-      intro:
-        "A direct investing console for fund discovery, allocation, XIRR tracking and disciplined long-term decisions.",
+      eyebrow: definition.dashboardLabel,
+      title: definition.heroTitle,
+      pixel: definition.heroPixel,
+      intro: definition.intro,
       metrics: [
         { label: "Total worth", value: "18.45L", note: "Daily movement +1.12%", tone: "cream" },
         { label: "XIRR", value: `${avgReturns}%`, note: "Direct plan alpha +3.8%", tone: "red" },
@@ -1154,62 +1434,83 @@ function buildRoleProfile(role: UserRole, stats: DashboardStats | null): RolePro
         "Advisor matching",
         "Portfolio monitoring",
       ],
+      capabilities: definition.capabilities,
+      permissions: definition.permissions,
+      reports: definition.reports,
+      guardrail: definition.guardrail,
+      primaryAction: definition.primaryAction,
       steps: baseSteps,
     },
     ADVISOR: {
-      eyebrow: "Advisor workspace",
-      title: "From client data to",
-      pixel: "better advice",
-      intro:
-        "Manage client portfolios, referrals, suitability notes and recurring advisory work from one visual command center.",
+      eyebrow: definition.dashboardLabel,
+      title: definition.heroTitle,
+      pixel: definition.heroPixel,
+      intro: definition.intro,
       metrics: [
         { label: "AUA", value: "8.45Cr", note: "12 active clients", tone: "cream" },
         { label: "Fees", value: "42.5K", note: "Monthly advisory revenue", tone: "teal" },
         { label: "Leads", value: "03", note: "Pending high-score matches", tone: "red" },
       ],
-      included: ["Client console", "Lead referrals", "Commission view", "Research notes", "Portfolio reviews"],
+      included: ["Client console", "Lead referrals", "Suitability notes", "Research shortlists", "Portfolio reviews"],
+      capabilities: definition.capabilities,
+      permissions: definition.permissions,
+      reports: definition.reports,
+      guardrail: definition.guardrail,
+      primaryAction: definition.primaryAction,
       steps: baseSteps,
     },
     AMC: {
-      eyebrow: "Fund house workspace",
-      title: "From scheme data to",
-      pixel: "market reach",
-      intro:
-        "Track listed funds, daily views, direct inflows and factsheet updates with a product-focused dashboard.",
+      eyebrow: definition.dashboardLabel,
+      title: definition.heroTitle,
+      pixel: definition.heroPixel,
+      intro: definition.intro,
       metrics: [
         { label: "AUM", value: formattedAum, note: `${fundsCount} listed schemes`, tone: "blue" },
         { label: "Views", value: "18.9K", note: "24 hour product views", tone: "cream" },
         { label: "Inflows", value: "4.2Cr", note: "Weekly direct movement", tone: "teal" },
       ],
       included: ["Fund manager", "AMC factsheets", "Lead pipeline", "View analytics", "Direct inflows"],
+      capabilities: definition.capabilities,
+      permissions: definition.permissions,
+      reports: definition.reports,
+      guardrail: definition.guardrail,
+      primaryAction: definition.primaryAction,
       steps: baseSteps,
     },
     RESEARCHER: {
-      eyebrow: "Research workspace",
-      title: "From insight to",
-      pixel: "trusted signal",
-      intro:
-        "Publish research, track reader engagement and build credibility around fund analysis and market commentary.",
+      eyebrow: definition.dashboardLabel,
+      title: definition.heroTitle,
+      pixel: definition.heroPixel,
+      intro: definition.intro,
       metrics: [
         { label: "Views", value: "48.2K", note: "8 insights published", tone: "cream" },
         { label: "Revenue", value: "8.9K", note: "Paid readers active", tone: "red" },
         { label: "Score", value: "98%", note: "Peer review credibility", tone: "blue" },
       ],
       included: ["Research center", "Insight publishing", "Reader analytics", "Peer review", "Subscription revenue"],
+      capabilities: definition.capabilities,
+      permissions: definition.permissions,
+      reports: definition.reports,
+      guardrail: definition.guardrail,
+      primaryAction: definition.primaryAction,
       steps: baseSteps,
     },
     ADMIN: {
-      eyebrow: "System workspace",
-      title: "From platform logs to",
-      pixel: "stable ops",
-      intro:
-        "Operate fund data, users, integrations and runtime checks from a single administrative console.",
+      eyebrow: definition.dashboardLabel,
+      title: definition.heroTitle,
+      pixel: definition.heroPixel,
+      intro: definition.intro,
       metrics: [
         { label: "Uptime", value: "99%", note: "Edge clusters healthy", tone: "black" },
         { label: "Funds", value: `${fundsCount}`, note: "Seeded database records", tone: "cream" },
         { label: "Users", value: `${usersCount}`, note: "Registered accounts", tone: "teal" },
       ],
       included: ["System control", "User settings", "Audit logging", "Integrations", "AMFI sync pipeline"],
+      capabilities: definition.capabilities,
+      permissions: definition.permissions,
+      reports: definition.reports,
+      guardrail: definition.guardrail,
+      primaryAction: definition.primaryAction,
       steps: baseSteps,
     },
   };

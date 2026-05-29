@@ -467,6 +467,8 @@ async function getPortfolioSummaries(
   userId: string,
   projection: FundProjection
 ) {
+  const fundNameExpression = withFundAlias(projection.nameExpression);
+  const fundCategoryExpression = withFundAlias(projection.categoryExpression);
   const portfolios = await db.$queryRawUnsafe<Array<{ id: string; name: string }>>(
     `
       SELECT "id", "name"
@@ -499,8 +501,8 @@ async function getPortfolioSummaries(
         h."avgNav",
         h."investedAmount",
         f."nav",
-        ${projection.nameExpression} AS "schemeName",
-        ${projection.categoryExpression} AS "category"
+        ${fundNameExpression} AS "schemeName",
+        ${fundCategoryExpression} AS "category"
       FROM "Holding" h
       INNER JOIN "Portfolio" p ON p."id" = h."portfolioId"
       INNER JOIN "Fund" f ON f."id" = h."fundId"
@@ -555,6 +557,7 @@ async function getRecentTransactions(
   userId: string,
   projection: FundProjection
 ) {
+  const fundNameExpression = withFundAlias(projection.nameExpression);
   const rows = await db.$queryRawUnsafe<
     Array<{
       id: string;
@@ -578,7 +581,7 @@ async function getRecentTransactions(
         t."nav",
         t."date",
         t."status",
-        ${projection.nameExpression} AS "schemeName"
+        ${fundNameExpression} AS "schemeName"
       FROM "Transaction" t
       INNER JOIN "Fund" f ON f."id" = t."fundId"
       WHERE t."userId" = $1
@@ -600,6 +603,10 @@ async function getRecentTransactions(
     schemeName: transaction.schemeName,
     name: transaction.schemeName,
   }));
+}
+
+function withFundAlias(expression: string) {
+  return expression.startsWith('"') ? `f.${expression}` : expression;
 }
 
 class InvestmentError extends Error {

@@ -6,6 +6,7 @@ import {
 } from "@/lib/backend-api";
 import { getLocalFunds } from "@/lib/local-funds";
 import { prisma } from "@/lib/prisma";
+import { parseUserRole, roleDefinitions } from "@/lib/roles";
 import { getActiveUserId } from "@/lib/session-user";
 
 type UserRole = "INVESTOR" | "ADVISOR" | "AMC" | "RESEARCHER" | "ADMIN";
@@ -29,13 +30,11 @@ interface Metric {
   tone: MetricTone;
 }
 
-const roles = new Set<UserRole>(["INVESTOR", "ADVISOR", "AMC", "RESEARCHER", "ADMIN"]);
-
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const role = parseRole(searchParams.get("role"));
+  const role = parseUserRole(searchParams.get("role"));
   const userId = await getActiveUserId();
 
   try {
@@ -60,6 +59,7 @@ export async function GET(request: NextRequest) {
       source,
       data: {
         role,
+        source,
         profile,
         chartData: fundStats.categories.slice(0, 6).map((category) => ({
           name: category.name,
@@ -241,6 +241,7 @@ function buildRoleProfile(
   }
 ) {
   const { fundStats, portfolioTotals, db, goals, source } = context;
+  const definition = roleDefinitions[role];
   const portfolioReturn =
     portfolioTotals.invested > 0
       ? ((portfolioTotals.value - portfolioTotals.invested) / portfolioTotals.invested) * 100
@@ -270,11 +271,10 @@ function buildRoleProfile(
 
   const profiles: Record<UserRole, any> = {
     INVESTOR: {
-      eyebrow: "Investor workspace",
-      title: "From capital to",
-      pixel: "confident moves",
-      intro:
-        "A direct investing console using live funds, portfolio holdings and transaction history.",
+      eyebrow: definition.dashboardLabel,
+      title: definition.heroTitle,
+      pixel: definition.heroPixel,
+      intro: definition.intro,
       metrics: [
         {
           label: "Total worth",
@@ -296,20 +296,24 @@ function buildRoleProfile(
         },
       ],
       included: [
-        "Direct fund screening",
-        "Live investment execution",
+        "Fund discovery and comparison",
+        "Server-validated direct investing",
         "Goal planning from holdings",
-        "Portfolio monitoring",
-        "Payment confirmation flow",
+        "Portfolio and transaction monitoring",
+        "Tax and payment report access",
       ],
+      capabilities: definition.capabilities,
+      permissions: definition.permissions,
+      reports: definition.reports,
+      guardrail: definition.guardrail,
+      primaryAction: definition.primaryAction,
       steps: baseSteps,
     },
     ADVISOR: {
-      eyebrow: "Advisor workspace",
-      title: "From client data to",
-      pixel: "better advice",
-      intro:
-        "A live advisory workspace driven by users, portfolios, holdings and current fund metrics.",
+      eyebrow: definition.dashboardLabel,
+      title: definition.heroTitle,
+      pixel: definition.heroPixel,
+      intro: definition.intro,
       metrics: [
         {
           label: "AUA",
@@ -330,15 +334,25 @@ function buildRoleProfile(
           tone: "red",
         },
       ],
-      included: ["Client console", "Suitability review", "Portfolio checks", "Fund shortlist", "Action notes"],
+      included: [
+        "Assigned client book",
+        "Suitability review notes",
+        "Portfolio drift checks",
+        "Approved fund shortlists",
+        "Advisor compliance reports",
+      ],
+      capabilities: definition.capabilities,
+      permissions: definition.permissions,
+      reports: definition.reports,
+      guardrail: definition.guardrail,
+      primaryAction: definition.primaryAction,
       steps: baseSteps,
     },
     AMC: {
-      eyebrow: "AMC control",
-      title: "From scheme data to",
-      pixel: "market reach",
-      intro:
-        "A product control surface fed by live fund counts, AUM, categories and AMFI-backed scheme rows.",
+      eyebrow: definition.dashboardLabel,
+      title: definition.heroTitle,
+      pixel: definition.heroPixel,
+      intro: definition.intro,
       metrics: [
         {
           label: "AUM",
@@ -359,15 +373,25 @@ function buildRoleProfile(
           tone: "teal",
         },
       ],
-      included: ["Fund manager", "Category pulse", "AUM ranking", "Scheme freshness", "Direct inflow checks"],
+      included: [
+        "Scheme registry operations",
+        "Factsheet readiness",
+        "Category and AUM pulse",
+        "Aggregate inflow checks",
+        "Product reach analytics",
+      ],
+      capabilities: definition.capabilities,
+      permissions: definition.permissions,
+      reports: definition.reports,
+      guardrail: definition.guardrail,
+      primaryAction: definition.primaryAction,
       steps: baseSteps,
     },
     RESEARCHER: {
-      eyebrow: "Research hub",
-      title: "From insight to",
-      pixel: "trusted signal",
-      intro:
-        "Research signals are calculated from live fund returns, categories and backend market-data coverage.",
+      eyebrow: definition.dashboardLabel,
+      title: definition.heroTitle,
+      pixel: definition.heroPixel,
+      intro: definition.intro,
       metrics: [
         {
           label: "Signals",
@@ -388,15 +412,25 @@ function buildRoleProfile(
           tone: "blue",
         },
       ],
-      included: ["Research center", "Fund signal ranking", "Category mix", "Return outliers", "Insight queue"],
+      included: [
+        "Fund signal ranking",
+        "Category movement analysis",
+        "Insight drafting queue",
+        "Research library coverage",
+        "Read-only market data access",
+      ],
+      capabilities: definition.capabilities,
+      permissions: definition.permissions,
+      reports: definition.reports,
+      guardrail: definition.guardrail,
+      primaryAction: definition.primaryAction,
       steps: baseSteps,
     },
     ADMIN: {
-      eyebrow: "System admin",
-      title: "From platform logs to",
-      pixel: "stable ops",
-      intro:
-        "A runtime console for users, portfolios, transactions, sync status and backend fund availability.",
+      eyebrow: definition.dashboardLabel,
+      title: definition.heroTitle,
+      pixel: definition.heroPixel,
+      intro: definition.intro,
       metrics: [
         {
           label: "Funds",
@@ -417,7 +451,18 @@ function buildRoleProfile(
           tone: "teal",
         },
       ],
-      included: ["System control", "User registry", "Portfolio audit", "Fund sync monitor", "Runtime checks"],
+      included: [
+        "Role and access registry",
+        "Fund sync operations",
+        "Portfolio and order audit",
+        "Runtime health checks",
+        "Integration guardrails",
+      ],
+      capabilities: definition.capabilities,
+      permissions: definition.permissions,
+      reports: definition.reports,
+      guardrail: definition.guardrail,
+      primaryAction: definition.primaryAction,
       steps: baseSteps,
     },
   };
@@ -492,10 +537,6 @@ function buildActivity(
     value: formatNav(fund.nav),
     note: normalizeCategory(fund.category),
   }));
-}
-
-function parseRole(role: string | null): UserRole {
-  return role && roles.has(role as UserRole) ? (role as UserRole) : "INVESTOR";
 }
 
 function normalizeCategory(category: unknown) {
