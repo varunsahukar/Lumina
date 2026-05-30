@@ -21,6 +21,7 @@ workspaces for investors, advisors, AMC users, researchers, and admins.
 - [Getting Started](#getting-started)
 - [Environment Variables](#environment-variables)
 - [Common Commands](#common-commands)
+- [Quality Gates](#quality-gates)
 - [API Overview](#api-overview)
 - [Data Sources](#data-sources)
 - [Troubleshooting](#troubleshooting)
@@ -246,6 +247,32 @@ Run these from `backend/`.
 | `npm run test:e2e` | Run end-to-end tests |
 | `npm run lint` | Run backend linting |
 
+## Quality Gates
+
+Run these checks before opening a pull request or deploying a build:
+
+```bash
+npm run lint
+npm run build
+
+cd backend
+npm run lint
+npm run build
+npm run test -- --runInBand
+```
+
+The backend lint task intentionally ignores generated Prisma output in
+`backend/src/generated/` and checks authored NestJS source only. Regenerate the
+client with `cd backend && npx prisma generate` after schema changes.
+
+For production deployment, also confirm:
+
+- frontend `BACKEND_API_URL` points at the deployed Nest API
+- backend `DATABASE_URL`, `JWT_SECRET`, provider keys, and Redis settings are
+  set per environment
+- migrations have been applied with `cd backend && npx prisma migrate deploy`
+- Redis is available when `ENABLE_REDIS` is not set to `false`
+
 ## API Overview
 
 ### Frontend API Routes
@@ -297,6 +324,7 @@ invalidates Redis fund caches, and exposes fresh data to the frontend.
 | Frontend shows empty data | Confirm `BACKEND_API_URL=http://localhost:3001/api` and check `http://localhost:3001/api/funds`. |
 | Prisma client is missing after backend build | Run `cd backend && npx prisma generate && npm run build`. |
 | pgvector extension is missing | Recreate the Docker database volume or run `CREATE EXTENSION IF NOT EXISTS vector;`. |
+| PostgreSQL SSL-mode warning appears during startup | Update `DATABASE_URL` to use the intended mode explicitly, such as `sslmode=verify-full` for strict SSL or `uselibpqcompat=true&sslmode=require` for libpq-compatible behavior. |
 | USA data is stale | Check `ALPHA_VANTAGE_KEY`, `USA_TICKERS`, and provider rate limits. |
 | Role dashboards are empty | Sync funds first, then create portfolios, investments, or transactions. |
 
@@ -314,8 +342,9 @@ Contributions are easiest to review when they are small and focused.
 Suggested local checks:
 
 ```bash
+npm run lint
 npm run build
-cd backend && npm run build
+cd backend && npm run lint && npm run build && npm run test -- --runInBand
 ```
 
 ## Security

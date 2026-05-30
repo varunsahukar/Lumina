@@ -76,6 +76,7 @@ let KycService = class KycService {
             const mockAnalysisId = 'perfios-job-xyz123';
             return {
                 jobId: mockAnalysisId,
+                fileSizeBytes: fileBuffer.length,
                 status: 'analyzing',
                 submittedAt: new Date(),
             };

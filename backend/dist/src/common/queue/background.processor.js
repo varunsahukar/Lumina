@@ -19,14 +19,16 @@ let BackgroundProcessor = BackgroundProcessor_1 = class BackgroundProcessor exte
                 case 'fetch-nav':
                     this.logger.log('Fetching live NAV updates from AMFI...');
                     return { status: 'success', data: 'NAV records updated' };
-                case 'rebalance-portfolio':
+                case 'rebalance-portfolio': {
                     const { portfolioId } = job.data;
                     this.logger.log(`Rebalancing portfolio: ${portfolioId}`);
                     return { status: 'success', portfolioId };
-                case 'generate-report':
+                }
+                case 'generate-report': {
                     const { reportId, userId } = job.data;
                     this.logger.log(`Generating report ${reportId} for user ${userId}`);
                     return { status: 'success', reportId };
+                }
                 default:
                     this.logger.warn(`Unknown job type: ${job.name}`);
                     return { status: 'error', error: `Unsupported job: ${job.name}` };

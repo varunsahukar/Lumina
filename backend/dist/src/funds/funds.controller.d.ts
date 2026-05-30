@@ -8,8 +8,8 @@ export declare class FundsController {
     private readonly comparisonService;
     constructor(fundsService: FundsService, screenerService: ScreenerService, comparisonService: ComparisonService);
     getAllFunds(response: Response, market?: string, search?: string, sort?: string, dir?: string, page?: string, limit?: string): Promise<{
-        name: string;
         id: string;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
         schemeCode: string;
@@ -77,8 +77,8 @@ export declare class FundsController {
         highestSharpeRatio: string | null;
     }>;
     screen(category?: string, minAum?: number, maxExpenseRatio?: number, minSharpe?: number, minReturns1y?: number, minReturns3y?: number, minReturns5y?: number, sortBy?: 'aum' | 'sharpeRatio' | 'returns1y' | 'returns3y' | 'returns5y' | 'expenseRatio', sortOrder?: 'asc' | 'desc', limit?: number): Promise<{
-        name: string;
         id: string;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
         schemeCode: string;
@@ -112,8 +112,8 @@ export declare class FundsController {
     getFundHistory(response: Response, id: string, days?: string): Promise<{
         id: string;
         nav: number;
-        date: Date;
         fundId: string;
+        date: Date;
     }[]>;
     private setFreshnessHeader;
 }

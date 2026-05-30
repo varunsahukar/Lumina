@@ -1,7 +1,6 @@
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class SecEdgarService {
@@ -24,11 +23,9 @@ export class SecEdgarService {
 
     try {
       // Fetching filing histories from SEC Edgar
-      const url = `https://data.sec.gov/submissions/CIK${paddedCik}.json`;
-
       // In production, we execute the HTTP call:
       // const response = await firstValueFrom(
-      //   this.httpService.get(url, {
+      //   this.httpService.get(`https://data.sec.gov/submissions/CIK${paddedCik}.json`, {
       //     headers: { 'User-Agent': this.userAgent }
       //   })
       // );

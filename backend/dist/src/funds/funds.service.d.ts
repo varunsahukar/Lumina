@@ -4,10 +4,10 @@ import { RedisService } from '../common/redis.service';
 import { Fund, NavHistory } from '../generated/prisma';
 import type { AmfiNavRecord, FundData, UsaFundQuote } from '../market-data/market-data.types';
 export interface FundFilters {
-    market?: 'INDIA' | 'USA' | 'INTERNATIONAL' | 'ALL' | string;
+    market?: string;
     search?: string;
-    sort?: 'nav' | 'change' | string;
-    dir?: 'asc' | 'desc' | string;
+    sort?: string;
+    dir?: string;
     page?: number | string;
     limit?: number | string;
 }
@@ -48,8 +48,8 @@ export declare class FundsService {
         search?: string;
     }): Promise<{
         items: {
-            name: string;
             id: string;
+            name: string;
             createdAt: Date;
             updatedAt: Date;
             schemeCode: string;

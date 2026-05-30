@@ -37,7 +37,8 @@ let AuthController = class AuthController {
         return this.authService.login(user);
     }
     getMe(req) {
-        const { password, ...user } = req.user;
+        const user = { ...req.user };
+        delete user.password;
         return user;
     }
     initiateKyc(req) {

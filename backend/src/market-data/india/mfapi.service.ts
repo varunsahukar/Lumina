@@ -123,7 +123,7 @@ export class MfApiService {
   private async fetchFundDataWithRetry(schemeCode: string): Promise<FundData> {
     try {
       return await this.fetchFundData(schemeCode);
-    } catch (error) {
+    } catch {
       this.logger.warn(
         `mfapi.in request failed for ${schemeCode}; retrying once in 1s`,
       );

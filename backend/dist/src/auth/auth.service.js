@@ -71,8 +71,7 @@ let AuthService = class AuthService {
                 role,
             },
         });
-        const { password: _, ...result } = user;
-        return result;
+        return this.withoutPassword(user);
     }
     async validateUser(email, pass) {
         const user = await this.prisma.user.findUnique({
@@ -81,8 +80,7 @@ let AuthService = class AuthService {
         if (user && user.password) {
             const isMatch = await bcrypt.compare(pass, user.password);
             if (isMatch) {
-                const { password, ...result } = user;
-                return result;
+                return this.withoutPassword(user);
             }
         }
         return null;
@@ -109,12 +107,16 @@ let AuthService = class AuthService {
             if (!user) {
                 throw new common_1.UnauthorizedException();
             }
-            const { password, ...result } = user;
-            return result;
+            return this.withoutPassword(user);
         }
         catch {
             throw new common_1.UnauthorizedException('Invalid or expired session');
         }
+    }
+    withoutPassword(user) {
+        const result = { ...user };
+        delete result.password;
+        return result;
     }
 };
 exports.AuthService = AuthService;

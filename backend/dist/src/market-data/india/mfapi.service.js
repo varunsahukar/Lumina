@@ -75,7 +75,7 @@ let MfApiService = MfApiService_1 = class MfApiService {
         try {
             return await this.fetchFundData(schemeCode);
         }
-        catch (error) {
+        catch {
             this.logger.warn(`mfapi.in request failed for ${schemeCode}; retrying once in 1s`);
             await this.sleep(1000);
             return this.fetchFundData(schemeCode);

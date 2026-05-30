@@ -40,9 +40,7 @@ export class AuthService {
       },
     });
 
-    // Remove password before returning
-    const { password: _, ...result } = user;
-    return result;
+    return this.withoutPassword(user);
   }
 
   async validateUser(email: string, pass: string): Promise<any> {
@@ -53,8 +51,7 @@ export class AuthService {
     if (user && user.password) {
       const isMatch = await bcrypt.compare(pass, user.password);
       if (isMatch) {
-        const { password, ...result } = user;
-        return result;
+        return this.withoutPassword(user);
       }
     }
     return null;
@@ -83,10 +80,17 @@ export class AuthService {
       if (!user) {
         throw new UnauthorizedException();
       }
-      const { password, ...result } = user;
-      return result;
+      return this.withoutPassword(user);
     } catch {
       throw new UnauthorizedException('Invalid or expired session');
     }
+  }
+
+  private withoutPassword<T extends { password?: unknown }>(
+    user: T,
+  ): Omit<T, 'password'> {
+    const result = { ...user };
+    delete result.password;
+    return result;
   }
 }

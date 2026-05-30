@@ -55,7 +55,8 @@ let FinnhubService = FinnhubService_1 = class FinnhubService {
             });
             ws.on('message', (data) => {
                 try {
-                    const parsed = JSON.parse(data.toString());
+                    const rawPacket = this.decodeWebSocketPacket(data);
+                    const parsed = JSON.parse(rawPacket);
                     if (parsed.type === 'trade') {
                         this.logger.debug(`Real-time trade parsed: ${JSON.stringify(parsed.data)}`);
                     }
@@ -75,6 +76,18 @@ let FinnhubService = FinnhubService_1 = class FinnhubService {
         catch (error) {
             this.logger.error(`Failed to initiate Finnhub WebSocket: ${error.message}`);
         }
+    }
+    decodeWebSocketPacket(data) {
+        if (typeof data === 'string') {
+            return data;
+        }
+        if (Buffer.isBuffer(data)) {
+            return data.toString('utf8');
+        }
+        if (data instanceof ArrayBuffer) {
+            return Buffer.from(data).toString('utf8');
+        }
+        return Buffer.concat(data).toString('utf8');
     }
     async getUsStockQuote(symbol) {
         const cleanSymbol = symbol.toUpperCase().trim();

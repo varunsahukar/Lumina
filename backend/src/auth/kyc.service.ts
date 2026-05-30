@@ -7,7 +7,6 @@ import { PrismaService } from '../common/prisma.service';
 import { KycStatus } from '../generated/prisma';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class KycService {
@@ -88,6 +87,7 @@ export class KycService {
 
       return {
         jobId: mockAnalysisId,
+        fileSizeBytes: fileBuffer.length,
         status: 'analyzing',
         submittedAt: new Date(),
       };

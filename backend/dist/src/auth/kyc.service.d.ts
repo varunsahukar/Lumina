@@ -10,31 +10,32 @@ export declare class KycService {
     private perfiosBaseUrl;
     constructor(prisma: PrismaService, httpService: HttpService, configService: ConfigService);
     initiateKyc(userId: string): Promise<{
-        password: string | null;
-        name: string | null;
-        role: import("../generated/prisma").$Enums.UserRole;
         id: string;
+        name: string | null;
         email: string;
         emailVerified: Date | null;
+        password: string | null;
         image: string | null;
+        role: import("../generated/prisma").$Enums.UserRole;
         kycStatus: import("../generated/prisma").$Enums.KycStatus;
         createdAt: Date;
         updatedAt: Date;
     }>;
     verifyPanWithSignzy(userId: string, panNumber: string): Promise<{
-        password: string | null;
-        name: string | null;
-        role: import("../generated/prisma").$Enums.UserRole;
         id: string;
+        name: string | null;
         email: string;
         emailVerified: Date | null;
+        password: string | null;
         image: string | null;
+        role: import("../generated/prisma").$Enums.UserRole;
         kycStatus: import("../generated/prisma").$Enums.KycStatus;
         createdAt: Date;
         updatedAt: Date;
     }>;
     uploadBankStatementWithPerfios(userId: string, fileBuffer: Buffer): Promise<{
         jobId: string;
+        fileSizeBytes: number;
         status: string;
         submittedAt: Date;
     }>;

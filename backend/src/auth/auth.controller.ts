@@ -31,7 +31,10 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body('email') email: string, @Body('password') password: string) {
+  async login(
+    @Body('email') email: string,
+    @Body('password') password: string,
+  ) {
     const user = await this.authService.validateUser(email, password);
 
     if (!user) {
@@ -44,7 +47,8 @@ export class AuthController {
   @Get('me')
   @UseGuards(JwtGuard)
   getMe(@Req() req: any) {
-    const { password, ...user } = req.user;
+    const user = { ...req.user };
+    delete user.password;
     return user;
   }
 

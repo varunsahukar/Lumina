@@ -5,17 +5,18 @@ export declare class AuthService {
     private prisma;
     private jwtService;
     constructor(prisma: PrismaService, jwtService: JwtService);
-    register(email: string, password: string, name?: string, role?: UserRole): Promise<{
-        name: string | null;
-        role: import("../generated/prisma").$Enums.UserRole;
+    register(email: string, password: string, name?: string, role?: UserRole): Promise<Omit<{
         id: string;
+        name: string | null;
         email: string;
         emailVerified: Date | null;
+        password: string | null;
         image: string | null;
+        role: import("../generated/prisma").$Enums.UserRole;
         kycStatus: import("../generated/prisma").$Enums.KycStatus;
         createdAt: Date;
         updatedAt: Date;
-    }>;
+    }, "password">>;
     validateUser(email: string, pass: string): Promise<any>;
     login(user: any): Promise<{
         access_token: string;
@@ -27,15 +28,17 @@ export declare class AuthService {
             kycStatus: any;
         };
     }>;
-    validateSession(token: string): Promise<{
-        name: string | null;
-        role: import("../generated/prisma").$Enums.UserRole;
+    validateSession(token: string): Promise<Omit<{
         id: string;
+        name: string | null;
         email: string;
         emailVerified: Date | null;
+        password: string | null;
         image: string | null;
+        role: import("../generated/prisma").$Enums.UserRole;
         kycStatus: import("../generated/prisma").$Enums.KycStatus;
         createdAt: Date;
         updatedAt: Date;
-    }>;
+    }, "password">>;
+    private withoutPassword;
 }

@@ -13,10 +13,10 @@ import type {
 import { DATA_FRESHNESS_MAX_AGE_MS } from '../market-data/market-data.types';
 
 export interface FundFilters {
-  market?: 'INDIA' | 'USA' | 'INTERNATIONAL' | 'ALL' | string;
+  market?: string;
   search?: string;
-  sort?: 'nav' | 'change' | string;
-  dir?: 'asc' | 'desc' | string;
+  sort?: string;
+  dir?: string;
   page?: number | string;
   limit?: number | string;
 }
@@ -394,7 +394,9 @@ export class FundsService {
    */
   async triggerManualRefresh(): Promise<{ queued: string[] }> {
     if (!isRedisEnabled()) {
-      this.logger.warn('Redis is disabled; manual fund refresh jobs were not queued');
+      this.logger.warn(
+        'Redis is disabled; manual fund refresh jobs were not queued',
+      );
       return { queued: [] };
     }
 

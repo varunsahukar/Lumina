@@ -31,7 +31,6 @@ let SecEdgarService = SecEdgarService_1 = class SecEdgarService {
             throw new common_1.BadRequestException('CIK number is required');
         const paddedCik = cik.trim().padStart(10, '0');
         try {
-            const url = `https://data.sec.gov/submissions/CIK${paddedCik}.json`;
             return {
                 cik: paddedCik,
                 entityType: 'operating company',

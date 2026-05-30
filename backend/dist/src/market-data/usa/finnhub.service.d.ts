@@ -12,6 +12,7 @@ export declare class FinnhubService implements OnModuleInit, OnModuleDestroy {
     onModuleInit(): void;
     onModuleDestroy(): void;
     private connectWebSocket;
+    private decodeWebSocketPacket;
     getUsStockQuote(symbol: string): Promise<{
         symbol: string;
         currentPrice: any;

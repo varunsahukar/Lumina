@@ -59,6 +59,19 @@ Important variables:
 | `npm run test:e2e` | Run end-to-end tests |
 | `npm run lint` | Run ESLint |
 
+## Quality Gates
+
+Before deploying or pushing backend changes, run:
+
+```bash
+npm run lint
+npm run build
+npm run test -- --runInBand
+```
+
+Generated Prisma files under `src/generated/` are excluded from linting. After
+editing `prisma/schema.prisma`, run `npx prisma generate` before building.
+
 ## Main Modules
 
 | Module | Responsibility |
@@ -97,3 +110,4 @@ Routes are mounted under `/api`.
 | Generated Prisma client missing | Run `npx prisma generate` and then `npm run build`. |
 | Empty fund responses | Run sync jobs or seed data, then check provider keys and rate limits. |
 | pgvector extension missing | Confirm `docker/postgres/init.sql` ran or manually create the extension. |
+| PostgreSQL SSL-mode warning | Set `DATABASE_URL` with explicit SSL behavior, for example `sslmode=verify-full` or `uselibpqcompat=true&sslmode=require`. |
