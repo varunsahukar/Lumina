@@ -72,6 +72,16 @@ npm run test -- --runInBand
 Generated Prisma files under `src/generated/` are excluded from linting. After
 editing `prisma/schema.prisma`, run `npx prisma generate` before building.
 
+For staging and production environment checks:
+
+```bash
+DEPLOY_ENV=production npm run check:deployment
+npm run migrate:deploy
+```
+
+See [`../docs/deployment.md`](../docs/deployment.md) for the full deployment
+checklist and hosting recommendation.
+
 ## Main Modules
 
 | Module | Responsibility |

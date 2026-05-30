@@ -22,6 +22,7 @@ workspaces for investors, advisors, AMC users, researchers, and admins.
 - [Environment Variables](#environment-variables)
 - [Common Commands](#common-commands)
 - [Quality Gates](#quality-gates)
+- [Deployment](#deployment)
 - [API Overview](#api-overview)
 - [Data Sources](#data-sources)
 - [Troubleshooting](#troubleshooting)
@@ -272,6 +273,27 @@ For production deployment, also confirm:
   set per environment
 - migrations have been applied with `cd backend && npx prisma migrate deploy`
 - Redis is available when `ENABLE_REDIS` is not set to `false`
+
+## Deployment
+
+Use [`docs/deployment.md`](docs/deployment.md) as the staging/production
+checklist. It covers required environment variables, backend migration commands,
+Redis requirements, PostgreSQL SSL-mode handling, and recommended hosting
+options.
+
+Before promoting a deployment, run:
+
+```bash
+DEPLOY_ENV=production npm run check:deployment
+```
+
+For backend-only services:
+
+```bash
+cd backend
+DEPLOY_ENV=production npm run check:deployment
+npm run migrate:deploy
+```
 
 ## API Overview
 
