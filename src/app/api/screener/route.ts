@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   backendErrorResponse,
   backendFetch,
+  describeBackendError,
   normalizeFunds,
   toNumber,
 } from "@/lib/backend-api";
@@ -41,7 +42,10 @@ export async function GET(request: NextRequest) {
       const backendFunds = await backendFetch<any[]>(`/funds?${backendParams}`);
       funds = normalizeFunds(backendFunds);
     } catch (error) {
-      console.warn("Backend screener unavailable, falling back to local database:", error);
+      console.warn(
+        "Backend screener unavailable, falling back to local database:",
+        describeBackendError(error)
+      );
       funds = await getLocalFunds({
         search,
         market: "INDIA",

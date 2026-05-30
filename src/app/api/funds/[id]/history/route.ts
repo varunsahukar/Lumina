@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   backendErrorResponse,
   backendFetch,
+  describeBackendError,
   toNumber,
   unwrapApiData,
 } from "@/lib/backend-api";
@@ -25,7 +26,7 @@ export async function GET(
     } catch (error) {
       console.warn(
         "Backend fund history unavailable, falling back to local database:",
-        error
+        describeBackendError(error)
       );
       history = await getLocalFundHistory(params.id, { days: Number(days) || 30 });
       source = "database-fallback";

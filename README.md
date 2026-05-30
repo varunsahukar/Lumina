@@ -202,8 +202,8 @@ Both the frontend and backend use `.env` files. Keep real secrets out of Git.
 | Variable | Purpose |
 | --- | --- |
 | `PORT` | Frontend port, usually `3000` |
-| `BACKEND_API_URL` | Server-side Nest API URL, for example `http://localhost:3001/api` |
-| `NEXT_PUBLIC_BACKEND_API_URL` | Browser-visible backend URL for client features |
+| `BACKEND_API_URL` | Server-side Nest API URL, including the `/api` prefix, for example `http://localhost:3001/api` or `https://your-backend.onrender.com/api` |
+| `NEXT_PUBLIC_BACKEND_API_URL` | Browser-visible backend URL for client features. Use the same `/api`-suffixed URL only when client code must call the backend directly. |
 | `DATABASE_URL` | Frontend Prisma database URL for auth/fallback data |
 | `JWT_SECRET` | Local auth secret |
 
@@ -343,7 +343,8 @@ invalidates Redis fund caches, and exposes fresh data to the frontend.
 | Problem | What to check |
 | --- | --- |
 | Backend cannot connect to Redis | Run `docker compose up -d redis`, or use `npm run start:local` after building the backend. |
-| Frontend shows empty data | Confirm `BACKEND_API_URL=http://localhost:3001/api` and check `http://localhost:3001/api/funds`. |
+| Frontend logs a Next.js 404 HTML page while fetching backend data | `BACKEND_API_URL` is missing the `/api` prefix or points at the frontend. Use the deployed Nest URL with `/api`, for example `https://your-backend.onrender.com/api`, then check `/api/funds`. |
+| Frontend shows empty data | Confirm `BACKEND_API_URL=http://localhost:3001/api` locally or `https://your-backend.onrender.com/api` in production, then check that `/api/funds` returns JSON. |
 | Prisma client is missing after backend build | Run `cd backend && npx prisma generate && npm run build`. |
 | pgvector extension is missing | Recreate the Docker database volume or run `CREATE EXTENSION IF NOT EXISTS vector;`. |
 | PostgreSQL SSL-mode warning appears during startup | Update `DATABASE_URL` to use the intended mode explicitly, such as `sslmode=verify-full` for strict SSL or `uselibpqcompat=true&sslmode=require` for libpq-compatible behavior. |

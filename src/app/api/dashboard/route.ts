@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import {
   backendFetch,
+  describeBackendError,
   normalizeFunds,
   toNumber,
 } from "@/lib/backend-api";
@@ -27,7 +28,10 @@ export async function GET() {
         backendFetch<any[]>("/funds?market=INDIA&limit=100"),
       ]);
     } catch (error) {
-      console.warn("Backend dashboard unavailable, falling back to local database:", error);
+      console.warn(
+        "Backend dashboard unavailable, falling back to local database:",
+        describeBackendError(error)
+      );
       source = "database-fallback";
       fundList = await getLocalFunds({ market: "INDIA", limit: 100 });
       summary = { totalFunds: fundList.length };

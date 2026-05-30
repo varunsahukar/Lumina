@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   backendErrorResponse,
   backendFetch,
+  describeBackendError,
   normalizeFunds,
 } from "@/lib/backend-api";
 import { getLocalFunds } from "@/lib/local-funds";
@@ -21,7 +22,10 @@ export async function GET(request: NextRequest) {
     try {
       funds = await backendFetch<any[]>(`/funds?${backendParams}`);
     } catch (error) {
-      console.warn("Backend funds unavailable, falling back to local database:", error);
+      console.warn(
+        "Backend funds unavailable, falling back to local database:",
+        describeBackendError(error)
+      );
       funds = await getLocalFunds({
         search: backendParams.get("search") || undefined,
         market: backendParams.get("market") || undefined,

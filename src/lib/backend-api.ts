@@ -1,16 +1,53 @@
 import { NextResponse } from "next/server";
 
-export const BACKEND_API_URL = (
-  process.env.BACKEND_API_URL ||
-  process.env.NEXT_PUBLIC_BACKEND_API_URL ||
-  "http://localhost:3001/api"
-).replace(/\/$/, "");
+const configuredBackendApiUrl =
+  process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_BACKEND_API_URL;
+
+const defaultBackendApiUrl =
+  process.env.NODE_ENV === "production" ? "" : "http://localhost:3001/api";
+
+export const BACKEND_API_URL = normalizeBackendApiUrl(
+  configuredBackendApiUrl || defaultBackendApiUrl
+);
+
+function normalizeBackendApiUrl(value: string) {
+  const trimmed = value.trim().replace(/\/+$/, "");
+
+  if (!trimmed) {
+    return "";
+  }
+
+  try {
+    const url = new URL(trimmed);
+    const pathname = url.pathname.replace(/\/+$/, "");
+
+    if (!pathname || pathname === "/") {
+      url.pathname = "/api";
+      return url.toString().replace(/\/+$/, "");
+    }
+
+    return url.toString().replace(/\/+$/, "");
+  } catch {
+    return trimmed;
+  }
+}
+
+function buildBackendUrl(path: string) {
+  if (!BACKEND_API_URL) {
+    throw new Error(
+      "BACKEND_API_URL is not configured. Set it to the deployed Nest API URL, for example https://your-api.onrender.com/api."
+    );
+  }
+
+  return `${BACKEND_API_URL}${path.startsWith("/") ? path : `/${path}`}`;
+}
 
 export async function backendFetch<T>(
   path: string,
   init?: RequestInit
 ): Promise<T> {
-  const response = await fetch(`${BACKEND_API_URL}${path}`, {
+  const url = buildBackendUrl(path);
+  const response = await fetch(url, {
     ...init,
     cache: "no-store",
     headers: {
@@ -20,19 +57,40 @@ export async function backendFetch<T>(
   });
 
   if (!response.ok) {
-    const message = await response.text();
-    throw new Error(
-      `Backend request failed: ${response.status} ${response.statusText}${
-        message ? ` - ${message}` : ""
-      }`
-    );
+    const message = await formatBackendError(response, url);
+    throw new Error(message);
   }
 
   return response.json() as Promise<T>;
 }
 
+async function formatBackendError(response: Response, url: string) {
+  const contentType = response.headers.get("content-type") || "";
+  const body = await response.text();
+  const bodyPreview = body
+    ? body
+        .replace(/<script[\s\S]*?<\/script>/gi, "")
+        .replace(/<style[\s\S]*?<\/style>/gi, "")
+        .replace(/<[^>]*>/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 240)
+    : "";
+  const htmlHint = contentType.includes("text/html")
+    ? " The backend returned HTML, so BACKEND_API_URL likely points to the frontend or is missing the /api prefix."
+    : "";
+
+  return `Backend request failed: ${response.status} ${response.statusText} at ${url}.${htmlHint}${
+    bodyPreview ? ` Response preview: ${bodyPreview}` : ""
+  }`;
+}
+
+export function describeBackendError(error: unknown) {
+  return error instanceof Error ? error.message : "Unknown backend error";
+}
+
 export function backendErrorResponse(error: unknown) {
-  const message = error instanceof Error ? error.message : "Unknown backend error";
+  const message = describeBackendError(error);
   return NextResponse.json({ success: false, error: message }, { status: 502 });
 }
 

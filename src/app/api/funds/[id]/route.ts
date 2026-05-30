@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   backendErrorResponse,
   backendFetch,
+  describeBackendError,
   normalizeFund,
   unwrapApiData,
 } from "@/lib/backend-api";
@@ -23,7 +24,7 @@ export async function GET(
     } catch (error) {
       console.warn(
         "Backend fund detail unavailable, falling back to local database:",
-        error
+        describeBackendError(error)
       );
       fund = await getLocalFund(params.id);
       source = "database-fallback";

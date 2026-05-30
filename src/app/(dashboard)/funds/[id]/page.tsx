@@ -4,7 +4,13 @@ import FundCard from "@/components/fund/FundCard";
 import FundDetail from "@/components/fund/FundDetail";
 import PerformanceChart from "@/components/fund/PerformanceChart";
 import { Button } from "@/components/ui/button";
-import { backendFetch, normalizeFund, toNumber, unwrapApiData } from "@/lib/backend-api";
+import {
+  backendFetch,
+  describeBackendError,
+  normalizeFund,
+  toNumber,
+  unwrapApiData,
+} from "@/lib/backend-api";
 import { getLocalFund, getLocalFundHistory } from "@/lib/local-funds";
 
 export default async function FundDetailPage({ params }: { params: { id: string } }) {
@@ -93,7 +99,10 @@ async function loadFund(id: string) {
     const fund = unwrapApiData(payload);
     return fund || (await getLocalFund(id));
   } catch (error) {
-    console.warn("Backend fund detail unavailable, falling back to local database:", error);
+    console.warn(
+      "Backend fund detail unavailable, falling back to local database:",
+      describeBackendError(error)
+    );
     return getLocalFund(id);
   }
 }
@@ -105,7 +114,10 @@ async function loadFundHistory(id: string) {
     );
     return unwrapApiData<any[]>(payload);
   } catch (error) {
-    console.warn("Backend fund history unavailable, falling back to local database:", error);
+    console.warn(
+      "Backend fund history unavailable, falling back to local database:",
+      describeBackendError(error)
+    );
     return getLocalFundHistory(id, { days: 180 });
   }
 }
