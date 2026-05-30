@@ -4,18 +4,19 @@ import FundCard from "@/components/fund/FundCard";
 import FundDetail from "@/components/fund/FundDetail";
 import PerformanceChart from "@/components/fund/PerformanceChart";
 import { Button } from "@/components/ui/button";
-import { backendFetch, normalizeFund, toNumber } from "@/lib/backend-api";
+import { backendFetch, normalizeFund, toNumber, unwrapApiData } from "@/lib/backend-api";
+import { getLocalFund, getLocalFundHistory } from "@/lib/local-funds";
 
 export default async function FundDetailPage({ params }: { params: { id: string } }) {
   const [fundResult, historyResult] = await Promise.allSettled([
-    backendFetch<any>(`/funds/${encodeURIComponent(params.id)}`),
-    backendFetch<any[]>(
-      `/funds/${encodeURIComponent(params.id)}/history?days=180`
-    ),
+    loadFund(params.id),
+    loadFundHistory(params.id),
   ]);
 
   const fund =
-    fundResult.status === "fulfilled" ? normalizeFund(fundResult.value) : null;
+    fundResult.status === "fulfilled" && fundResult.value
+      ? normalizeFund(fundResult.value)
+      : null;
   const history =
     historyResult.status === "fulfilled"
       ? historyResult.value.map((point) => ({
@@ -84,4 +85,27 @@ export default async function FundDetailPage({ params }: { params: { id: string 
       <FundDetail fund={fund || undefined} />
     </div>
   );
+}
+
+async function loadFund(id: string) {
+  try {
+    const payload = await backendFetch<any>(`/funds/${encodeURIComponent(id)}`);
+    const fund = unwrapApiData(payload);
+    return fund || (await getLocalFund(id));
+  } catch (error) {
+    console.warn("Backend fund detail unavailable, falling back to local database:", error);
+    return getLocalFund(id);
+  }
+}
+
+async function loadFundHistory(id: string) {
+  try {
+    const payload = await backendFetch<any[] | { data?: any[] }>(
+      `/funds/${encodeURIComponent(id)}/history?days=180`
+    );
+    return unwrapApiData<any[]>(payload);
+  } catch (error) {
+    console.warn("Backend fund history unavailable, falling back to local database:", error);
+    return getLocalFundHistory(id, { days: 180 });
+  }
 }

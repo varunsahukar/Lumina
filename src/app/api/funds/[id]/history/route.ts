@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { backendErrorResponse, backendFetch, toNumber } from "@/lib/backend-api";
+import {
+  backendErrorResponse,
+  backendFetch,
+  toNumber,
+  unwrapApiData,
+} from "@/lib/backend-api";
+import { getLocalFundHistory } from "@/lib/local-funds";
 
 export async function GET(
   request: NextRequest,
@@ -8,13 +14,26 @@ export async function GET(
   try {
     const { searchParams } = new URL(request.url);
     const days = searchParams.get("days") || "30";
-    const history = await backendFetch<any[]>(
-      `/funds/${encodeURIComponent(params.id)}/history?days=${encodeURIComponent(days)}`
-    );
+    let history: any[];
+    let source = "backend";
+
+    try {
+      const backendPayload = await backendFetch<any[] | { data?: any[] }>(
+        `/funds/${encodeURIComponent(params.id)}/history?days=${encodeURIComponent(days)}`
+      );
+      history = unwrapApiData<any[]>(backendPayload);
+    } catch (error) {
+      console.warn(
+        "Backend fund history unavailable, falling back to local database:",
+        error
+      );
+      history = await getLocalFundHistory(params.id, { days: Number(days) || 30 });
+      source = "database-fallback";
+    }
 
     return NextResponse.json({
       success: true,
-      source: "backend",
+      source,
       data: history.map((point) => ({
         ...point,
         nav: toNumber(point.nav) ?? 0,

@@ -36,6 +36,19 @@ export function backendErrorResponse(error: unknown) {
   return NextResponse.json({ success: false, error: message }, { status: 502 });
 }
 
+export function unwrapApiData<T>(payload: T | { data?: T }): T {
+  if (
+    payload &&
+    typeof payload === "object" &&
+    "data" in payload &&
+    (payload as { data?: T }).data !== undefined
+  ) {
+    return (payload as { data: T }).data;
+  }
+
+  return payload as T;
+}
+
 export function toNumber(value: unknown): number | null {
   if (value === null || value === undefined) return null;
   const parsed = Number(value);
