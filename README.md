@@ -33,6 +33,7 @@ Lumina is a monorepo containing a **Next.js 14 frontend** at the repository root
 - [Production Environment Checklist](#production-environment-checklist)
 - [API Overview](#api-overview)
 - [Data Sources](#data-sources)
+- [Operations Runbook](#operations-runbook)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [Security](#security)
@@ -410,6 +411,42 @@ The NestJS app is served under `/api`.
 | Finnhub / Yahoo Finance | Optional live or extended market data | Feature-flagged |
 
 The backend normalizes provider responses into Prisma models, writes sync logs, invalidates Redis fund caches, and exposes fresh data to the frontend.
+
+---
+
+## Operations Runbook
+
+Use this checklist when operating the app after deployment.
+
+### Daily checks
+
+- Open the frontend and confirm the screener shows funds.
+- Check `/api/funds?market=INDIA&limit=1` on the frontend host.
+- Check `/api/funds?market=INDIA&limit=1` on the backend host.
+- Confirm Redis is connected if `ENABLE_REDIS` is not `false`.
+- Review backend logs for sync or provider rate-limit errors.
+
+### Data refresh
+
+1. Confirm provider keys and cron values are set.
+2. Run migrations if the schema changed.
+3. Restart the backend worker or service.
+4. Confirm fund rows and NAV history are updating.
+5. Recheck the frontend screener and dashboard.
+
+### Release flow
+
+1. Merge or push to `main`.
+2. Deploy backend first when API or schema behavior changed.
+3. Run `cd backend && npx prisma migrate deploy`.
+4. Deploy frontend after the backend is healthy.
+5. Validate `/api/dashboard`, `/api/funds`, `/screener`, and `/dashboard`.
+
+### Rollback notes
+
+- Roll back frontend first for UI-only issues.
+- Roll back backend only after checking database migration impact.
+- Do not roll back a migrated database without a tested recovery plan.
 
 ---
 
