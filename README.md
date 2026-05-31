@@ -25,6 +25,7 @@ Lumina is a monorepo containing a **Next.js 14 frontend** at the repository root
 - [Tech Stack](#tech-stack)
 - [Repository Layout](#repository-layout)
 - [Getting Started](#getting-started)
+- [Quick Health Check](#quick-health-check)
 - [Environment Variables](#environment-variables)
 - [Common Commands](#common-commands)
 - [Quality Gates](#quality-gates)
@@ -206,6 +207,22 @@ npm run dev
 ```
 
 App is available at `http://localhost:3000`.
+
+---
+
+## Quick Health Check
+
+Use these checks after starting the local stack.
+
+| Check | Command | Expected Result |
+|---|---|---|
+| Frontend loads | `open http://localhost:3000` | Prototype or landing page opens |
+| Backend responds | `curl http://localhost:3001/api/funds?market=INDIA\&limit=1` | JSON fund response |
+| Frontend proxy works | `curl http://localhost:3000/api/funds?market=INDIA\&limit=1` | JSON with `success: true` |
+| Prisma can generate | `npx prisma generate` | Client generated in `src/generated/prisma` |
+| Backend builds | `cd backend && npm run build` | Nest build completes |
+
+If the frontend proxy returns an HTML 404 page, check `BACKEND_API_URL`. It must include `/api`.
 
 ---
 
