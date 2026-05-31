@@ -248,18 +248,17 @@ function buildRoleProfile(
       : 0;
   const avgGoalProgress =
     goals.reduce((sum, goal) => sum + goal.progress, 0) / Math.max(1, goals.length);
-  const syncNote = source === "backend" ? "Nest backend live" : "Local database fallback";
-
+  const sourceLabel = source === "backend" ? "Backend" : "Local cache";
   const baseSteps = [
     {
       id: "01",
       title: "Live snapshot",
-      body: `${fundStats.categories.reduce((sum, item) => sum + item.funds, 0)} funds loaded from ${syncNote.toLowerCase()}.`,
+      body: `${fundStats.categories.reduce((sum, item) => sum + item.funds, 0)} funds loaded.`,
     },
     {
       id: "02",
       title: "Portfolio signal",
-      body: `${db.portfoliosCount} portfolios and ${db.transactionsCount} investment transactions are available in the database.`,
+      body: `${db.portfoliosCount} portfolios, ${db.transactionsCount} transactions.`,
       red: true,
     },
     {
@@ -291,16 +290,16 @@ function buildRoleProfile(
         {
           label: "Goals",
           value: `${goals.length}`,
-          note: `${avgGoalProgress.toFixed(0)}% portfolio-derived progress`,
+          note: `${avgGoalProgress.toFixed(0)}% progress`,
           tone: "blue",
         },
       ],
       included: [
-        "Fund discovery and comparison",
-        "Server-validated direct investing",
-        "Goal planning from holdings",
-        "Portfolio and transaction monitoring",
-        "Tax and payment report access",
+        "Fund comparison",
+        "Direct investing",
+        "Goal planning",
+        "Portfolio tracking",
+        "Tax reports",
       ],
       capabilities: definition.capabilities,
       permissions: definition.permissions,
@@ -335,11 +334,11 @@ function buildRoleProfile(
         },
       ],
       included: [
-        "Assigned client book",
-        "Suitability review notes",
-        "Portfolio drift checks",
-        "Approved fund shortlists",
-        "Advisor compliance reports",
+        "Client book",
+        "Suitability notes",
+        "Drift checks",
+        "Fund shortlists",
+        "Review reports",
       ],
       capabilities: definition.capabilities,
       permissions: definition.permissions,
@@ -363,7 +362,7 @@ function buildRoleProfile(
         {
           label: "Schemes",
           value: `${fundStats.categories.reduce((sum, item) => sum + item.funds, 0)}`,
-          note: syncNote,
+          note: sourceLabel,
           tone: "cream",
         },
         {
@@ -374,11 +373,11 @@ function buildRoleProfile(
         },
       ],
       included: [
-        "Scheme registry operations",
-        "Factsheet readiness",
-        "Category and AUM pulse",
-        "Aggregate inflow checks",
-        "Product reach analytics",
+        "Scheme registry",
+        "Factsheets",
+        "AUM pulse",
+        "Inflow checks",
+        "Reach analytics",
       ],
       capabilities: definition.capabilities,
       permissions: definition.permissions,
@@ -413,11 +412,11 @@ function buildRoleProfile(
         },
       ],
       included: [
-        "Fund signal ranking",
-        "Category movement analysis",
-        "Insight drafting queue",
-        "Research library coverage",
-        "Read-only market data access",
+        "Signal ranking",
+        "Category moves",
+        "Insight drafts",
+        "Research library",
+        "Read-only data",
       ],
       capabilities: definition.capabilities,
       permissions: definition.permissions,
@@ -435,7 +434,7 @@ function buildRoleProfile(
         {
           label: "Funds",
           value: `${fundStats.categories.reduce((sum, item) => sum + item.funds, 0)}`,
-          note: syncNote,
+          note: sourceLabel,
           tone: "black",
         },
         {
@@ -452,11 +451,11 @@ function buildRoleProfile(
         },
       ],
       included: [
-        "Role and access registry",
-        "Fund sync operations",
-        "Portfolio and order audit",
-        "Runtime health checks",
-        "Integration guardrails",
+        "Access registry",
+        "Fund sync",
+        "Order audit",
+        "Runtime checks",
+        "Integrations",
       ],
       capabilities: definition.capabilities,
       permissions: definition.permissions,
@@ -566,11 +565,11 @@ function formatNav(value: unknown) {
 
 function roleActionBody(role: UserRole) {
   const body: Record<UserRole, string> = {
-    INVESTOR: "Move from fund selection to a real database transaction and payment confirmation page.",
-    ADVISOR: "Prioritise client reviews using live portfolio values and completed investment events.",
-    AMC: "Watch product reach with scheme counts, AUM ranking and category distribution.",
-    RESEARCHER: "Convert return outliers and category movement into publishable research signals.",
-    ADMIN: "Monitor users, funds, portfolios and order records from the live database snapshot.",
+    INVESTOR: "Pick a fund, invest and confirm payment.",
+    ADVISOR: "Prioritise clients with live portfolio values.",
+    AMC: "Track schemes, AUM and categories.",
+    RESEARCHER: "Turn return outliers into insights.",
+    ADMIN: "Monitor users, funds and orders.",
   };
 
   return body[role];

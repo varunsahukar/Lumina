@@ -55,8 +55,8 @@ export default function FundDetail({ fund }: FundDetailProps) {
       <h2 className="text-xl font-semibold mt-8">AI Summary</h2>
       <p className="text-muted-foreground">
         {fund
-          ? `${fund.schemeName} is a ${fund.category} fund from ${fund.amcName || "its AMC"}. Current NAV is ${fund.nav.toFixed(2)}, with ${formatPercent(fund.returns3y)} 3-year returns where available.`
-          : "Real fund data will appear here once the backend returns this fund."}
+          ? `${fund.schemeName} is a ${fund.category} fund from ${fund.amcName || "its AMC"}. NAV is ${fund.nav.toFixed(2)}. 3Y return is ${formatPercent(fund.returns3y)}.`
+          : "Fund data appears after load."}
       </p>
     </div>
   );

@@ -69,7 +69,7 @@ export default function FundTable() {
           ) {
             nextFunds = fallbackJson.data;
             nextSource = fallbackJson.source || nextSource;
-            nextNotice = `No ${selectedCategory} instruments are in the current feed yet. Showing all live instruments.`;
+            nextNotice = `No ${selectedCategory} rows yet. Showing all funds.`;
           }
         }
 
@@ -89,8 +89,8 @@ export default function FundTable() {
         console.error("Failed to load funds", err);
         setError(
           hasLoadedFundsRef.current
-            ? "Live refresh failed. Showing the last loaded instruments."
-            : "Unable to load instruments from the backend."
+            ? "Refresh failed. Showing saved rows."
+            : "Unable to load funds."
         );
         setNotice(null);
       } finally {
@@ -110,7 +110,7 @@ export default function FundTable() {
       if (compareList.length >= 3) {
         toast({
           title: "Comparison limit reached",
-          description: "You can compare up to 3 mutual funds side-by-side.",
+          description: "You can compare up to 3 funds.",
           variant: "destructive",
         });
         return;
@@ -118,7 +118,7 @@ export default function FundTable() {
       addToCompare(fund);
       toast({
         title: "Added to compare queue",
-        description: `${fund.schemeName.split(" - ")[0]} has been added.`,
+        description: `${fund.schemeName.split(" - ")[0]} added.`,
       });
     }
   };
@@ -145,12 +145,12 @@ export default function FundTable() {
     <div className="space-y-4">
       <div className="flex flex-col gap-2 px-1 text-xs font-bold text-[#5b5652] dark:text-[#bdb5ae] sm:flex-row sm:items-center sm:justify-between">
         <span>
-          Showing {loading ? "..." : funds.length} instruments matching criteria
+          Showing {loading ? "..." : funds.length} funds
           {dataSource === "database-fallback" ? " from local cache" : ""}
         </span>
         <span className="flex items-center">
           <Star className="mr-1 h-3 w-3 fill-[#c95545] text-[#c95545] dark:fill-[#4ba1a7] dark:text-[#4ba1a7]" />
-          Direct Plan - Growth Options Only
+          Direct plans only
         </span>
       </div>
 
@@ -195,7 +195,7 @@ export default function FundTable() {
             <AlertCircle className="mb-3 h-10 w-10 text-[#c95545] dark:text-[#4ba1a7]" />
             <h3 className="text-sm font-bold text-black dark:text-[#f7eee8]">No funds found</h3>
             <p className="mt-1 max-w-sm text-xs font-semibold text-[#5b5652] dark:text-[#bdb5ae]">
-              We couldn&apos;t find any direct plans matching your keywords. Adjust your category filters or double check spelling!
+              Try a shorter search or another category.
             </p>
           </div>
         ) : (
@@ -235,7 +235,7 @@ export default function FundTable() {
                       </Badge>
                       {fund.sharpeRatio && fund.sharpeRatio >= 1.6 && (
                         <Badge className="rounded-none border border-[#4ba1a7] bg-[#dff5f1] px-1.5 py-0.5 text-[9px] font-bold text-[#082f33] hover:bg-[#dff5f1] dark:bg-[#123f45] dark:text-[#bcece6] dark:hover:bg-[#123f45]">
-                          High Risk-Adjusted
+                          Strong risk score
                         </Badge>
                       )}
                     </div>
@@ -255,7 +255,7 @@ export default function FundTable() {
                       }`}
                       aria-expanded={isPreviewOpen}
                     >
-                      <span>{isPreviewOpen ? "Hide Preview" : "Preview"}</span>
+                      <span>{isPreviewOpen ? "Hide" : "Preview"}</span>
                     </button>
                     <button
                       type="button"
@@ -305,7 +305,7 @@ export default function FundTable() {
                     ticker={fund.schemeCode ? `FUND:${fund.schemeCode}` : `FUND:${fund.id.slice(0, 8)}`}
                     issuer={fund.amcName || "AMC pending"}
                     category={`${fund.category || "Category pending"} / ${fund.subCategory || "Direct Plan"}`}
-                    description={`${fund.schemeName} is managed by ${fund.amcName || "the AMC"}. This preview keeps the essentials readable before you compare, invest, or open the full fund detail page.`}
+                    description={`${fund.amcName || "AMC"} fund with core stats and return history.`}
                     priceLabel="Current NAV"
                     priceValue={`₹${fund.nav.toFixed(2)}`}
                     stats={[
@@ -316,14 +316,14 @@ export default function FundTable() {
                     history={buildFundHistory(fund)}
                     historyLabel="Return history"
                     actionHref={`/funds/${encodeURIComponent(fund.id)}`}
-                    actionLabel="Open full details"
+                    actionLabel="Open details"
                   />
                 ) : null}
 
                 <div className="grid grid-cols-2 gap-4 border-t-[3px] border-black pt-3 dark:border-[#f7eee8]/20 md:grid-cols-4">
                   <div className="space-y-0.5">
                     <span className="text-[10px] font-bold uppercase tracking-wide text-[#5b5652] dark:text-[#bdb5ae]">
-                      Current NAV
+                      NAV
                     </span>
                     <p className="text-xs font-extrabold text-black dark:text-[#f7eee8]">
                       ₹{fund.nav.toFixed(2)}
@@ -331,7 +331,7 @@ export default function FundTable() {
                   </div>
                   <div className="space-y-0.5">
                     <span className="text-[10px] font-bold uppercase tracking-wide text-[#5b5652] dark:text-[#bdb5ae]">
-                      3-Year returns (CAGR)
+                      3Y return
                     </span>
                     <p className="text-xs font-extrabold text-[#16804d] dark:text-[#4ba1a7]">
                       {formatPercent(fund.returns3y)}
@@ -339,7 +339,7 @@ export default function FundTable() {
                   </div>
                   <div className="space-y-0.5">
                     <span className="text-[10px] font-bold uppercase tracking-wide text-[#5b5652] dark:text-[#bdb5ae]">
-                      Total Assets (AUM)
+                      AUM
                     </span>
                     <p className="text-xs font-extrabold text-black dark:text-[#f7eee8]">
                       {formatAUM(fund.aum)}
@@ -347,7 +347,7 @@ export default function FundTable() {
                   </div>
                   <div className="space-y-0.5">
                     <span className="text-[10px] font-bold uppercase tracking-wide text-[#5b5652] dark:text-[#bdb5ae]">
-                      Expense Ratio
+                      Expense
                     </span>
                     <p className="text-xs font-extrabold text-[#c95545] dark:text-[#f0c7bf]">
                       {formatPercent(fund.expenseRatio)}

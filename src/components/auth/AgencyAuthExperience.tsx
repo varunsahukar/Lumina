@@ -158,8 +158,7 @@ export default function AgencyAuthExperience({ initialMode }: { initialMode: Aut
             {activeMode === "login" ? "Welcome back to the console" : "Create your investor console"}
           </h1>
           <p className="mt-8 max-w-2xl text-2xl font-semibold leading-[1.35] text-[#3f3a37]">
-            Direct plans, watchlists, risk diagnostics and portfolio decisions live in one hard-edged
-            workspace built for repeat action.
+            Direct plans, watchlists, risk checks and portfolio actions in one workspace.
           </p>
 
           <div className="mt-12 grid max-w-2xl grid-cols-3 gap-5">

@@ -16,7 +16,7 @@ export default function ScreenerPage() {
           </h1>
         </div>
         <p className="max-w-3xl text-sm font-semibold leading-6 text-[#5b5652] dark:text-[#bdb5ae]">
-          Explore and filter Direct Plan mutual funds using daily AMFI NAV data and risk-adjusted Sharpe metrics.
+          Filter live direct plans by return, cost, AUM and risk.
         </p>
       </div>
 

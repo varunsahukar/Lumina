@@ -34,15 +34,15 @@ export const roleDefinitions: Record<UserRole, RoleDefinition> = {
   INVESTOR: {
     label: "Investor Console",
     shortLabel: "Investor",
-    description: "Screen funds, invest directly, track goals",
+    description: "Screen, invest and track goals",
     badge: "Personal wealth workspace",
     dashboardLabel: "Investor workspace",
     heroTitle: "From capital to",
     heroPixel: "confident moves",
     intro:
-      "A personal investment console for fund discovery, direct allocations, portfolio health, goals and payment review.",
+      "Find funds, invest and track your portfolio.",
     guardrail:
-      "Investors can act only on their own portfolios, orders, risk profile and reports.",
+      "Investors only see their own portfolios, orders and reports.",
     primaryAction: "Invest Direct",
     nav: [
       { name: "Fund Screener", href: "/screener", icon: "compass", code: "01" },
@@ -52,44 +52,44 @@ export const roleDefinitions: Record<UserRole, RoleDefinition> = {
     ],
     capabilities: [
       {
-        label: "Discover and compare funds",
-        description: "Use NAV, return, category, risk and AUM signals to shortlist schemes.",
+        label: "Compare funds",
+        description: "Shortlist by NAV, return, risk and AUM.",
       },
       {
         label: "Invest directly",
-        description: "Create one-time or SIP allocations and continue into payment confirmation.",
+        description: "Create one-time or SIP orders.",
       },
       {
-        label: "Track portfolio outcomes",
-        description: "Monitor holdings, gain, goal progress and recent transactions from live data.",
+        label: "Track portfolio",
+        description: "See holdings, gains, goals and transactions.",
       },
     ],
     permissions: [
       {
-        label: "Own portfolio access",
-        description: "View and manage only personal portfolios, holdings and goal plans.",
+        label: "Own data only",
+        description: "Access personal portfolios and goals.",
       },
       {
         label: "Order creation",
-        description: "Create investment orders after server-side NAV and amount validation.",
+        description: "Place orders after NAV and amount checks.",
       },
       {
         label: "Personal reports",
-        description: "Generate tax, transaction and performance reports for the signed-in investor.",
+        description: "Export personal tax and performance reports.",
       },
     ],
     reports: [
       {
         label: "Capital gains statement",
-        description: "Realized and unrealized gains grouped by fund and holding period.",
+        description: "Gains by fund and holding period.",
       },
       {
         label: "Goal progress summary",
-        description: "Portfolio value mapped against live goal targets and contribution gaps.",
+        description: "Progress against live goals.",
       },
       {
         label: "Transaction ledger",
-        description: "Buy, sell and SIP rows prepared for payment and tax review.",
+        description: "Buy, sell and SIP rows.",
       },
     ],
     quickActions: ["Invest Direct", "My Portfolio", "Goal Planner", "Risk Profile"],
@@ -97,15 +97,15 @@ export const roleDefinitions: Record<UserRole, RoleDefinition> = {
   ADVISOR: {
     label: "Advisor Workspace",
     shortLabel: "Advisor",
-    description: "Manage assigned clients and suitability reviews",
+    description: "Review clients and suitability",
     badge: "Client advisory desk",
     dashboardLabel: "Advisor workspace",
     heroTitle: "From client data to",
     heroPixel: "better advice",
     intro:
-      "A client-book workspace for suitability review, portfolio diagnostics, fund shortlists and advisory reporting.",
+      "Review client portfolios and prepare advice.",
     guardrail:
-      "Advisors review assigned client data and recommendations; execution requires investor approval.",
+      "Advisors draft recommendations. Investors approve execution.",
     primaryAction: "Review Clients",
     nav: [
       { name: "Client Book", href: "/dashboard", icon: "users", code: "01" },
@@ -115,44 +115,44 @@ export const roleDefinitions: Record<UserRole, RoleDefinition> = {
     ],
     capabilities: [
       {
-        label: "Review client portfolios",
-        description: "See client holdings, transactions, allocation gaps and risk-context snapshots.",
+        label: "Review portfolios",
+        description: "See holdings, gaps and risk context.",
       },
       {
-        label: "Prepare suitability notes",
-        description: "Convert portfolio signals into review-ready advice and rationale.",
+        label: "Write suitability notes",
+        description: "Turn signals into clear advice.",
       },
       {
-        label: "Build approved shortlists",
-        description: "Compare funds and stage recommended schemes for client approval.",
+        label: "Build shortlists",
+        description: "Stage funds for client approval.",
       },
     ],
     permissions: [
       {
         label: "Assigned clients only",
-        description: "Access is scoped to mapped clients and their advisory records.",
+        description: "Access only mapped clients.",
       },
       {
         label: "Recommendation drafting",
-        description: "Create notes, shortlists and review reports without placing orders directly.",
+        description: "Create notes and reports, not orders.",
       },
       {
         label: "Read-only fund universe",
-        description: "Inspect and compare schemes, but fund master data remains AMC/admin controlled.",
+        description: "View schemes without editing master data.",
       },
     ],
     reports: [
       {
         label: "Client review pack",
-        description: "Portfolio health, risk fit, allocation drift and recommended next actions.",
+        description: "Health, risk fit and next actions.",
       },
       {
         label: "Suitability exceptions",
-        description: "Clients whose portfolio mix diverges from their declared risk profile.",
+        description: "Clients outside their risk profile.",
       },
       {
         label: "Advisor activity log",
-        description: "Notes, shortlists and review events prepared for compliance audit.",
+        description: "Notes, shortlists and review events.",
       },
     ],
     quickActions: ["Review Clients", "Suitability Notes", "Fund Shortlist", "Advisor Reports"],
@@ -160,15 +160,15 @@ export const roleDefinitions: Record<UserRole, RoleDefinition> = {
   AMC: {
     label: "AMC Control",
     shortLabel: "AMC",
-    description: "Operate schemes, factsheets and product analytics",
+    description: "Manage schemes and factsheets",
     badge: "Fund house control room",
     dashboardLabel: "AMC control",
     heroTitle: "From scheme data to",
     heroPixel: "market reach",
     intro:
-      "A fund-house control surface for scheme freshness, AUM movement, category reach and factsheet readiness.",
+      "Track schemes, AUM and factsheet readiness.",
     guardrail:
-      "AMC users manage product-level data and aggregated insights, not individual investor PII.",
+      "AMC users see product data, not investor PII.",
     primaryAction: "Scheme Monitor",
     nav: [
       { name: "Scheme Registry", href: "/dashboard", icon: "layers", code: "01" },
@@ -179,43 +179,43 @@ export const roleDefinitions: Record<UserRole, RoleDefinition> = {
     capabilities: [
       {
         label: "Monitor scheme freshness",
-        description: "Track NAV sync coverage, category distribution and stale product rows.",
+        description: "Track NAV sync and stale rows.",
       },
       {
-        label: "Publish factsheet inputs",
-        description: "Prepare product statistics, AUM context and scheme data for factsheets.",
+        label: "Prepare factsheets",
+        description: "Review stats, AUM and scheme data.",
       },
       {
         label: "Read aggregate demand",
-        description: "Use category, view and inflow signals without exposing investor-level data.",
+        description: "See category, view and inflow signals.",
       },
     ],
     permissions: [
       {
         label: "Product data stewardship",
-        description: "Manage fund metadata, categories, factsheet queues and product analytics.",
+        description: "Manage metadata and factsheet queues.",
       },
       {
         label: "Aggregate-only investor insight",
-        description: "See demand and inflow patterns without accessing personal portfolios.",
+        description: "See demand without personal portfolios.",
       },
       {
         label: "No platform administration",
-        description: "Cannot assign user roles, change auth policy or operate infrastructure settings.",
+        description: "No access to roles or infrastructure.",
       },
     ],
     reports: [
       {
         label: "Scheme freshness report",
-        description: "NAV coverage, missing factsheet fields and stale data flags.",
+        description: "NAV coverage and stale data.",
       },
       {
         label: "Category pulse",
-        description: "AUM, scheme count and return spread by category.",
+        description: "AUM and count by category.",
       },
       {
         label: "Product reach summary",
-        description: "Aggregated views, shortlist signals and direct inflow checks.",
+        description: "Views, shortlists and inflows.",
       },
     ],
     quickActions: ["Scheme Monitor", "AUM Ranking", "Factsheet Queue", "Inflow Review"],
@@ -223,15 +223,15 @@ export const roleDefinitions: Record<UserRole, RoleDefinition> = {
   RESEARCHER: {
     label: "Research Hub",
     shortLabel: "Research",
-    description: "Convert fund signals into published insights",
+    description: "Publish fund insights",
     badge: "Editorial and signal desk",
     dashboardLabel: "Research hub",
     heroTitle: "From insight to",
     heroPixel: "trusted signal",
     intro:
-      "A research workspace for ranking funds, detecting category movement, drafting insights and reviewing readership signals.",
+      "Rank funds, draft insights and track readership.",
     guardrail:
-      "Researchers can publish analysis and signals, but cannot place trades or change fund master data.",
+      "Researchers publish insights, not trades or fund edits.",
     primaryAction: "Signal Ranking",
     nav: [
       { name: "Signal Lab", href: "/dashboard", icon: "compass", code: "01" },
@@ -241,44 +241,44 @@ export const roleDefinitions: Record<UserRole, RoleDefinition> = {
     ],
     capabilities: [
       {
-        label: "Rank research signals",
-        description: "Turn returns, categories and market-data coverage into publishable signals.",
+        label: "Rank signals",
+        description: "Turn returns and categories into signals.",
       },
       {
-        label: "Draft fund commentary",
-        description: "Create insight queues for outliers, category changes and benchmark context.",
+        label: "Draft commentary",
+        description: "Write notes on outliers and categories.",
       },
       {
         label: "Track credibility",
-        description: "Review readership, peer-review status and research coverage gaps.",
+        description: "Review readership and coverage gaps.",
       },
     ],
     permissions: [
       {
         label: "Research publishing",
-        description: "Create, update and publish commentary and signal summaries.",
+        description: "Publish commentary and summaries.",
       },
       {
         label: "Read-only financial data",
-        description: "Inspect fund and aggregate market data without changing orders or portfolios.",
+        description: "Read data without changing orders.",
       },
       {
         label: "No execution authority",
-        description: "Cannot create investments, approve KYC or manage platform access.",
+        description: "No investments, KYC or access control.",
       },
     ],
     reports: [
       {
         label: "Signal ranking",
-        description: "Top and bottom schemes by return, category and data freshness.",
+        description: "Top and bottom schemes.",
       },
       {
         label: "Research coverage map",
-        description: "Categories with strong, weak or missing insight coverage.",
+        description: "Coverage by category.",
       },
       {
         label: "Insight queue",
-        description: "Drafts, review status and publish-ready research packs.",
+        description: "Drafts and review status.",
       },
     ],
     quickActions: ["Signal Ranking", "Category Pulse", "Draft Insight", "Research Queue"],
@@ -286,15 +286,15 @@ export const roleDefinitions: Record<UserRole, RoleDefinition> = {
   ADMIN: {
     label: "System Admin",
     shortLabel: "Admin",
-    description: "Operate access, integrations and platform health",
+    description: "Manage access and health",
     badge: "Platform operations",
     dashboardLabel: "System admin",
     heroTitle: "From platform logs to",
     heroPixel: "stable ops",
     intro:
-      "A runtime operations console for users, roles, data sync status, portfolio records, transactions and backend availability.",
+      "Monitor users, sync, transactions and backend health.",
     guardrail:
-      "Admins manage platform controls and access policy; investment decisions stay with investors and advisors.",
+      "Admins manage the platform, not investment decisions.",
     primaryAction: "Runtime Check",
     nav: [
       { name: "Runtime Control", href: "/dashboard", icon: "shield", code: "01" },
@@ -305,43 +305,43 @@ export const roleDefinitions: Record<UserRole, RoleDefinition> = {
     capabilities: [
       {
         label: "Control user access",
-        description: "Audit accounts, role assignments, KYC state and access boundaries.",
+        description: "Audit users, roles and KYC state.",
       },
       {
         label: "Monitor data pipelines",
-        description: "Inspect fund sync, backend availability, Redis status and API freshness.",
+        description: "Check sync, Redis and API freshness.",
       },
       {
         label: "Operate audit controls",
-        description: "Review transaction counts, portfolio records and operational exceptions.",
+        description: "Review counts, records and exceptions.",
       },
     ],
     permissions: [
       {
         label: "Role and access management",
-        description: "Manage roles, accounts, access boundaries and operational policy.",
+        description: "Manage roles and access policy.",
       },
       {
         label: "Integration operations",
-        description: "Monitor providers, sync jobs, cache health and backend data availability.",
+        description: "Monitor providers, sync and cache health.",
       },
       {
         label: "Audit visibility",
-        description: "View platform-wide logs, counts and exceptions without impersonating advice.",
+        description: "View logs and exceptions.",
       },
     ],
     reports: [
       {
         label: "Access audit",
-        description: "Users, roles, KYC state and permission boundaries for review.",
+        description: "Users, roles and permissions.",
       },
       {
         label: "Fund sync health",
-        description: "Backend source mode, scheme count, cache freshness and pipeline status.",
+        description: "Source, scheme count and cache state.",
       },
       {
         label: "Order operations",
-        description: "Portfolio and transaction volumes with exception monitoring.",
+        description: "Portfolio and order volumes.",
       },
     ],
     quickActions: ["Runtime Check", "User Registry", "Fund Sync", "Audit Trail"],

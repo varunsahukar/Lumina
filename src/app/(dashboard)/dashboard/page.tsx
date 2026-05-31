@@ -601,7 +601,7 @@ function GoalPlannerPanel({
         <div>
           <p className="agency-label mb-4">Goal Planner</p>
           <h2 className="text-4xl font-bold leading-none text-[#082f33] dark:text-[#f7eee8] sm:text-6xl">
-            Portfolio-derived goals
+            Live goals
           </h2>
         </div>
         <span className="border-[3px] border-black bg-white px-4 py-3 text-xs font-bold uppercase tracking-[0.14em] text-black dark:border-[#f7eee8]/25 dark:bg-[#141414] dark:text-[#f7eee8]">
@@ -648,7 +648,7 @@ function GoalPlannerPanel({
           ))
         ) : (
           <div className="border-[3px] border-black bg-[#0b0b0b] p-6 text-sm font-bold text-[#f7eee8]">
-            Add an investment and this planner will calculate progress from portfolio value.
+            Add an investment to start goal tracking.
           </div>
         )}
       </div>
@@ -714,7 +714,7 @@ function RoleCommandCenter({
           <div>
             <p className="agency-label mb-3">{roleDefinition.badge}</p>
             <h2 className="text-3xl font-bold leading-tight text-[#082f33] dark:text-[#f7eee8] sm:text-4xl">
-              Role command center
+              Role center
             </h2>
             <p className="mt-3 max-w-3xl text-sm font-bold leading-[1.55] text-[#5b5652] dark:text-[#bdb5ae]">
               {profile.guardrail || roleDefinition.guardrail}
@@ -743,7 +743,7 @@ function RoleCommandCenter({
               </span>
             </div>
             <p className="mt-2 text-xs font-bold text-[#bdb5ae]">
-              {workspace?.source === "backend" ? "Nest backend connected" : "Local fallback ready"}
+              {workspace?.source === "backend" ? "Backend live" : "Local fallback"}
             </p>
           </div>
         </div>
@@ -904,7 +904,7 @@ function RoleWorkspaceConsole({
         <div>
           <p className="agency-label mb-4">{roleLabel(role)}</p>
           <h2 className="text-4xl font-bold leading-none text-[#082f33] dark:text-[#f7eee8] sm:text-6xl">
-            Live workspace data
+            Workspace data
           </h2>
         </div>
         <Button
@@ -918,7 +918,7 @@ function RoleWorkspaceConsole({
           ) : (
             <RefreshCcw className="mr-2 h-4 w-4" />
           )}
-          Refresh live data
+          Refresh data
         </Button>
       </div>
 
@@ -959,7 +959,7 @@ function RoleWorkspaceConsole({
               ))
             ) : (
               <div className="border-[3px] border-black bg-[#0b0b0b] p-6 text-sm font-bold text-[#f7eee8]">
-                No live rows yet. Sync funds or add investments to populate this workspace.
+                No rows yet. Sync funds or add investments.
               </div>
             )}
           </div>
@@ -970,13 +970,13 @@ function RoleWorkspaceConsole({
         <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr_0.9fr]">
           <RoleDetailColumn
             eyebrow="Role capabilities"
-            title="What this workspace is for"
+            title="Purpose"
             items={capabilities}
             tone="cream"
           />
           <RoleDetailColumn
             eyebrow="Access permissions"
-            title="What this role can do"
+            title="Allowed actions"
             items={permissions}
             tone="teal"
           />
@@ -1398,21 +1398,18 @@ function buildRoleProfile(role: UserRole, stats: DashboardStats | null): RolePro
     {
       id: "01",
       title: "Discovery",
-      body:
-        "The workspace begins with fresh fund data, goals and risk context so every action has a clear starting point.",
+      body: "Start with live funds, goals and risk context.",
     },
     {
       id: "02",
       title: "Design",
-      body:
-        "Signals are shaped into visual panels, comparisons and alerts that make repeated decisions easier to scan.",
+      body: "Turn signals into clear panels and alerts.",
       red: true,
     },
     {
       id: "03",
       title: "Development",
-      body:
-        "The platform connects portfolio, research and execution workflows so each role can move from insight to action.",
+      body: "Move from insight to action.",
     },
   ];
 

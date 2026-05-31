@@ -124,7 +124,7 @@ export default function PaymentPage() {
                 <PaymentRow label="Status" value={payment.status} />
                 <PaymentRow
                   label="Transaction"
-                  value={transactionId || "Generated after investment"}
+                  value={transactionId || "After investment"}
                 />
                 <PaymentRow
                   label="Date"
@@ -135,7 +135,7 @@ export default function PaymentPage() {
 
             <div className="mt-7 flex items-center gap-3 border-[3px] border-black bg-[#dff5f1] p-4 text-sm font-bold text-[#082f33] dark:border-[#f7eee8]/25 dark:bg-[#123f45] dark:text-[#bcece6]">
               <ShieldCheck className="h-5 w-5 shrink-0" />
-              This confirmation is generated from the database investment transaction.
+              This comes from the investment record.
             </div>
           </div>
         </div>

@@ -89,19 +89,19 @@ const workflow = [
     id: "01",
     icon: Database,
     title: "Backend sync",
-    body: "The page reads fund counts, AUM and recent funds from the existing Next API proxy.",
+    body: "Loads funds, AUM and recent rows from the API.",
   },
   {
     id: "02",
     icon: Search,
     title: "Live discovery",
-    body: "Funds from the backend power the explorer, market tape, category chart and fund focus panel.",
+    body: "Feeds the explorer, tape, charts and fund panel.",
   },
   {
     id: "03",
     icon: SlidersHorizontal,
     title: "Interactive planning",
-    body: "The SIP lab uses the selected live fund return to animate a projected five year outcome.",
+    body: "Uses the selected return to model a five year SIP.",
   },
 ];
 
@@ -109,17 +109,17 @@ const faqItems = [
   {
     question: "Is this showing real fund data?",
     answer:
-      "Yes. The live surfaces read from /api/dashboard and /api/funds, which are backed by the Nest fund services through the frontend proxy layer.",
+      "Yes. The page reads `/api/dashboard` and `/api/funds`.",
   },
   {
     question: "What happens if the backend is unavailable?",
     answer:
-      "The UI keeps running and clearly shows the backend state. It does not replace the live panels with fake fund rows.",
+      "The UI stays usable and shows the backend state.",
   },
   {
     question: "Can I compare funds from here?",
     answer:
-      "The live explorer links into the screener so the same backend-backed fund universe can be filtered and compared.",
+      "Yes. Open the screener to filter and compare.",
   },
 ];
 
@@ -341,8 +341,7 @@ export default function LuminaLandingExperience() {
             </h1>
 
             <p className="mt-8 max-w-2xl text-lg font-semibold leading-[1.55] text-[var(--landing-muted)] sm:text-xl">
-              A real-time investing surface powered by backend fund data, animated analytics,
-              live category movement and an interactive planning lab.
+              Live fund data, simple charts and a SIP planner in one view.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
@@ -413,7 +412,7 @@ export default function LuminaLandingExperience() {
               <div>
                 <p className="lumina-label">Live fund explorer</p>
                 <h2 className="mt-3 text-4xl font-black leading-tight sm:text-5xl">
-                  Rank, inspect and move into the screener.
+                  Rank funds. Open details. Invest.
                 </h2>
               </div>
               <PixelIcon kind="chart" className="shrink-0" />
@@ -469,7 +468,7 @@ export default function LuminaLandingExperience() {
           <div className="lumina-panel lumina-reveal">
             <p className="lumina-label">Planning lab</p>
             <h2 className="mt-3 max-w-3xl text-4xl font-black leading-tight sm:text-5xl">
-              Model a five year SIP with the selected live return.
+              Model a five year SIP.
             </h2>
 
             <div className="mt-10 grid gap-5 md:grid-cols-3">
@@ -540,7 +539,7 @@ export default function LuminaLandingExperience() {
           <div className="lumina-reveal">
             <p className="lumina-label">Confidence layer</p>
             <h2 className="mt-3 text-4xl font-black leading-tight sm:text-5xl">
-              Fast answers for a live investing surface.
+              Quick answers.
             </h2>
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               <TrustTile icon={ShieldCheck} label="Proxy-backed" body="Frontend calls stay on the existing /api contract." />
@@ -685,7 +684,7 @@ function MarketTape({ funds, isLoading }: { funds: Fund[]; isLoading: boolean })
           ))
         ) : (
           <div className="lumina-tape-item">
-            {isLoading ? "Syncing live fund tape" : "Start the backend to populate the live fund tape"}
+            {isLoading ? "Syncing fund tape" : "Start backend to load funds"}
           </div>
         )}
       </div>
@@ -702,8 +701,8 @@ function SelectedFundPanel({
 }) {
   const fundName = fund?.schemeName || fund?.name || "No fund selected";
   const fundDescription = fund
-    ? `${fundName} is shown with the same simple preview pattern used for stocks: details first, key stats second, and readable yearly history last.`
-    : "Select a live scheme to see company or AMC details, key stats and a compact yearly history preview.";
+    ? `${fundName} with key stats and return history.`
+    : "Select a scheme to preview stats and history.";
   const history = performanceData.map((point) => ({
     label: point.period,
     value: Math.max(0, point.value),
@@ -740,7 +739,7 @@ function CategoryPanel({ data, isLoading }: { data: CategoryPoint[]; isLoading: 
       <div className="mb-6 flex items-center justify-between">
         <div>
           <p className="lumina-label">Category pulse</p>
-          <h3 className="mt-2 text-2xl font-black">Backend universe mix</h3>
+          <h3 className="mt-2 text-2xl font-black">Fund mix</h3>
         </div>
         <BarChart3 className="h-6 w-6 text-[var(--landing-red)]" />
       </div>

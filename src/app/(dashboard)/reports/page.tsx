@@ -128,7 +128,7 @@ export default function ReportsPage() {
 
     toast({
       title: `${label} downloaded`,
-      description: "A role-scoped JSON export was generated from the live workspace data.",
+      description: "JSON export created.",
     });
   };
 
@@ -157,7 +157,7 @@ export default function ReportsPage() {
             ) : (
               <RefreshCcw className="mr-2 h-4 w-4" />
             )}
-            Refresh live role data
+            Refresh data
           </Button>
         </div>
 
@@ -188,7 +188,7 @@ export default function ReportsPage() {
           <div>
             <p className="agency-label mb-4">Report permissions</p>
             <h2 className="text-4xl font-bold leading-none text-[#082f33] dark:text-[#f7eee8] sm:text-6xl">
-              Role-specific exports
+              Role exports
             </h2>
           </div>
           <span className="inline-flex h-12 items-center border-[3px] border-black bg-white px-4 text-xs font-bold uppercase tracking-[0.14em] text-black dark:border-[#f7eee8]/25 dark:bg-[#141414] dark:text-[#f7eee8]">
@@ -287,7 +287,7 @@ export default function ReportsPage() {
             ))
           ) : (
             <div className="border-[3px] border-black bg-[#0b0b0b] p-6 text-sm font-bold text-[#f7eee8]">
-              No live rows yet. Sync funds or add investments to populate reports.
+              No rows yet. Sync funds or add investments.
             </div>
           )}
         </div>

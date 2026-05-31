@@ -153,7 +153,7 @@ export default function InstrumentPreviewCard({
         ) : (
           <div className="instrument-preview-empty">
             <LineChart className="h-5 w-5" />
-            History will appear after the data provider returns enough yearly records.
+            History appears when yearly data is available.
           </div>
         )}
       </div>

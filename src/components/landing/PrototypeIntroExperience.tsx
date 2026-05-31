@@ -42,19 +42,19 @@ const prototypePages: PrototypePage[] = [
   {
     id: "01",
     eyebrow: "ABOUT US",
-    title: "A decision layer before money moves.",
-    accent: "Lumina turns scattered fund and market data into an investment workflow.",
+    title: "Decide before you invest.",
+    accent: "Lumina turns fund and market data into clear actions.",
     body:
-      "Most investors compare schemes, read market news, calculate SIP outcomes and place orders across different tools. This prototype brings those actions into one readable surface where every decision can trace back to data.",
+      "Most investors jump between tools. Lumina brings discovery, planning and orders into one simple flow.",
     stats: [
       { label: "User journey", value: "4", note: "discover, compare, plan, invest" },
       { label: "Core markets", value: "2", note: "mutual funds and listed equities" },
       { label: "Workspaces", value: "5", note: "investor, advisor, AMC, research, admin" },
     ],
     points: [
-      "Unifies fund discovery, stock-market context and portfolio action.",
-      "Keeps investors inside a guided flow instead of dropping them into raw tables.",
-      "Separates role permissions so each workspace sees the data it can act on.",
+      "Find funds faster.",
+      "Plan with live numbers.",
+      "Keep each role focused.",
     ],
     visual: "problem",
     icon: CompassIcon,
@@ -62,19 +62,19 @@ const prototypePages: PrototypePage[] = [
   {
     id: "02",
     eyebrow: "Mutual fund engine",
-    title: "Schemes become comparable, current and actionable.",
-    accent: "The backend normalizes NAV, category, AUM, return and freshness signals.",
+    title: "Compare funds quickly.",
+    accent: "NAV, AUM, return and category data stay in one view.",
     body:
-      "The mutual fund side solves discovery friction. Instead of relying on static brochure data, Lumina can show scheme rows, category context, return history, focused scheme details and SIP planning from the same fund universe.",
+      "The fund view removes clutter. Users can compare schemes, open details and move into investing.",
     stats: [
       { label: "Inputs", value: "NAV", note: "AMFI and mfapi-backed data" },
       { label: "Output", value: "SIP", note: "planning from scheme returns" },
       { label: "Guardrail", value: "Risk", note: "category and allocation awareness" },
     ],
     points: [
-      "Compare schemes on return, expense, AUM, category and risk context.",
-      "Use focused scheme pages to reduce noisy decision making.",
-      "Convert a selected scheme into a direct-invest and payment review flow.",
+      "Compare return, cost and size.",
+      "Open a focused fund page.",
+      "Invest and review payment.",
     ],
     visual: "funds",
     icon: WalletCards,
@@ -82,19 +82,19 @@ const prototypePages: PrototypePage[] = [
   {
     id: "03",
     eyebrow: "Stock market context",
-    title: "Market movement explains why allocation changes.",
-    accent: "Stocks, sectors and volatility give the fund story its operating context.",
+    title: "Use market context.",
+    accent: "Stocks and sectors explain fund movement.",
     body:
-      "Funds do not move in isolation. The prototype frames equity signals, sector pressure, benchmark movement and volatility as context for screening, rebalancing and research decisions.",
+      "Funds move with markets. Lumina keeps the key signals close to screening and research.",
     stats: [
       { label: "Signals", value: "Live", note: "market and quote-ready design" },
       { label: "Lens", value: "Sector", note: "allocation context" },
       { label: "Use case", value: "Rebalance", note: "portfolio action support" },
     ],
     points: [
-      "Connects market momentum with mutual fund category performance.",
-      "Makes stock-market volatility visible before users commit money.",
-      "Gives researchers and advisors a shared view of signal quality.",
+      "See market momentum.",
+      "Spot volatility early.",
+      "Share the same signal view.",
     ],
     visual: "stocks",
     icon: TrendingUp,
@@ -102,19 +102,19 @@ const prototypePages: PrototypePage[] = [
   {
     id: "04",
     eyebrow: "What Lumina solves",
-    title: "A guided path from insight to investment.",
-    accent: "The landing experience after this page shows the live fund surface.",
+    title: "From insight to action.",
+    accent: "The next page opens the live fund surface.",
     body:
-      "Lumina solves the gap between information and action. It gives users a flow that starts with education, moves into live fund intelligence, and ends with portfolio, payment and reporting workflows.",
+      "Lumina connects learning, screening, investing, portfolio tracking and reports.",
     stats: [
       { label: "Problem", value: "Noise", note: "too many disconnected finance tools" },
       { label: "Solution", value: "Flow", note: "learn, screen, invest, monitor" },
       { label: "Next step", value: "Live", note: "open the landing experience" },
     ],
     points: [
-      "Investors get direct investing, goal planning and portfolio monitoring.",
-      "Advisors, AMC users, researchers and admins get role-specific control surfaces.",
-      "Ops teams get backend data freshness, sync and reporting visibility.",
+      "Investors can act directly.",
+      "Teams get role-based views.",
+      "Ops can track data health.",
     ],
     visual: "solution",
     icon: ShieldCheck,
@@ -127,7 +127,7 @@ const sampleFundPreview = {
   issuer: "ICICI Prudential AMC",
   category: "Large Cap Equity",
   description:
-    "A sample fund preview showing how each mutual fund can explain its AMC, category, NAV, risk and yearly performance in one compact card.",
+    "A compact fund preview with AMC, NAV, risk and yearly returns.",
   stats: [
     { label: "NAV", value: "INR 95.42" },
     { label: "3Y return", value: "18.6%", tone: "positive" as const },
@@ -148,7 +148,7 @@ const sampleStockPreview = {
   issuer: "Reliance Industries Ltd",
   category: "Energy / Retail / Digital",
   description:
-    "A stock preview keeps company context and financial scale readable before the user studies price action or adds the stock to a watchlist.",
+    "A simple stock preview with company details and revenue history.",
   stats: [
     { label: "Market cap", value: "INR 19.4T" },
     { label: "P/E", value: "24.8x" },

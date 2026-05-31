@@ -103,8 +103,8 @@ export default function OnboardingPage() {
 
   const handleCompleteOnboarding = () => {
     toast({
-      title: "Onboarding Complete!",
-      description: "Your eKYC has been matched with CVL-KRA. Welcome to LuminaVest!",
+      title: "Onboarding complete",
+      description: "eKYC verified. Welcome to LuminaVest.",
     });
     router.push("/dashboard");
   };
@@ -173,17 +173,17 @@ export default function OnboardingPage() {
           <div className="space-y-5 animate-fade-in">
             <div className="space-y-1.5">
               <h2 className="text-sm font-extrabold text-slate-200 uppercase tracking-wider">
-                Step 1: KYC PAN & Aadhaar Matching
+                Step 1: Verify PAN and Aadhaar
               </h2>
               <p className="text-[11px] text-slate-500 leading-relaxed">
-                Enter your permanent account credentials. We instantly verify details directly against income tax departments and UIDAI registries.
+                Enter IDs to verify your profile.
               </p>
             </div>
 
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="pan" className="text-xs font-semibold text-slate-400">
-                  PAN Card Number (10 Alphanumeric characters)
+                  PAN number
                 </Label>
                 <Input
                   id="pan"
@@ -197,7 +197,7 @@ export default function OnboardingPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="aadhaar" className="text-xs font-semibold text-slate-400">
-                  Aadhaar Card Number (12 digits)
+                  Aadhaar number
                 </Label>
                 <div className="flex gap-2">
                   <Input
@@ -223,7 +223,7 @@ export default function OnboardingPage() {
               {otpSent && !otpVerified && (
                 <div className="space-y-2.5 p-4 bg-slate-950 border border-slate-850 rounded-2xl animate-slide-up">
                   <Label htmlFor="otp" className="text-xs font-bold text-slate-400">
-                    Aadhaar Linked SMS OTP Code (6 digits)
+                    OTP code
                   </Label>
                   <div className="flex gap-2">
                     <Input
@@ -263,10 +263,10 @@ export default function OnboardingPage() {
           <div className="space-y-5 animate-fade-in">
             <div className="space-y-1.5">
               <h2 className="text-sm font-extrabold text-slate-200 uppercase tracking-wider">
-                Step 2: In-Person Liveness IPV
+                Step 2: Video IPV
               </h2>
               <p className="text-[11px] text-slate-500 leading-relaxed">
-                SEBI regulations mandate In-Person Verification. Allow camera access, and capture a 3-second snapshot reading the verification digits displayed.
+                Allow camera access and capture a short verification clip.
               </p>
             </div>
 
@@ -347,10 +347,10 @@ export default function OnboardingPage() {
           <div className="space-y-5 animate-fade-in">
             <div className="space-y-1.5">
               <h2 className="text-sm font-extrabold text-slate-200 uppercase tracking-wider">
-                Step 3: Investor Risk Diagnostics
+                Step 3: Risk profile
               </h2>
               <p className="text-[11px] text-slate-550 leading-relaxed">
-                SEBI mandates wealth platforms evaluate investor risk profiles to ensure fund products match personal holding tolerances.
+                Pick answers that match your comfort with risk.
               </p>
             </div>
 
@@ -358,7 +358,7 @@ export default function OnboardingPage() {
               {/* Question 1 */}
               <div className="space-y-2">
                 <Label className="text-xs font-bold text-slate-400">
-                  1. What is your expected investment horizon timeline?
+                  1. Investment horizon?
                 </Label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
@@ -388,9 +388,9 @@ export default function OnboardingPage() {
                 </Label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
-                    { val: "capital", label: "Capital Protection" },
-                    { val: "growth", label: "Aggressive Growth" },
-                    { val: "speculative", label: "High CAGR Wealth" },
+                    { val: "capital", label: "Protect capital" },
+                    { val: "growth", label: "Grow wealth" },
+                    { val: "speculative", label: "High growth" },
                   ].map((item) => (
                     <button
                       key={item.val}
@@ -410,13 +410,13 @@ export default function OnboardingPage() {
               {/* Question 3 */}
               <div className="space-y-2">
                 <Label className="text-xs font-bold text-slate-400">
-                  3. If your holdings drop 20% in a market correction, you will:
+                  3. If holdings drop 20%, you will:
                 </Label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
-                    { val: "sell", label: "Panic Sell" },
-                    { val: "hold", label: "Hold Position" },
-                    { val: "buy-more", label: "Buy More Units" },
+                    { val: "sell", label: "Sell" },
+                    { val: "hold", label: "Hold" },
+                    { val: "buy-more", label: "Buy more" },
                   ].map((item) => (
                     <button
                       key={item.val}
@@ -465,10 +465,10 @@ export default function OnboardingPage() {
 
             <div className="space-y-2">
               <h2 className="text-md font-extrabold text-slate-200 tracking-wide uppercase">
-                Consolidated AOF Digitally Signed
+                AOF signed
               </h2>
               <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
-                Account Opening Form (AOF) successfully compiled and e-signed via Digilocker CDSL NSDL registries.
+                Your account form is complete.
               </p>
             </div>
 
@@ -479,7 +479,7 @@ export default function OnboardingPage() {
                 <span className="text-slate-300 font-extrabold">Retail Investor</span>
               </div>
               <div className="flex justify-between border-b border-slate-900 pb-2">
-                <span className="text-slate-500 font-semibold">Risk Rating Profile</span>
+                <span className="text-slate-500 font-semibold">Risk profile</span>
                 <span className="text-emerald-400 font-extrabold tracking-wide uppercase">
                   {calculateRiskCategory()}
                 </span>

@@ -119,7 +119,7 @@ export default function PortfolioPage() {
               Portfolio Analytics
             </h1>
             <p className="mt-2 max-w-3xl text-sm font-semibold leading-6 text-[#5b5652] dark:text-[#bdb5ae]">
-              Live holdings, allocation, returns and goal-readiness from the investment database.
+              Holdings, allocation, returns and goals from live data.
             </p>
           </div>
         </div>
@@ -253,7 +253,7 @@ export default function PortfolioPage() {
               </div>
               <div className="mt-7 flex items-start gap-3 border-[3px] border-[#082f33]/60 bg-[#dff5f1] p-4 text-sm font-bold dark:bg-[#0b0b0b]">
                 <Sparkles className="mt-0.5 h-5 w-5 shrink-0" />
-                Goals are computed from real holdings until a dedicated goal table is added.
+                Goals use current holdings for now.
               </div>
             </section>
           </div>
@@ -332,7 +332,7 @@ function EmptyPortfolioState() {
         No live holdings yet
       </h2>
       <p className="mx-auto mt-4 max-w-xl text-sm font-semibold leading-6 text-[#5b5652] dark:text-[#bdb5ae]">
-        Use the Investor Console to add a direct investment. This page will then show real holdings, allocation and goal progress from the database.
+        Add an investment to see holdings, allocation and goal progress.
       </p>
       <Button
         asChild

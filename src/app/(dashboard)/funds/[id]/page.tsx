@@ -81,8 +81,7 @@ export default async function FundDetailPage({ params }: { params: { id: string 
 
       {!fund && (
         <div className="border-[3px] border-[#c95545] bg-[#c95545]/10 p-4 text-sm font-bold text-[#c95545]">
-          Unable to load this fund from the backend. Check that the Nest API is
-          running and that this fund id exists.
+          Fund not found. Check the API or try another fund.
         </div>
       )}
 
