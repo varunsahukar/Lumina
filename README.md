@@ -30,6 +30,7 @@ Lumina is a monorepo containing a **Next.js 14 frontend** at the repository root
 - [Common Commands](#common-commands)
 - [Quality Gates](#quality-gates)
 - [Deployment](#deployment)
+- [Production Environment Checklist](#production-environment-checklist)
 - [API Overview](#api-overview)
 - [Data Sources](#data-sources)
 - [Troubleshooting](#troubleshooting)
@@ -329,6 +330,41 @@ cd backend
 DEPLOY_ENV=production npm run check:deployment
 npm run migrate:deploy
 ```
+
+---
+
+## Production Environment Checklist
+
+Set these before promoting a staging or production build.
+
+### Frontend host, for example Vercel
+
+| Variable | Required | Example |
+|---|---:|---|
+| `BACKEND_API_URL` | Yes | `https://your-backend.onrender.com/api` |
+| `DATABASE_URL` | Yes | Production PostgreSQL connection string |
+| `JWT_SECRET` | Yes | Strong unique secret |
+| `NEXT_PUBLIC_BACKEND_API_URL` | Optional | Same as `BACKEND_API_URL` only when browser code needs it |
+
+### Backend host, for example Render
+
+| Variable | Required | Example |
+|---|---:|---|
+| `DATABASE_URL` | Yes | PostgreSQL connection string with explicit SSL mode |
+| `JWT_SECRET` | Yes | Strong unique secret |
+| `REDIS_URL` or `REDIS_HOST` / `REDIS_PORT` | Required when Redis is enabled | Managed Redis connection |
+| `ENABLE_REDIS` | Optional | `false` only for environments without Redis |
+| `ALPHA_VANTAGE_KEY` | Optional | Required for USA fund sync |
+| `MFAPI_BASE_URL` / `AMFI_NAV_URL` | Yes | Use values from `.env.example` unless changed |
+
+Run migrations against the target database before routing users to the new backend:
+
+```bash
+cd backend
+npx prisma migrate deploy
+```
+
+For hosted PostgreSQL, make SSL behavior explicit. Use `sslmode=verify-full` for strict SSL, or `uselibpqcompat=true&sslmode=require` when your provider expects libpq-compatible behavior.
 
 ---
 
